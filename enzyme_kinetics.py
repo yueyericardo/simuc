@@ -3,7 +3,7 @@ import bokeh
 from bokeh.io import curdoc
 from bokeh.layouts import row, column
 from bokeh.models import ColumnDataSource
-from bokeh.models.widgets import Slider, TextInput, CheckboxButtonGroup
+from bokeh.models.widgets import Slider
 from bokeh.plotting import figure
 
 
@@ -50,7 +50,6 @@ dt = 0.01
 
 
 def get_newdata(kr, kf, kcat, kir, ki, kesir, kesi, keisr, keis, S, ES, EI, ESI, Inhi, E, P, Inhi0, E0, S0, dt):
-
     x_t = [0]
     y_S = [S]
     y_ES = [ES]
@@ -259,14 +258,12 @@ for w in [slider_Ks, slider_kcat, slider_Ki, slider_K_ES_I, slider_K_EI_S, slide
 
 title = bokeh.models.Div(text="Enzyme Kinetics<br><br>")
 title_inhi = bokeh.models.Div(text="Inhibition<br><br>")
-# title_inhi = bokeh.models.Markup(text="<br>Inhibition<br>", style={"text-align": "center",})
 energy_png = bokeh.models.Div(text="<img src='https://yyrcd-1256568788.cos.na-siliconvalley.myqcloud.com/yyrcd/2019-09-06-CodeCogsEqn%20-1-.png'><br><br><br>")
 wave_png = bokeh.models.Div(text="<img src='https://yyrcd-1256568788.cos.na-siliconvalley.myqcloud.com/yyrcd/2019-09-06-CodeCogsEqn%20-3-.png'><br><br><br>")
 prob_png = bokeh.models.Div(text="<img src='https://yyrcd-1256568788.cos.na-siliconvalley.myqcloud.com/yyrcd/2019-09-06-CodeCogsEqn%20-2-.png'><br><br><br>")
 v_net_png = bokeh.models.Div(text="<img src='https://yyrcd-1256568788.cos.na-siliconvalley.myqcloud.com/yyrcd/2019-09-06-CodeCogsEqn%20-4-.png'><br><br><br>")
 
 # Set up layouts and add to document
-
 left = column(children=[title, slider_Ks, slider_kcat, slider_E0, slider_S0, energy_png, wave_png, prob_png, v_net_png], sizing_mode='fixed', width=500)
 middle = column(children=[plot_con_time, plot_V_S, plot_1_over], sizing_mode='fixed', width=700)
 right = column(children=[title_inhi, slider_Ki, slider_K_ES_I, slider_K_EI_S, slider_Inhi0], sizing_mode='fixed', width=500)
