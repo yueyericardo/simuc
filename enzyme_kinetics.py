@@ -115,6 +115,8 @@ p_E = plot_con_time.line('x', 'y', source=source_E, line_width=3, line_alpha=1, 
 p_ES = plot_con_time.line('x', 'y', source=source_ES, line_width=1, line_alpha=1, color='darkgreen', line_dash='dashed', legend='ES')
 p_EI = plot_con_time.line('x', 'y', source=source_EI, line_width=1, line_alpha=1, color='tomato', line_dash='dashed', legend='EI')
 p_ESI = plot_con_time.line('x', 'y', source=source_ESI, line_width=1, line_alpha=1, color='silver', line_dash='dashed', legend='ESI (low)')
+plot_con_time.yaxis.axis_label = "Concentration"
+plot_con_time.xaxis.axis_label = "Time"
 
 Km = (kcat + kr)/kf
 Vm = kcat * E
@@ -193,6 +195,8 @@ plot_V_S = figure(plot_height=200, plot_width=600,
                   toolbar_location=None,
                   y_range=[0, 45])
 p_V_S = plot_V_S.line('x', 'y', source=source_V_S, line_width=2, line_alpha=1, color='violet', legend='Initial Rate')
+plot_V_S.yaxis.axis_label = "V0"
+plot_V_S.xaxis.axis_label = "[S]"
 
 plot_1_over = figure(plot_height=200, plot_width=600,
                      title="1/V0 vs 1/[S]",
@@ -201,7 +205,8 @@ plot_1_over = figure(plot_height=200, plot_width=600,
                      y_range=[-0.5, 0.5],
                      x_range=[-0.02, 0.02])
 p_1_over = plot_1_over.line('x', 'y', source=source_1_over, line_width=2, line_alpha=1, color='blue', legend='1/V0')
-
+plot_1_over.yaxis.axis_label = "1 / V0"
+plot_1_over.xaxis.axis_label = "1 / [S]"
 
 def update_data(attrname, old, new):
     # Eq constant
