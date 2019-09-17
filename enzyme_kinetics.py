@@ -138,11 +138,10 @@ def get_v0(x_S0, kcat, kf, kr, E0, I0, Ki, K_ES_I, K_EI_S):
     # non-competitive inhibition
     if (Ki > 0 and K_ES_I > 0):
         Vm = Vm / (1 + I0 / K_ES_I)
-        # Km = Km * (1 + I0 / Ki) * (1 + I0 / Ki)
 
     # un-competitive inhibition
     if (Ki == 0 and K_ES_I > 0):
-        # Km = Km / (1 + I0 / K_ES_I)
+        Km = Km / (1 + I0 / K_ES_I)
         Vm = Vm / (1 + I0 / K_ES_I)
 
     V0 = Vm * x_S0 / (Km + x_S0)
@@ -162,12 +161,11 @@ def get_1_over_v0(x_1_over_S0, kcat, kf, kr, E0, I0, Ki, K_ES_I, K_EI_S):
     # non-competitive inhibition
     if (Ki > 0 and K_ES_I > 0):
         Vm = Vm / (1 + I0 / K_ES_I)
-        # Km = Km * (1 + I0 / Ki) * (1 + I0 / Ki)
         inhi_type = 'Non-Competitive Inhibition'
 
     # un-competitive inhibition
     if (Ki == 0 and K_ES_I > 0):
-        # Km = Km / (1 + I0 / K_ES_I)
+        Km = Km / (1 + I0 / K_ES_I)
         Vm = Vm / (1 + I0 / K_ES_I)
         inhi_type = 'Un-Competitive Inhibition'
 
@@ -207,6 +205,7 @@ plot_1_over = figure(plot_height=200, plot_width=600,
 p_1_over = plot_1_over.line('x', 'y', source=source_1_over, line_width=2, line_alpha=1, color='blue', legend='1/V0')
 plot_1_over.yaxis.axis_label = "1 / V0"
 plot_1_over.xaxis.axis_label = "1 / [S]"
+
 
 def update_data(attrname, old, new):
     # Eq constant
@@ -269,7 +268,7 @@ prob_png = bokeh.models.Div(text="<img src='https://yyrcd-1256568788.cos.na-sili
 v_net_png = bokeh.models.Div(text="<img src='https://yyrcd-1256568788.cos.na-siliconvalley.myqcloud.com/yyrcd/2019-09-06-CodeCogsEqn%20-4-.png'><br><br><br>")
 
 # Set up layouts and add to document
-left = column(children=[title, slider_Ks, slider_kcat, slider_E0, slider_S0, energy_png, wave_png, prob_png, v_net_png], sizing_mode='fixed', width=500)
+left = column(children=[title, slider_Ks, slider_kcat, slider_E0, slider_S0, energy_png, wave_png, prob_png, v_net_png], sizing_mode='fixed', width=400)
 middle = column(children=[plot_con_time, plot_V_S, plot_1_over], sizing_mode='fixed', width=700)
 right = column(children=[title_inhi, slider_Ki, slider_K_ES_I, slider_K_EI_S, slider_Inhi0], sizing_mode='fixed', width=500)
 all_layout = row(left, middle, right)
