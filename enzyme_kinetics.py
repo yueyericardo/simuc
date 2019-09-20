@@ -190,7 +190,8 @@ plot_V_S = figure(plot_height=200, plot_width=600,
                   title="Initial Rate vs Substrate",
                   tools="crosshair,reset,save,wheel_zoom",
                   toolbar_location=None,
-                  y_range=[0, 45])
+                  y_range=[0, 45],
+                  x_range=[0, 2010])
 p_V_S = plot_V_S.line('x', 'y', source=source_V_S, line_width=2, line_alpha=1, color='violet', legend='Initial Rate')
 plot_V_S.circle('x', 'y', source=source_circle__half_Vm, fill_color="purple", line_color="black", size=8, legend='(Km, Vm/2)')
 
