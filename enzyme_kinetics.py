@@ -8,15 +8,15 @@ from bokeh.plotting import figure
 
 
 # rate constant slider
-slider_Ks = Slider(title="Ks", value=10, start=1, end=20, step=3)
-slider_kcat = Slider(title="kcat", value=0.1, start=0.06, end=0.2, step=0.01)
-slider_Ki = Slider(title="Ki", value=0, start=0, end=20, step=3)
-slider_K_ES_I = Slider(title="Kii", value=0, start=0, end=100, step=10)
-slider_K_EI_S = Slider(title="Kss", value=0, start=0, end=100, step=10)
+slider_Ks = Slider(title="Ks", value=10, start=1, end=20, step=3, sizing_mode="stretch_width")
+slider_kcat = Slider(title="kcat", value=0.1, start=0.06, end=0.2, step=0.01, sizing_mode="stretch_width")
+slider_Ki = Slider(title="Ki", value=0, start=0, end=20, step=3, sizing_mode="stretch_width")
+slider_K_ES_I = Slider(title="Kii", value=0, start=0, end=100, step=10, sizing_mode="stretch_width")
+slider_K_EI_S = Slider(title="Kss", value=0, start=0, end=100, step=10, sizing_mode="stretch_width")
 # Initial concentration
-slider_E0 = Slider(title="E0", value=200, start=0, end=300, step=50)
-slider_S0 = Slider(title="S0", value=500, start=400, end=600, step=50)
-slider_Inhi0 = Slider(title="I0", value=0, start=0, end=700, step=50)
+slider_E0 = Slider(title="E0", value=200, start=0, end=300, step=50, sizing_mode="stretch_width")
+slider_S0 = Slider(title="S0", value=500, start=400, end=600, step=50, sizing_mode="stretch_width")
+slider_Inhi0 = Slider(title="I0", value=0, start=0, end=700, step=50, sizing_mode="stretch_width")
 
 # Eq constant
 Ki = slider_Ki.value
@@ -267,26 +267,26 @@ def update_data(attrname, old, new):
 for w in [slider_Ks, slider_kcat, slider_Ki, slider_K_ES_I, slider_K_EI_S, slider_E0, slider_Inhi0, slider_S0]:
     w.on_change('value', update_data)
 
-title_left = bokeh.models.Div(text="Without Inhibition<br><br>")
-title_inhi = bokeh.models.Div(text="Inhibition<br><br>")
+title_left = bokeh.models.Div(text="Without Inhibition<br><br>", sizing_mode="stretch_width")
+title_inhi = bokeh.models.Div(text="Inhibition<br><br>", sizing_mode="stretch_width")
 
-all_information_text = "<br><br><br><br><br><br><br><br><br><br><br>All Initial Parameters: <br><br>Rate Constants: (Unit for k: 1/s)<br>Ks&nbsp;&nbsp;&nbsp;=&nbsp;&nbsp;{: 3d}&nbsp;&nbsp;(k1 = {: .4f}, k-1 = {: .4f})<br>kcat =&nbsp;&nbsp;{: 6.2f}&nbsp;&nbsp;<br>Ki&nbsp;&nbsp;&nbsp;=&nbsp;&nbsp;{: 3d}&nbsp;&nbsp;(k1 = {: .4f}, k-1 = {: .4f})<br>Kii&nbsp;&nbsp;=&nbsp;&nbsp;{: 3d}&nbsp;&nbsp;(k1 = {: .4f}, k-1 = {: .4f})<br>Kss&nbsp;&nbsp;=&nbsp;&nbsp;{: 3d}&nbsp;&nbsp;(k1 = {: .4f}, k-1 = {: .4f})<br><br>Initial Concentration:<br>E0   = {: .0f} mol/L, S0   = {: .0f} mol/L, I0   = {: .0f} mol/L<br>"
+all_information_text = "<br><br><br><br><br><br><br><br><br><br>All Initial Parameters: <br><br>Rate Constants: <br>(Unit for k1 is 1/s, Unit for k-1 is 1/(M*s))<br>Ks&nbsp;&nbsp;&nbsp;=&nbsp;&nbsp;{: 3d}&nbsp;&nbsp;(k1 = {: .4f}, k-1 = {: .4f})<br>kcat =&nbsp;&nbsp;{: 6.2f}&nbsp;&nbsp;<br>Ki&nbsp;&nbsp;&nbsp;=&nbsp;&nbsp;{: 3d}&nbsp;&nbsp;(k1 = {: .4f}, k-1 = {: .4f})<br>Kii&nbsp;&nbsp;=&nbsp;&nbsp;{: 3d}&nbsp;&nbsp;(k1 = {: .4f}, k-1 = {: .4f})<br>Kss&nbsp;&nbsp;=&nbsp;&nbsp;{: 3d}&nbsp;&nbsp;(k1 = {: .4f}, k-1 = {: .4f})<br><br>Initial Concentration:<br>E0   = {: .0f} mol/L, S0   = {: .0f} mol/L, I0   = {: .0f} mol/L<br>"
 a_i_t = all_information_text.format(slider_Ks.value, kf, kr, kcat, Ki, ki, kir, K_ES_I, kesi, kesir, K_EI_S, keis, keisr, E0, S0, Inhi0)
-all_information = bokeh.models.Div(text=a_i_t, style={'width': '1450px', 'font-family': 'serif', 'color': 'black', 'text-align': 'left'})
+all_information = bokeh.models.Div(text=a_i_t, style={'width': '1450px', 'font-family': 'serif', 'color': 'black', 'text-align': 'left'}, sizing_mode="stretch_width")
 
 title = bokeh.models.Div(text="<h1>Simulation of Enzyme Kinetics</h1><a target='_blank' href='https://yyrcd-1256568788.cos.na-siliconvalley.myqcloud.com/yyrcd/2019-09-24-Background_Information.html'>Background Information</a><br><hr>",
-                         style={'font-size': '120%', 'width': '1450px', 'font-family': 'serif', 'color': 'black', 'text-align': 'center'})
+                         style={'font-size': '120%', 'width': '1450px', 'font-family': 'serif', 'color': 'black', 'text-align': 'center'}, sizing_mode="stretch_width")
 footer = bokeh.models.Div(text="<br><hr><br>Richard (Jinze) Xue <br>2019.09.18<br> <a target='_blank' href='https://github.com/yueyericardo/simuc'>Source code on Github</a><br>Department of Chemistry, Physical Chemistry Division, University of Florida",
-                          style={'font-size': '100%', 'width': '1450px', 'font-family': 'serif', 'color': 'black', 'text-align': 'center'})
-reaction_png = bokeh.models.Div(text="<br><br><br><br><br>Symbol Definition: <img src='https://yyrcd-1256568788.cos.na-siliconvalley.myqcloud.com/yyrcd/2019-09-18-143043.png' style='width: 310px; margin: auto; display: block'> <br><br>Michaelis-Menten Equation:<br><br> <img src='https://yyrcd-1256568788.cos.na-siliconvalley.myqcloud.com/yyrcd/2019-09-18-mm-equation.png' style='width: 150px; display: block'>")
+                          style={'font-size': '100%', 'width': '1450px', 'font-family': 'serif', 'color': 'black', 'text-align': 'center'}, sizing_mode="stretch_width")
+reaction_png = bokeh.models.Div(text="<br><br><br><br><br>Symbol Definition: <img src='https://yyrcd-1256568788.cos.na-siliconvalley.myqcloud.com/yyrcd/2019-09-18-143043.png' style='width: 310px; margin: auto; display: block'> <br><br>Michaelis-Menten Equation:<br><br> <img src='https://yyrcd-1256568788.cos.na-siliconvalley.myqcloud.com/yyrcd/2019-09-18-mm-equation.png' style='width: 150px; display: block'>", sizing_mode="stretch_width")
 
 # Set up layouts and add to document
 up_title = row(children=[title], sizing_mode='fixed', height=150, width=1600)
 down_footer = row(children=[footer], sizing_mode='fixed', height=130, width=1600)
-left = column(children=[title_left, slider_Ks, slider_kcat, slider_E0, slider_S0, reaction_png], sizing_mode='fixed', width=400)
-middle = column(children=[plot_con_time, plot_V_S, plot_1_over], sizing_mode='fixed', width=700)
-right = column(children=[title_inhi, slider_Ki, slider_K_ES_I, slider_K_EI_S, slider_Inhi0, all_information], sizing_mode='fixed', width=400)
-all_layout = column(up_title, row(left, middle, right), down_footer)
+left = column(children=[title_left, slider_Ks, slider_kcat, slider_E0, slider_S0, reaction_png], sizing_mode='fixed', width=400, height=700)
+middle = column(children=[plot_con_time, plot_V_S, plot_1_over], sizing_mode='fixed', width=700, height=700)
+right = column(children=[title_inhi, slider_Ki, slider_K_ES_I, slider_K_EI_S, slider_Inhi0, all_information], sizing_mode='fixed', width=400, height=700)
+all_layout = column(up_title, row(left, middle, right), down_footer, sizing_mode="fixed", width=1600)
 
 curdoc().add_root(all_layout)
 curdoc().title = "Enzyme Kinetics"
