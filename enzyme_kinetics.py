@@ -260,6 +260,8 @@ def update_data(attrname, old, new):
     source_circle_x.data = dict(x=[x_circle_x], y=[0])
     source_circle_y.data = dict(x=[0], y=[y_circle_y])
     source_circle__half_Vm.data = dict(x=[xy_circle_half_Vm[0]], y=[xy_circle_half_Vm[1]])
+    a_i_t = all_information_text.format(slider_Ks.value, kf, kr, kcat, Ki, ki, kir, K_ES_I, kesi, kesir, K_EI_S, keis, keisr, E0, S0, Inhi0)
+    all_information.text = a_i_t
 
 
 for w in [slider_Ks, slider_kcat, slider_Ki, slider_K_ES_I, slider_K_EI_S, slider_E0, slider_Inhi0, slider_S0]:
@@ -267,19 +269,23 @@ for w in [slider_Ks, slider_kcat, slider_Ki, slider_K_ES_I, slider_K_EI_S, slide
 
 title_left = bokeh.models.Div(text="Without Inhibition<br><br>")
 title_inhi = bokeh.models.Div(text="Inhibition<br><br>")
-title = bokeh.models.Div(text="<h1>Simulation of Enzyme Kinetics</h1><a target='_blank' href='https://yyrcd-1256568788.cos.na-siliconvalley.myqcloud.com/yyrcd/2019-09-18-Background_Information%20-2-.html'>Background Information</a><br><hr>",
+
+all_information_text = "<br><br><br><br><br><br><br><br><br><br><br>All Initial Parameters: <br><br>Rate Constants: (Unit for k: 1/s)<br>Ks&nbsp;&nbsp;&nbsp;=&nbsp;&nbsp;{: 3d}&nbsp;&nbsp;(k1 = {: .4f}, k-1 = {: .4f})<br>kcat =&nbsp;&nbsp;{: 6.2f}&nbsp;&nbsp;<br>Ki&nbsp;&nbsp;&nbsp;=&nbsp;&nbsp;{: 3d}&nbsp;&nbsp;(k1 = {: .4f}, k-1 = {: .4f})<br>Kii&nbsp;&nbsp;=&nbsp;&nbsp;{: 3d}&nbsp;&nbsp;(k1 = {: .4f}, k-1 = {: .4f})<br>Kss&nbsp;&nbsp;=&nbsp;&nbsp;{: 3d}&nbsp;&nbsp;(k1 = {: .4f}, k-1 = {: .4f})<br><br>Initial Concentration:<br>E0   = {: .0f} mol/L, S0   = {: .0f} mol/L, I0   = {: .0f} mol/L<br>"
+a_i_t = all_information_text.format(slider_Ks.value, kf, kr, kcat, Ki, ki, kir, K_ES_I, kesi, kesir, K_EI_S, keis, keisr, E0, S0, Inhi0)
+all_information = bokeh.models.Div(text=a_i_t, style={'width': '1450px', 'font-family': 'serif', 'color': 'black', 'text-align': 'left'})
+
+title = bokeh.models.Div(text="<h1>Simulation of Enzyme Kinetics</h1><a target='_blank' href='https://yyrcd-1256568788.cos.na-siliconvalley.myqcloud.com/yyrcd/2019-09-24-Background_Information.html'>Background Information</a><br><hr>",
                          style={'font-size': '120%', 'width': '1450px', 'font-family': 'serif', 'color': 'black', 'text-align': 'center'})
 footer = bokeh.models.Div(text="<br><hr><br>Richard (Jinze) Xue <br>2019.09.18<br> <a target='_blank' href='https://github.com/yueyericardo/simuc'>Source code on Github</a><br>Department of Chemistry, Physical Chemistry Division, University of Florida",
                           style={'font-size': '100%', 'width': '1450px', 'font-family': 'serif', 'color': 'black', 'text-align': 'center'})
-reaction_png = bokeh.models.Div(text="<br><br><br><br><br><br><br><br><br><br><br><br><br>Symbol Definition: <img src='https://yyrcd-1256568788.cos.na-siliconvalley.myqcloud.com/yyrcd/2019-09-18-143043.png' style='width: 310px; margin: auto; display: block'><br>")
-mm_equation_png = bokeh.models.Div(text="<br><br><br><br><br><br><br><br><br><br><br><br><br>Michaelis-Menten Equation:<br><br> <img src='https://yyrcd-1256568788.cos.na-siliconvalley.myqcloud.com/yyrcd/2019-09-18-mm-equation.png' style='width: 150px; margin: auto; display: block'><br>")
+reaction_png = bokeh.models.Div(text="<br><br><br><br><br>Symbol Definition: <img src='https://yyrcd-1256568788.cos.na-siliconvalley.myqcloud.com/yyrcd/2019-09-18-143043.png' style='width: 310px; margin: auto; display: block'> <br><br>Michaelis-Menten Equation:<br><br> <img src='https://yyrcd-1256568788.cos.na-siliconvalley.myqcloud.com/yyrcd/2019-09-18-mm-equation.png' style='width: 150px; display: block'>")
 
 # Set up layouts and add to document
 up_title = row(children=[title], sizing_mode='fixed', height=150, width=1600)
 down_footer = row(children=[footer], sizing_mode='fixed', height=130, width=1600)
 left = column(children=[title_left, slider_Ks, slider_kcat, slider_E0, slider_S0, reaction_png], sizing_mode='fixed', width=400)
 middle = column(children=[plot_con_time, plot_V_S, plot_1_over], sizing_mode='fixed', width=700)
-right = column(children=[title_inhi, slider_Ki, slider_K_ES_I, slider_K_EI_S, slider_Inhi0, mm_equation_png], sizing_mode='fixed', width=400)
+right = column(children=[title_inhi, slider_Ki, slider_K_ES_I, slider_K_EI_S, slider_Inhi0, all_information], sizing_mode='fixed', width=400)
 all_layout = column(up_title, row(left, middle, right), down_footer)
 
 curdoc().add_root(all_layout)
