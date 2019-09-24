@@ -9,7 +9,7 @@ from bokeh.plotting import figure
 
 # rate constant slider
 slider_Ks = Slider(title="Ks", value=10, start=1, end=20, step=3)
-slider_kcat = Slider(title="kcat * 1e-3", value=100, start=60, end=200, step=20)
+slider_kcat = Slider(title="kcat", value=0.1, start=0.06, end=0.2, step=0.01)
 slider_Ki = Slider(title="Ki", value=0, start=0, end=20, step=3)
 slider_K_ES_I = Slider(title="Kii", value=0, start=0, end=100, step=10)
 slider_K_EI_S = Slider(title="Kss", value=0, start=0, end=100, step=10)
@@ -25,7 +25,7 @@ K_EI_S = slider_K_EI_S.value
 # rate constant
 kr = 1/10000
 kf = slider_Ks.value * kr
-kcat = slider_kcat.value / 1000
+kcat = slider_kcat.value
 kir = 1 / 10000
 ki = slider_Ki.value * kir
 kesir = 1 / 10000
@@ -220,7 +220,7 @@ def update_data(attrname, old, new):
     # rate constant
     kr = 1/10000
     kf = slider_Ks.value * kr
-    kcat = slider_kcat.value / 1000
+    kcat = slider_kcat.value
     kir = 1 / 10000
     ki = slider_Ki.value * kir
     kesir = 1 / 10000
