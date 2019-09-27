@@ -1,6 +1,6 @@
 # SIMUC (WIP)
 SIMUlation for Chemistry  
-(Currently only available within UF network)
+(Currently only available within University of Florida network)
 
 ## 1. Index
 1. [Sound Interference](http://simuc.chem.ufl.edu/sound)
