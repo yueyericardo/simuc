@@ -6,8 +6,8 @@ from bokeh.models import ColumnDataSource, LayoutDOM
 # that we are fixing the size of this component, in ``options``, but
 # with additional work it could be made more responsive.
 DEFAULTS = {
-    'width':          '600px',
-    'height':         '600px',
+    'width':          '300px',
+    'height':         '300px',
     'style':          'surface',
     'showPerspective': True,
     'showGrid':        True,
@@ -17,7 +17,7 @@ DEFAULTS = {
     'cameraPosition':  {
         'horizontal': -0.35,
         'vertical':    0.22,
-        'distance':    1.8,
+        'distance':    2,
     }
 }
 

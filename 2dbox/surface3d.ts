@@ -28,8 +28,8 @@ declare namespace vis {
 // See: http://visjs.org/graph3d_examples.html for more details. This
 // JS object should match the Python default value.
 const OPTIONS = {
-  width: '600px',
-  height: '600px',
+  width: '300px',
+  height: '300px',
   style: 'surface',
   showPerspective: true,
   showGrid: true,
@@ -39,7 +39,7 @@ const OPTIONS = {
   cameraPosition: {
     horizontal: -0.35,
     vertical: 0.22,
-    distance: 1.8,
+    distance: 2,
   },
 }
 
