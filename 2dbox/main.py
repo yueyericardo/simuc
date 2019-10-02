@@ -153,9 +153,10 @@ plot_prob = Surface3d(x="x", y="y", z="z", data_source=source_prob)
 for w in [slider_lx, slider_ly, slider_nx, slider_ny, slider_mass]:
     w.on_change('value', update_data)
 
+equation_png = Div(text="<br><br><img src='https://yyrcd-1256568788.cos.na-siliconvalley.myqcloud.com/yyrcd/2019-10-02-185706.png' style='width: 400px;'><br>")
 title_prob = Div(text="Probability Density", style={'font-size': '120%', 'width': '300px', 'font-family': 'serif', 'color': 'black', 'text-align': 'center'}, sizing_mode="stretch_width")
 title_wave = Div(text="Wavefunction", style={'font-size': '120%', 'width': '300px', 'font-family': 'serif', 'color': 'black', 'text-align': 'center'}, sizing_mode="stretch_width")
 inputs = column(children=[slider_nx, slider_ny, slider_lx, slider_ly, slider_mass], width=400)
 prob_wave_plot = row(column(plot_wavefunction, title_wave), column(plot_prob, title_prob))
-curdoc().add_root(row(inputs, column(plot_energy, prob_wave_plot), width=1000))
+curdoc().add_root(row(column(inputs, equation_png), column(plot_energy, prob_wave_plot), width=1000))
 curdoc().title = "Particle in a 2D box"
