@@ -272,7 +272,7 @@ title_inhi = bokeh.models.Div(text="Inhibition<br><br>", sizing_mode="stretch_wi
 
 all_information_text = "All Initial Parameters: <br><br>Rate Constants: <br>(Unit for k1 is L/(mol*s), Unit for k-1 is 1/s)<br>Ks&nbsp;&nbsp;&nbsp;=&nbsp;&nbsp;{: 3d}&nbsp;&nbsp;(k1 = {: .4f}, k-1 = {: .4f})<br>kcat =&nbsp;&nbsp;{: 6.2f}&nbsp;&nbsp;<br>Ki&nbsp;&nbsp;&nbsp;=&nbsp;&nbsp;{: 3d}&nbsp;&nbsp;(k1 = {: .4f}, k-1 = {: .4f})<br>Kii&nbsp;&nbsp;=&nbsp;&nbsp;{: 3d}&nbsp;&nbsp;(k1 = {: .4f}, k-1 = {: .4f})<br>Kss&nbsp;&nbsp;=&nbsp;&nbsp;{: 3d}&nbsp;&nbsp;(k1 = {: .4f}, k-1 = {: .4f})<br><br>Initial Concentration:<br>E0   = {: .0f} mol/L, S0   = {: .0f} mol/L, I0   = {: .0f} mol/L<br>"
 a_i_t = all_information_text.format(slider_Ks.value, kf, kr, kcat, Ki, ki, kir, K_ES_I, kesi, kesir, K_EI_S, keis, keisr, E0, S0, Inhi0)
-all_information = bokeh.models.Div(text=a_i_t, style={'margin-top': '170px', 'width': '1450px', 'font-family': 'serif', 'color': 'black', 'text-align': 'left'}, sizing_mode="stretch_width")
+all_information = bokeh.models.Div(text=a_i_t, style={'margin-top': '200px', 'width': '1450px', 'font-family': 'serif', 'color': 'black', 'text-align': 'left'}, sizing_mode="stretch_width")
 
 title = bokeh.models.Div(text="<h1>Simulation of Enzyme Kinetics</h1><a target='_blank' href='https://yyrcd-1256568788.cos.na-siliconvalley.myqcloud.com/yyrcd/2019-09-24-Background_Information.html'>Background Information</a><br><hr>",
                          style={'font-size': '120%', 'width': '1450px', 'font-family': 'serif', 'color': 'black', 'text-align': 'center'}, sizing_mode="stretch_width")
