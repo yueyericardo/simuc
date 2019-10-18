@@ -9,7 +9,7 @@ SIMUlation for Chemistry
 1. [How to make a plot](https://yyrcd-1256568788.cos.na-siliconvalley.myqcloud.com/yyrcd/2019-09-25-How_to_make_a_plot%20-1--1.html)
 1. [Particle in a 2D Box](http://simuc.chem.ufl.edu/2dbox)
 1. [Minimal background for python](https://yyrcd-1256568788.cos.na-siliconvalley.myqcloud.com/yyrcd/2019-10-18-Minimal%20Background%20for%20Python-1.html)
-1. [Photoisomerization Kinetics Analysis using Python](https://yyrcd-1256568788.cos.na-siliconvalley.myqcloud.com/yyrcd/2019-10-18-photoisomerization.html)
+1. [Photoisomerization Kinetics Analysis using Python](https://yyrcd-1256568788.cos.na-siliconvalley.myqcloud.com/yyrcd/2019-10-18-photoisomerization-1.html)
 
 ## 2. Example
 Enzyme Kinetics
