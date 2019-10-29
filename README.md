@@ -11,6 +11,7 @@ SIMUlation for Chemistry
 1. [Minimal background for python](https://yyrcd-1256568788.cos.na-siliconvalley.myqcloud.com/yyrcd/2019-10-18-Minimal%20Background%20for%20Python-1.html)
 1. [Photoisomerization Kinetics Analysis using Python](https://yyrcd-1256568788.cos.na-siliconvalley.myqcloud.com/yyrcd/2019-10-28-photoisomerization.html)
 1. [HOMO-LUMO Gap Energy of the Conjugated Dye Analysis using Python](https://yyrcd-1256568788.cos.na-siliconvalley.myqcloud.com/yyrcd/2019-10-28-HOMO-LUMO%20Gap%20Energy%20of%20the%20Conjugated%20Dye.html)
+1. [Anaylze the order of dyes bleaching reaction](https://yyrcd-1256568788.cos.na-siliconvalley.myqcloud.com/yyrcd/2019-10-29-Anaylze%20the%20order%20of%20dyes%20bleaching%20reaction-1.html)
 
 ## 2. Example
 Enzyme Kinetics
