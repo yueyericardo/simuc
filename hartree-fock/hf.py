@@ -24,7 +24,7 @@ def S_int(f1, f2):
 
 # H core = kinetics energy + electron and nuclear potential energy
 def H_int(f1, f2, Z):
-    return sp.integrate(f1 * (- ((1 / 2) * (1 / r) * diff(diff(r * f2, r), r))-((Z / r) * f2)) * r * r, (r, 0, +oo))
+    return sp.integrate(f1 * (- ((1 / 2) * (1 / r) * diff(diff(r * f2, r), r)) - ((Z / r) * f2)) * r * r, (r, 0, +oo))
 
 
 # Returns the core hamiltonian matrix
