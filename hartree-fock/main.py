@@ -92,7 +92,7 @@ def test1():
     zetas = [[1.45363, 1], [2.91093, 1]]
     # input nuclear charge (element number)
     Z = 2
-    Rpos = [1, 1]
+    Rpos = [0, 0]
     hf_e = run_hf(zetas, Z, Rpos)
     ref_hf_e = -2.8616726
     compare(hf_e, ref_hf_e)
