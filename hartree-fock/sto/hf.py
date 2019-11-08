@@ -218,17 +218,20 @@ def energy_tot(e, P, H, NN_V=0):
 
 def print_info(e, Co, hf_e, start, stop, delta_e=0, verbose=False):
     """
-    Print information while do scf interations.
+    Print information while doing SCF interations.
     """
     if(verbose):
+        # Co
         print('Coefficients:')
         print(Co)
-    if(verbose):
+
+        # MOs
         print('MO energies:')
         message = ', '
         m_list = ['e{} = {:0.3f}'.format(i+1, x) for i, x in enumerate(e)]
         message = message.join(m_list)
         print(message)
+
     print('HF energy: {:0.5f} (hartree) = {:0.5f} (eV)'.format(hf_e, hf_e*27.211))
     if delta_e != 0:
         print('dE       : {:.2e}'.format(delta_e))
