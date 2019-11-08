@@ -18,7 +18,7 @@ def run_hf(fs, Z):
     S = hf.S_matrix(fs)
     e, Co = hf.secular_eqn(H, S)
     P = hf.P_matrix(Co, N)
-    hf_e = hf.get_E0(e, P, H)
+    hf_e = hf.energy_tot(e, P, H)
 
     stop = time.time()
     print('------------------------------', "Initialization", '------------------------------')
@@ -40,7 +40,7 @@ def run_hf(fs, Z):
         F = hf.F_matrix(H, G)
         e, Co = hf.secular_eqn(F, S)
         P = hf.P_matrix(Co, N)
-        hf_e = hf.get_E0(e, P, H)
+        hf_e = hf.energy_tot(e, P, H)
 
         delta_e = np.abs(hf_e - previous_e)
         previous_e = hf_e
