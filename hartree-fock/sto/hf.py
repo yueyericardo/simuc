@@ -217,6 +217,9 @@ def energy_tot(e, P, H, NN_V=0):
 # --------- PART 5 Utils ---------
 
 def print_info(e, Co, hf_e, start, stop, delta_e=0, verbose=False):
+    """
+    Print information while do scf interations.
+    """
     if(verbose):
         print('Coefficients:')
         print(Co)
@@ -233,6 +236,9 @@ def print_info(e, Co, hf_e, start, stop, delta_e=0, verbose=False):
 
 
 def compare(cal, ref, tol=1.0e-4):
+    """
+    Compare calculated result with reference data.
+    """
     delta = np.abs(ref - cal)
     if delta < tol:
         message = '\33[32m' + 'PASSED' + '\x1b[0m'
