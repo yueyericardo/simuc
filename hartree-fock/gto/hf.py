@@ -284,3 +284,40 @@ def energy_tot(e, P, H, mol):
     # print('electronic: ', e_tot - V_NN(mol))
     # print('V_NN: ', V_NN(mol))
     return e_tot
+
+
+# --------- PART 5 Utils ---------
+
+def print_info(e, Co, hf_e, start, stop, delta_e=0, verbose=False):
+    """
+    Print information while doing SCF interations.
+    """
+    if(verbose):
+        # Co
+        print('Coefficients:')
+        print(Co)
+
+        # MOs
+        print('MO energies:')
+        message = ', '
+        m_list = ['e{} = {:0.3f}'.format(i+1, x) for i, x in enumerate(e)]
+        message = message.join(m_list)
+        print(message)
+
+    print('HF energy: {:0.5f} (hartree) = {:0.5f} (eV)'.format(hf_e, hf_e*27.211))
+    if delta_e != 0:
+        print('dE       : {:.2e}'.format(delta_e))
+    print('time used: {:.1f} s'.format(stop-start))
+
+
+def compare(cal, ref, tol=1.0e-4):
+    """
+    Compare calculated result with reference data.
+    """
+    delta = np.abs(ref - cal)
+    if delta < tol:
+        message = '\33[32m' + 'PASSED' + '\x1b[0m'
+    else:
+        message = '\033[91m' + 'FAILED' + '\033[0m'
+    print('-' * 32, message, '-' * 33)
+    print('cal: {:.7f}, ref: {:.7f}\n\n'.format(cal, ref))

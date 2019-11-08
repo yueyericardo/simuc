@@ -43,7 +43,7 @@ def run_hf(fs, Z):
 
         # important scf steps
         G = hf.G_matrix(P, R)
-        F = hf.F_matrix(H, G)
+        F = H + G
         e, Co = hf.secular_eqn(F, S)
         P = hf.P_matrix(Co, N)
         hf_e = hf.energy_tot(e, P, H)
