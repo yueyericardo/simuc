@@ -8,8 +8,14 @@ E_conv = 1.0e-6  # Energy convergence criterion
 
 
 def run_hf(fs, Z):
+    """
+    Run restricted hartree fock for a single atom.
 
-    # num of electron == nuclear charege (since it's atom)
+    INPUT:
+        fs: basis functions
+        Z: nuclear charge of the atom
+    """
+    # num of electron = nuclear charege (since it's atom)
     N = Z
     start = time.time()
 
