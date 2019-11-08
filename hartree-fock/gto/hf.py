@@ -256,7 +256,6 @@ def V_NN(mol):
 
     for i in range(mol.num_atoms):
         for j in range(i+1, mol.num_atoms):
-            print('something')
             # Select atoms from molecule
             Ri = mol.coordinates[i]
             Rj = mol.coordinates[j]
@@ -282,6 +281,6 @@ def energy_tot(e, P, H, mol):
     for i in range(int(mol.num_electron/2)):
         e_tot += e[i].real
     e_tot = e_tot + 0.5*(P * H).sum() + V_NN(mol)
-    print('electronic: ', e_tot - V_NN(mol))
-    print('V_NN: ', V_NN(mol))
+    # print('electronic: ', e_tot - V_NN(mol))
+    # print('V_NN: ', V_NN(mol))
     return e_tot

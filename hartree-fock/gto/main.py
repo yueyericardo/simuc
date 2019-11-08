@@ -3,8 +3,8 @@ import hf
 import time
 
 np.set_printoptions(precision=6)
-print_co = True
-print_MO = True
+print_co = False
+print_MO = False
 
 # Maximum SCF iterations
 MAXITER = 40
@@ -34,6 +34,9 @@ def run_hf(mol):
                 R
                 print('R')
                 print(R)
+                F
+                print('F')
+                print(F)
             except NameError:
                 pass
             print('Coefficients:')
@@ -115,12 +118,44 @@ def test2():
     """
 
     mol = hf.Molecule(HeH)
-    print(mol.cgfs[0].show())
-    print(mol.cgfs[1].show())
     hf_e = run_hf(mol)
     ref_hf_e = -2.8606621637
     compare(hf_e, ref_hf_e)
 
+
+def test3(dist):
+    # 1. test for H2
+    H2 = """
+    0
+    H 0 0 0
+    H 0 0 {:.4f}
+    """.format(dist)
+    # H2 = '0\nH 0 0 0\nH 0 0 {:.4f}'.format(dist)
+    mol = hf.Molecule(H2)
+    hf_e = run_hf(mol)
+    ref_hf_e = -1.11675930740
+    compare(hf_e, ref_hf_e)
+    return hf_e
+
+
+def test4():
+    import matplotlib
+    from matplotlib import pyplot as plt
+
+    distances = np.linspace(0.2, 40., num=300)
+    distances = [1.32, 1.34, 1.36, 1.38, 1.40]
+    energies = []
+    for d in distances:
+        energies.append(test3(d))
+
+    for i, d in enumerate(distances):
+        print('{:.2f}: {:.6f}'.format(distances[i], energies[i]))
+
+    plt.plot(distances, energies, 'o-', markersize=3)
+    plt.xlabel('bond length (A)')
+    plt.ylabel('Total Energy')
+    plt.title('H2 molecule')
+    plt.show()
 
 if __name__ == "__main__":
     test1()
