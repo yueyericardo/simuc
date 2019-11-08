@@ -40,14 +40,16 @@ def H_int(f1, f2, Z):
     return sp.integrate(f1 * (- ((1 / 2) * (1 / r) * diff(diff(r * f2, r), r)) - ((Z / r) * f2)) * r * r, (r, 0, +oo))
 
 
-def R_int(zetas):
+def R_int(fs):
     """
     Compute electron-electron repulsion integral.
     """
-    f1 = STO(zetas[0][0], zetas[0][1], r1)
-    f2 = STO(zetas[1][0], zetas[1][1], r1)
-    f3 = STO(zetas[2][0], zetas[2][1], r2)
-    f4 = STO(zetas[3][0], zetas[3][1], r2)
+    f1, f2, f3, f4 = fs
+
+    f1 = f1.subs(r, r1)
+    f2 = f2.subs(r, r1)
+    f3 = f3.subs(r, r2)
+    f4 = f4.subs(r, r2)
 
     B = (1 / r1) * sp.integrate(f3 * f4 * r2 * r2, (r2, 0, r1)) + sp.integrate((1 / r2) * f3 * f4 * r2 * r2, (r2, r1, +oo))
     A = sp.integrate(f1 * f2 * r1 * r1 * B, (r1, 0, +oo))
@@ -94,7 +96,7 @@ def H_matrix(fs, Z):
     return H
 
 
-def R_matrix(zetas):
+def R_matrix(fs):
     """
     Compute the electron repulsion integral matrix R.
 
@@ -104,14 +106,14 @@ def R_matrix(zetas):
         R: repulsion matrix
     """
     start = time.time()
-    num_bfs = len(zetas)
+    num_bfs = len(fs)
     R = np.zeros((num_bfs, num_bfs, num_bfs, num_bfs))
 
     for r in range(num_bfs):
         for s in range(num_bfs):
             for t in range(num_bfs):
                 for u in range(num_bfs):
-                    R[r, s, t, u] = R_int((zetas[r], zetas[s], zetas[t], zetas[u]))
+                    R[r, s, t, u] = R_int([fs[r], fs[s], fs[t], fs[u]])
 
     stop = time.time()
     print('time Repu: {:.1f} s'.format(stop-start))

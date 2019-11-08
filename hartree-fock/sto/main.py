@@ -7,13 +7,10 @@ MAXITER = 40  # Maximum SCF iterations
 E_conv = 1.0e-6  # Energy convergence criterion
 
 
-def run_hf(zetas, Z):
+def run_hf(fs, Z):
 
-    fs = []
-    for i, z in enumerate(zetas):
-        f = hf.STO(z[0], z[1])
-        fs.append(f)
-    N = Z  # num of electron == nuclear charege (since it's atom)
+    # num of electron == nuclear charege (since it's atom)
+    N = Z
     start = time.time()
 
     # initialization
@@ -28,14 +25,17 @@ def run_hf(zetas, Z):
     print('-------------------------', "Ignore repulsion integral", '------------------------')
     hf.print_info(e, Co, hf_e, start, stop, verbose=verbose)
     print('-----------', "Caculating Electron Repulsion Integral (takes time)", '------------')
-    R = hf.R_matrix(zetas)
+    R = hf.R_matrix(fs)
     delta_e = 1
     ITER = 0
     previous_e = hf_e
 
+    # Iterations
     while(delta_e > E_conv and ITER < MAXITER):
         print('------------------------------', "Iteration", ITER + 1, '------------------------------')
         start = time.time()
+
+        # important scf steps
         G = hf.G_matrix(P, R)
         F = hf.F_matrix(H, G)
         e, Co = hf.secular_eqn(F, S)
@@ -52,21 +52,50 @@ def run_hf(zetas, Z):
 
 
 def test1():
-    # 1. test for He
-    # input for zeta, format [[zeta1, n1], [zeta2, n2], ...]
-    zetas = [[1.45363, 1], [2.91093, 1]]
-    # input nuclear charge (element number)
+    """
+    Test of He (1s)
+    """
+    # Use 2 Slator Type ourbital to represent Helium 1s orbital.
+    # The final Helium 1s orbital is a linear combination of these two STO.
+    f1s_1 = hf.STO(zeta=1.45363, n=1)
+    f1s_2 = hf.STO(zeta=2.91093, n=1)
+
+    # all basis functions
+    fs = [f1s_1, f1s_2]
+
+    #  nuclear charge of He
     Z = 2
-    hf_e = run_hf(zetas, Z)
+
+    # run hartree fock
+    hf_e = run_hf(fs, Z)
+
+    # compare result with reference
     ref_hf_e = -2.8616726
     hf.compare(hf_e, ref_hf_e)
 
 
 def test2():
-    # 2. test for Be
-    zetas = [[5.59108, 1], [3.35538, 1], [1.01122, 2], [0.61000, 2]]
+    """
+    Test of Be (1s, 2s)
+    """
+    # Use 2 STO to represent Be 1s orbital and another 2 STO for 2s orbital
+    # The final 1s orbital is a linear combination of these 4 STO.
+    # Same for 2s orbital.
+    f1s_1 = hf.STO(zeta=5.59108, n=1)
+    f1s_2 = hf.STO(zeta=3.35538, n=1)
+    f2s_1 = hf.STO(zeta=1.01122, n=2)
+    f2s_2 = hf.STO(zeta=0.61000, n=2)
+
+    # all basis functions
+    fs = [f1s_1, f1s_2, f2s_1, f2s_2]
+
+    # nuclear charge of Be
     Z = 4
-    hf_e = run_hf(zetas, Z)
+
+    # run hartree fock
+    hf_e = run_hf(fs, Z)
+
+    # compare result with reference
     ref_hf_e = -14.572369
     hf.compare(hf_e, ref_hf_e)
 
