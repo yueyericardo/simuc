@@ -1,9 +1,10 @@
-import sympy as sp
-from sympy import oo
-import numpy as np
-from scipy.linalg import eigh
-from sympy import diff
 import time
+import sympy as sp
+import numpy as np
+from sympy import oo
+from sympy import diff
+from scipy.linalg import eigh
+
 
 r, r1, r2, zeta = sp.symbols("r, r1, r2, zeta")
 n = sp.Symbol('n', integer=True)

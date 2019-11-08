@@ -1,9 +1,8 @@
-import numpy as np
+import time
 import scipy
-from scipy.special import erf
+import numpy as np
 import sympy as sp
-
-r = sp.Symbol('r', positive=True)
+from scipy.special import erf
 
 
 class CGF():
@@ -31,7 +30,8 @@ class CGF():
             cgf += self.contract_co[i] * self.gto(a, self.n)
         return cgf
 
-    def gto(self, alpha, n, r=r):
+    def gto(self, alpha, n):
+        r = sp.Symbol('r', positive=True)
         f = r**(n-1)*sp.exp(-alpha*r*r)
         return f
 
@@ -210,12 +210,17 @@ def H_matrix(cgfs, mol):
 
 
 def R_matrix(cgfs):
+    start = time.time()
+
     R = np.zeros([len(cgfs), len(cgfs), len(cgfs), len(cgfs)])
     for r, cgf_1 in enumerate(cgfs):
         for s, cgf_2 in enumerate(cgfs):
             for t, cgf_3 in enumerate(cgfs):
                 for u, cgf_4 in enumerate(cgfs):
                     R[r, s, t, u] = R_int(cgf_1, cgf_2, cgf_3, cgf_4)
+
+    stop = time.time()
+    print('time Repu: {:.1f} s'.format(stop-start))
     return R
 
 
