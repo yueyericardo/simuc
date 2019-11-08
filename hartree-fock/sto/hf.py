@@ -10,6 +10,7 @@ n = sp.Symbol('n', integer=True)
 
 
 # --------- PART 1 Define Slator Type Orbital ---------
+
 def STO(zeta, n, r=r):
     """
     Define a Slator Type Orbital function using sympy.
@@ -24,6 +25,7 @@ def STO(zeta, n, r=r):
 
 
 # --------- PART 2 Compute integrals between STO functions ---------
+
 def S_int(f1, f2):
     """
     Compute overlap integral between two STO functions.
@@ -59,6 +61,7 @@ def R_int(fs):
 
 
 # --------- PART 3 Build matrix ---------
+
 def S_matrix(fs):
     """
     Compute overlap matrix S.
@@ -178,6 +181,7 @@ def F_matrix(H, G):
 
 
 # --------- PART 4 Other Equations ---------
+
 def secular_eqn(F, S):
     """
     Slove secular equation, return the MO energies (eigenvalue) and improved coeffients (eigenvector)
@@ -211,6 +215,7 @@ def energy_tot(e, P, H, NN_V=0):
 
 
 # --------- PART 5 Utils ---------
+
 def print_info(e, Co, hf_e, start, stop, delta_e=0, verbose=False):
     if(verbose):
         print('Coefficients:')
