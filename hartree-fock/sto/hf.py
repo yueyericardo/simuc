@@ -1,55 +1,49 @@
 import sympy as sp
 from sympy import oo
 import numpy as np
-from itertools import product
 from scipy.linalg import eigh
 from sympy import diff
 import time
 
-r, r1, r2, zeta, zeta1, zeta2 = sp.symbols("r, r1, r2, zeta, zeta1, zeta2")
+r, r1, r2, zeta = sp.symbols("r, r1, r2, zeta")
 n = sp.Symbol('n', integer=True)
 
 
-# Define STO function
-def STO(zeta, n, r=r, R=0):
-    f = (r-R)**(n-1)*sp.exp(-zeta*(r-R))
-    N = sp.sqrt(1 / sp.integrate(f*f*r*r, (r, 0, +oo)))
+def STO(zeta, n, r=r):
+    """
+    Define a Slator Type Orbital function using sympy.
+
+    INPUT:
+    zeta: zeta for the STO.
+    n: principle quantum number for the STO.
+    """
+    f = r ** (n - 1) * sp.exp(-zeta * r)
+    N = sp.sqrt(1 / sp.integrate(f * f * r * r, (r, 0, +oo)))
     return N * f
 
 
-# S Overlap Integrate
 def S_int(f1, f2):
+    """
+    Compute overlap integral between two STO functions.
+    """
     return sp.integrate(f1*f2*r*r, (r, 0, +oo))
 
 
-# H core = kinetics energy + electron and nuclear potential energy
 def H_int(f1, f2, Z):
+    """
+    Compute H_core integral between two STO functions.
+    H_core = electron kinetics energy + electron nuclear potential energy
+
+    INPUT:
+    Z: Nuclear charge
+    """
     return sp.integrate(f1 * (- ((1 / 2) * (1 / r) * diff(diff(r * f2, r), r)) - ((Z / r) * f2)) * r * r, (r, 0, +oo))
 
 
-# Returns the core hamiltonian matrix
-def H_matrix(fs, Z):
-
-    H = np.zeros((len(fs), len(fs)))
-    for i in range(len(fs)):
-        for j in range(len(fs)):
-            H[i, j] = H_int(fs[i], fs[j], Z)
-
-    return H
-
-
-# Returns the overlap matrix
-def S_matrix(fs):
-
-    S = np.zeros((len(fs), len(fs)))
-    for i in range(len(fs)):
-        for j in range(len(fs)):
-            S[i, j] = S_int(fs[i], fs[j])
-
-    return S
-
-
-def Repulsion_electron(zetas):
+def R_int(zetas):
+    """
+    Compute electron-electron repulsion integral.
+    """
     f1 = STO(zetas[0][0], zetas[0][1], r1)
     f2 = STO(zetas[1][0], zetas[1][1], r1)
     f3 = STO(zetas[2][0], zetas[2][1], r2)
@@ -60,71 +54,178 @@ def Repulsion_electron(zetas):
     return A
 
 
-# Calculates Density matrix
-def P_matrix(Co):
+def S_matrix(fs):
+    """
+    Compute overlap matrix S.
 
-    P = np.zeros([Co.shape[0], Co.shape[0]])
+    INPUT:
+        fs: basis functions
+    OUTPUT:
+        S: Overlap matrix
+    """
+    num_bfs = len(fs)
+    S = np.zeros((num_bfs, num_bfs))
 
-    for t in range(Co.shape[0]):
-        for u in range(Co.shape[0]):
-            for j in range(int(Co.shape[0]/2)):
-                P[t][u] += 2 * Co[t][j] * Co[u][j]
-    return P
+    for i in range(num_bfs):
+        for j in range(num_bfs):
+            S[i, j] = S_int(fs[i], fs[j])
+
+    return S
+
+
+def H_matrix(fs, Z):
+    """
+    Compute the core hamiltonian matrix H.
+    H_core = electron kinetics energy + electron nuclear potential energy
+
+    INPUT:
+        fs: basis functions
+        Z: nuclear charge
+    OUTPUT:
+        H: core hamiltonian matrix
+    """
+    num_bfs = len(fs)
+    H = np.zeros((num_bfs, num_bfs))
+
+    for i in range(num_bfs):
+        for j in range(num_bfs):
+            H[i, j] = H_int(fs[i], fs[j], Z)
+
+    return H
 
 
 def R_matrix(zetas):
+    """
+    Compute the electron repulsion integral matrix R.
+
+    INPUT:
+        fs: basis functions
+    OUTPUT:
+        R: repulsion matrix
+    """
     start = time.time()
-    R = np.zeros((len(zetas), len(zetas), len(zetas), len(zetas)))
+    num_bfs = len(zetas)
+    R = np.zeros((num_bfs, num_bfs, num_bfs, num_bfs))
 
-    rs = list(product(range(len(zetas)), repeat=2))
-    tu = list(product(range(len(zetas)), repeat=2))
+    for r in range(num_bfs):
+        for s in range(num_bfs):
+            for t in range(num_bfs):
+                for u in range(num_bfs):
+                    R[r, s, t, u] = R_int((zetas[r], zetas[s], zetas[t], zetas[u]))
 
-    for r, s in rs:
-        for t, u in tu:
-            R[r, s, t, u] = Repulsion_electron((zetas[r], zetas[s], zetas[t], zetas[u]))
     stop = time.time()
     print('time Repu: {:.1f} s'.format(stop-start))
     return R
 
 
-# Caculate G Matrix
-def G_matrix(zetas, Co, R):
+# Calculates Density matrix
+def P_matrix(Co, N):
+    """
+    Compute density matrix P.
 
-    G = np.zeros((Co.shape[0], Co.shape[0]))
+    INPUT:
+        Co: coefficents matrix
+        N: num of electrons
+    OUTPUT:
+        P: repulsion matrix
+    """
+    P = np.zeros([Co.shape[0], Co.shape[0]])
 
-    P = P_matrix(Co)
+    for t in range(Co.shape[0]):
+        for u in range(Co.shape[0]):
+            for j in range(int(N/2)):
+                P[t][u] += 2 * Co[t][j] * Co[u][j]
+    return P
 
-    rs = list(product(range(Co.shape[0]), repeat=2))
-    tu = list(product(range(Co.shape[0]), repeat=2))
 
-    for r, s in rs:
-        g = 0
-        for t, u in tu:
-            int1 = R[r, s, t, u]
-            int2 = R[r, u, t, s]
-            # print('({0}{1}|{2}{3}): {4}'.format(r, s, t, u, int1))
-            g += P[t, u] * (int1 - 0.5 * int2)
-        G[r, s] = g
+def G_matrix(P, R):
+    """
+    Compute G matrix.
+    G =  coulombic repulsion energy + exchange energy
+
+    INPUT:
+        P: density matrix
+        R: electron repulsion matrix
+    OUTPUT:
+        P: repulsion matrix
+    """
+    num_bfs = P.shape[0]
+    G = np.zeros((num_bfs, num_bfs))
+
+    for r in range(num_bfs):
+        for s in range(num_bfs):
+            g = 0
+            for t in range(num_bfs):
+                for u in range(num_bfs):
+                    int1 = R[r, s, t, u]
+                    int2 = R[r, u, t, s]
+                    g += P[t, u] * (int1 - 0.5 * int2)
+            G[r, s] = g
+
     return G
 
 
-# Returns the Fock matrix
-def F_matrix(fs, Z, zetas, Co, R):
-    return H_matrix(fs, Z) + G_matrix(zetas, Co, R)
+def F_matrix(H, G):
+    """
+    Compute fock matrix F.
+    F =  H_core + G
+    """
+    return H + G
 
 
-# slove secular equation, return the energy and improved coeffients
-# the energy here is molecular orbital energies
 def secular_eqn(F, S):
+    """
+    Slove secular equation, return the MO energies (eigenvalue) and improved coeffients (eigenvector)
+
+    INPUT:
+        F: fock matrix
+        S: overlap integral
+    OUTPUT:
+        ei: eigenvalue
+        C: eigenvector
+    """
     ei, C = eigh(F, S)
     return ei, C
 
 
-# return energy of atom
-def get_E0(e, P, H):
+def get_E0(e, P, H, NN_V=0):
+    """
+    Compute the total energy.
 
+    INPUT:
+    e: MO energies
+    P: density matrix
+    H: h_core matrix
+    NN_V: nuclear nuclear repulsion energy
+    """
     E0 = 0
     for i in range(int(e.shape[0]/2)):
         E0 += e[i].real
-    E0 = E0 + 0.5 * (P * H).sum()
+    E0 = E0 + 0.5 * (P * H).sum() + NN_V
     return E0
+
+
+def print_info(e, Co, hf_e, start, stop, delta_e=0, verbose=False):
+    if(verbose):
+        print('Coefficients:')
+        print(Co)
+    if(verbose):
+        print('MO energies:')
+        message = ', '
+        m_list = ['e{} = {:0.3f}'.format(i+1, x) for i, x in enumerate(e)]
+        message = message.join(m_list)
+        print(message)
+    print('HF energy: {:0.5f} (hartree) = {:0.5f} (eV)'.format(hf_e, hf_e*27.211))
+    if delta_e != 0:
+        print('dE       : {:.2e}'.format(delta_e))
+    print('time used: {:.1f} s'.format(stop-start))
+
+
+def compare(cal, ref, tol=1.0e-4):
+    delta = np.abs(ref - cal)
+    if delta < tol:
+        message = '\33[32m' + 'PASSED' + '\x1b[0m'
+    else:
+        message = '\033[91m' + 'FAILED' + '\033[0m'
+    print('-' * 32, message, '-' * 33)
+    print('cal: {:.7f}, ref: {:.7f}\n\n'.format(cal, ref))
