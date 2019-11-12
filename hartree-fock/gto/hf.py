@@ -3,6 +3,24 @@ import scipy
 import numpy as np
 import sympy as sp
 from scipy.special import erf
+from scipy.optimize import minimize
+
+
+class STO():
+    def __init__(self, zeta, n):
+        self.zeta = zeta
+        self.n = n
+        self.sto = self.get_sto(self.zeta, self.n)
+
+    def show(self):
+        f = self.get_sto(self.zeta, self.n)
+        return f
+
+    def get_sto(self, zeta, n):
+        r = sp.Symbol('r')
+        f = r ** (n - 1) * sp.exp(-zeta * sp.Abs(r))
+        N = sp.sqrt(1 / sp.integrate(f * f * r * r, (r, 0, +sp.oo)))
+        return f * N
 
 
 class CGF():
@@ -22,24 +40,77 @@ class CGF():
         self.contract_co = contract_cos[n-1]
         self.alpha = alphas[n-1] * zeta ** 2
         self.n = n
+        self.zeta = zeta
         self.coordinates = coordinates
+        self.gtos = []
+        for i, a in enumerate(self.alpha):
+            gto = self.get_gto(a, self.n)
+            self.gtos.append(gto)
+        self.cgf = 0
+        for i, g in enumerate(self.gtos):
+            self.cgf = self.cgf + self.contract_co[i] * g
 
     def show(self):
         cgf = 0
         for i, a in enumerate(self.alpha):
-            cgf += self.contract_co[i] * self.gto(a, self.n)
+            cgf += self.contract_co[i] * self.get_gto(a, self.n)
         return cgf
 
-    def gto(self, alpha, n):
-        r = sp.Symbol('r', positive=True)
+    def get_gto(self, alpha, n):
+        r = sp.Symbol('r')
         f = r**(n-1)*sp.exp(-alpha*r*r)
         return f
+
+    def opt_cgf(self, r1, c1, c2, c3, n):
+        f = c1 * r1 ** (n-1)*np.exp(-self.alpha[0]*r1*r1) + c2 * r1 ** (n-1)*np.exp(-self.alpha[1]*r1*r1) + c3 * r1 ** (n-1)*np.exp(-self.alpha[2]*r1*r1)
+        r = sp.Symbol('r')
+        f_sp = c1 * r ** (n-1)*sp.exp(-self.alpha[0]*r*r) + c2 * r ** (n-1)*sp.exp(-self.alpha[1]*r*r) + c3 * r ** (n-1)*sp.exp(-self.alpha[2]*r*r)
+        N = sp.sqrt(1 / sp.integrate(f_sp * f_sp * r * r, (r, 0, +sp.oo)))
+        N = N.subs(sp.pi, np.pi)
+        return f * N, N
+
+    def opt_sto(self, r1, zeta, n):
+        r = sp.Symbol('r')
+        f = r ** (n - 1) * sp.exp(-zeta * sp.Abs(r))
+        N = sp.sqrt(1 / sp.integrate(f * f * r * r, (r, 0, +sp.oo)))
+        f = r1 ** (n - 1) * np.exp(-zeta * np.abs(r1))
+        return f * N
+
+    def opt(self):
+
+        r = np.linspace(-5, 5., num=1000)
+        sto = self.opt_sto(r, self.zeta, self.n)
+
+        def loss(para):
+            import sys
+            sys.stdout.write('.')
+            sys.stdout.flush()
+            pred, _ = self.opt_cgf(r, para[0], para[1], para[2], self.n)
+            mse = np.mean((pred - sto)**2)  # mean_squared_error
+            return mse
+
+        print('optimizing cgf')
+        result = minimize(loss, x0=np.array(self.contract_co), method='Nelder-Mead')
+        print('{} iterations: \n', result.nit)
+        _, N = self.opt_cgf(r, result.x[0], result.x[1], result.x[2], self.n)
+        self.contract_co[1] = N * result.x[1]
+        self.contract_co[0] = N * result.x[0]
+        self.contract_co[1] = N * result.x[1]
+
+    def update(self):
+        self.gtos = []
+        for i, a in enumerate(self.alpha):
+            gto = self.get_gto(a, self.n)
+            self.gtos.append(gto)
+        self.cgf = 0
+        for i, g in enumerate(self.gtos):
+            self.cgf = self.cgf + self.contract_co[i] * g
 
     def __str__(self):
         return str(self.show())
 
     def __repr__(self):
-        return str(self.show())
+        return self.show()
 
 
 class Molecule():
@@ -58,9 +129,11 @@ class Molecule():
         self.num_electron = np.sum(self.charges) - self.charge
         self.ns = [principle_quantum_number[a] for a in self.species]
         self.cgfs = []
+        self.stos = []
         for i, a in enumerate(self.species):
             for z in self.zetas[i]:
                 self.cgfs.append(CGF(z, self.ns[i], self.coordinates[i]))
+                self.stos.append(STO(z, self.ns[i]))
 
     def mol_parse(self, string):
         atoms = string.split('\n')
