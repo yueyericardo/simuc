@@ -155,7 +155,7 @@ def G_matrix(P, R):
         P: density matrix
         R: electron repulsion matrix
     OUTPUT:
-        P: repulsion matrix
+        G: repulsion matrix
     """
     num_bfs = P.shape[0]
     G = np.zeros((num_bfs, num_bfs))
@@ -198,12 +198,13 @@ def secular_eqn(F, S):
     return ei, C
 
 
-def energy_tot(e, P, H, NN_V=0):
+def energy_tot(e, N, P, H, NN_V=0):
     """
     Compute the total energy.
 
     INPUT:
     e: MO energies
+    N: num of electrons
     P: density matrix
     H: h_core matrix
     NN_V: nuclear nuclear repulsion energy

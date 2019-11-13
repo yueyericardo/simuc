@@ -21,12 +21,13 @@ def run_hf(mol):
     S = hf.S_matrix(mol.cgfs)
     e, Co = hf.secular_eqn(H, S)
     P = hf.P_matrix(Co, mol.num_electron)
-    hf_e = hf.energy_tot(e, P, H, mol)
+    Vnn = hf.V_NN(mol)
+    hf_e = hf.energy_tot(e, mol.num_electron, P, H, Vnn)
 
     stop = time.time()
     print('------------------------------', "Initialization", '------------------------------')
     print('-------------------------', "Ignore repulsion integral", '------------------------')
-    hf.print_info(e, Co, hf_e, start, stop, verbose=verbose)
+    hf.print_info(S, e, Co, hf_e, start, stop, verbose=verbose)
     print('-----------', "Caculating Electron Repulsion Integral (takes time)", '------------')
     R = hf.R_matrix(mol.cgfs)
     delta_e = 1
@@ -43,13 +44,13 @@ def run_hf(mol):
         F = H + G
         e, Co = hf.secular_eqn(F, S)
         P = hf.P_matrix(Co, mol.num_electron)
-        hf_e = hf.energy_tot(e, P, H, mol)
+        hf_e = hf.energy_tot(e, mol.num_electron, P, H, Vnn)
 
         delta_e = np.abs(hf_e - previous_e)
         previous_e = hf_e
         ITER += 1
         stop = time.time()
-        hf.print_info(e, Co, hf_e, start, stop, delta_e, verbose)
+        hf.print_info(S, e, Co, hf_e, start, stop, delta_e, verbose)
 
     return hf_e
 
@@ -65,8 +66,6 @@ def test1():
     """
 
     mol = hf.Molecule(H2)
-    print(mol.cgfs[0].show())
-    print(mol.cgfs[1].show())
 
     # run hartree fock
     hf_e = run_hf(mol)
@@ -129,6 +128,47 @@ def test4():
     plt.ylabel('Total Energy')
     plt.title('H2 molecule')
     plt.show()
+
+    def test5():
+        """
+        Test of H2
+        """
+        H2 = """
+        0
+        H 0 0 0
+        H 0 0 1.4
+        """
+
+        mol = hf.Molecule(H2)
+        mol.cgfs[0].opt()
+        mol.cgfs[0].update()
+        mol.cgfs[1].opt()
+        mol.cgfs[1].update()
+        gtos = mol.cgfs[0].gtos
+        cgf = mol.cgfs[0].cgf
+        print(cgf)
+        sto = mol.stos[0].sto
+        print(sto)
+        r = sp.Symbol('r')
+        p = plot((cgf, (r, -5, 5)), (sto, (r, -5, 5)), (gtos[0], (r, -5, 5)), (gtos[1], (r, -5, 5)), (gtos[2], (r, -5, 5)), show=False, legend=True)
+        p[0].label = 'cgf'
+        p[1].label = 'sto'
+        p[2].label = 'gto1'
+        p[3].label = 'gto2'
+        p[4].label = 'gto3'
+        p[0].line_color = 'red'
+        p[1].line_color = 'green'
+        p[2].line_color = 'yellow'
+        p[3].line_color = 'cyan'
+        p[4].line_color = 'purple'
+        p.show()
+
+        # run hartree fock
+        hf_e = run_hf(mol)
+
+        # compare result with reference
+        ref_hf_e = -1.11675930740
+        hf.compare(hf_e, ref_hf_e)
 
 
 if __name__ == "__main__":
