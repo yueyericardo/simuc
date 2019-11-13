@@ -21,7 +21,7 @@ def STO(zeta, n, r=r):
     n: principle quantum number for the STO.
     """
     f = r ** (n - 1) * sp.exp(-zeta * r)
-    N = sp.sqrt(1 / sp.integrate(f * f * r * r, (r, 0, +oo)))
+    N = sp.sqrt(1 / sp.integrate(4 * sp.pi * f * f * r * r, (r, 0, +oo)))
     return N * f
 
 
@@ -31,7 +31,7 @@ def S_int(f1, f2):
     """
     Compute overlap integral between two STO functions.
     """
-    return sp.integrate(f1*f2*r*r, (r, 0, +oo))
+    return sp.integrate(4 * sp.pi * f1*f2*r*r, (r, 0, +oo))
 
 
 def H_int(f1, f2, Z):
@@ -42,7 +42,7 @@ def H_int(f1, f2, Z):
     INPUT:
     Z: Nuclear charge
     """
-    return sp.integrate(f1 * (- ((1 / 2) * (1 / r) * diff(diff(r * f2, r), r)) - ((Z / r) * f2)) * r * r, (r, 0, +oo))
+    return sp.integrate(4 * sp.pi * f1 * (- ((1 / 2) * (1 / r) * diff(diff(r * f2, r), r)) - ((Z / r) * f2)) * r * r, (r, 0, +oo))
 
 
 def R_int(fs):
@@ -56,8 +56,8 @@ def R_int(fs):
     f3 = f3.subs(r, r2)
     f4 = f4.subs(r, r2)
 
-    B = (1 / r1) * sp.integrate(f3 * f4 * r2 * r2, (r2, 0, r1)) + sp.integrate((1 / r2) * f3 * f4 * r2 * r2, (r2, r1, +oo))
-    A = sp.integrate(f1 * f2 * r1 * r1 * B, (r1, 0, +oo))
+    B = (1 / r1) * sp.integrate(4 * sp.pi * f3 * f4 * r2 * r2, (r2, 0, r1)) + sp.integrate(4 * sp.pi * (1 / r2) * f3 * f4 * r2 * r2, (r2, r1, +oo))
+    A = sp.integrate(4 * sp.pi * f1 * f2 * r1 * r1 * B, (r1, 0, +oo))
     return A
 
 
