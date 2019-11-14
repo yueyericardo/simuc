@@ -1,5 +1,6 @@
 import time
 import scipy
+import scipy.linalg
 import numpy as np
 import sympy as sp
 from scipy.special import erf
@@ -367,17 +368,19 @@ def G_matrix(P, R):
     OUTPUT:
         G: repulsion matrix
     """
-    G = np.zeros((P.shape[0], P.shape[0]))
+    num_bfs = P.shape[0]
+    G = np.zeros((num_bfs, num_bfs))
 
-    for r in range(P.shape[0]):
-        for s in range(P.shape[0]):
+    for r in range(num_bfs):
+        for s in range(num_bfs):
             g = 0
-            for t in range(P.shape[0]):
-                for u in range(P.shape[0]):
+            for t in range(num_bfs):
+                for u in range(num_bfs):
                     int1 = R[r, s, t, u]
                     int2 = R[r, u, t, s]
                     g += P[t, u] * (int1 - 0.5 * int2)
             G[r, s] = g
+
     return G
 
 
@@ -436,7 +439,7 @@ def energy_tot(e, N, P, H, Vnn):
     N: num of electrons
     P: density matrix
     H: h_core matrix
-    V_NN: nuclear nuclear repulsion energy
+    Vnn: nuclear nuclear repulsion energy
     """
     e_tot = 0
     for i in range(int(N/2)):

@@ -1,9 +1,10 @@
 import time
-import sympy as sp
+import scipy
+import scipy.linalg
 import numpy as np
+import sympy as sp
 from sympy import oo
 from sympy import diff
-from scipy.linalg import eigh
 
 
 r, r1, r2, zeta = sp.symbols("r, r1, r2, zeta")
@@ -142,7 +143,7 @@ def P_matrix(Co, N):
     for t in range(Co.shape[0]):
         for u in range(Co.shape[0]):
             for j in range(int(N/2)):
-                P[t][u] += 2 * Co[t][j] * Co[u][j]
+                P[t, u] += 2 * Co[t, j]*Co[u, j]
     return P
 
 
@@ -194,11 +195,11 @@ def secular_eqn(F, S):
         ei: eigenvalue
         C: eigenvector
     """
-    ei, C = eigh(F, S)
+    ei, C = scipy.linalg.eigh(F, S)
     return ei, C
 
 
-def energy_tot(e, N, P, H, NN_V=0):
+def energy_tot(e, N, P, H, Vnn):
     """
     Compute the total energy.
 
@@ -207,13 +208,13 @@ def energy_tot(e, N, P, H, NN_V=0):
     N: num of electrons
     P: density matrix
     H: h_core matrix
-    NN_V: nuclear nuclear repulsion energy
+    Vnn: nuclear nuclear repulsion energy
     """
-    E0 = 0
-    for i in range(int(e.shape[0]/2)):
-        E0 += e[i].real
-    E0 = E0 + 0.5 * (P * H).sum() + NN_V
-    return E0
+    e_tot = 0
+    for i in range(int(N/2)):
+        e_tot += e[i].real
+    e_tot = e_tot + 0.5 * (P * H).sum() + Vnn
+    return e_tot
 
 
 # --------- PART 5 Utils ---------

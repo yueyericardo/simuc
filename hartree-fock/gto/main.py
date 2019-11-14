@@ -14,15 +14,17 @@ def run_hf(mol):
     INPUT:
         mol: hf.mol object
     """
+    # num of electron
+    N = mol.num_electron
     start = time.time()
 
     # initialization
     H = hf.H_matrix(mol.cgfs, mol)
     S = hf.S_matrix(mol.cgfs)
     e, Co = hf.secular_eqn(H, S)
-    P = hf.P_matrix(Co, mol.num_electron)
+    P = hf.P_matrix(Co, N)
     Vnn = hf.V_NN(mol)
-    hf_e = hf.energy_tot(e, mol.num_electron, P, H, Vnn)
+    hf_e = hf.energy_tot(e, N, P, H, Vnn)
 
     stop = time.time()
     print('------------------------------', "Initialization", '------------------------------')
@@ -43,8 +45,8 @@ def run_hf(mol):
         G = hf.G_matrix(P, R)
         F = H + G
         e, Co = hf.secular_eqn(F, S)
-        P = hf.P_matrix(Co, mol.num_electron)
-        hf_e = hf.energy_tot(e, mol.num_electron, P, H, Vnn)
+        P = hf.P_matrix(Co, N)
+        hf_e = hf.energy_tot(e, N, P, H, Vnn)
 
         delta_e = np.abs(hf_e - previous_e)
         previous_e = hf_e
