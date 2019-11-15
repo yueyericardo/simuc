@@ -143,7 +143,7 @@ def P_matrix(Co, N):
     for t in range(Co.shape[0]):
         for u in range(Co.shape[0]):
             for j in range(int(N/2)):
-                P[t, u] += 2 * Co[t, j]*Co[u, j]
+                P[t, u] += 2 * Co[t, j] * Co[u, j]
     return P
 
 
@@ -219,14 +219,26 @@ def energy_tot(e, N, P, H, Vnn):
 
 # --------- PART 5 Utils ---------
 
-def print_info(e, Co, hf_e, start, stop, delta_e=0, verbose=False):
+def print_info(S, H, e, Co, P, hf_e, start, stop, delta_e=0, verbose=False):
     """
     Print information while doing SCF interations.
     """
     if(verbose):
+        # overlap
+        print('Overlap:')
+        print(S)
+
+        # hamiltonian
+        print('Core hamiltonian:')
+        print(H)
+
         # Co
         print('Coefficients:')
         print(Co)
+
+        # density
+        print('Density matrix:')
+        print(P)
 
         # MOs
         print('MO energies:')

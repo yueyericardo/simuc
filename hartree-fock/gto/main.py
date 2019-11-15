@@ -14,6 +14,8 @@ def run_hf(mol):
     INPUT:
         mol: hf.mol object
     """
+    print('------------------------------', "Initialization", '------------------------------')
+    print('-------------------------', "Ignore repulsion integral", '------------------------')
     # num of electron
     N = mol.num_electron
     start = time.time()
@@ -27,9 +29,7 @@ def run_hf(mol):
     hf_e = hf.energy_tot(e, N, P, H, Vnn)
 
     stop = time.time()
-    print('------------------------------', "Initialization", '------------------------------')
-    print('-------------------------', "Ignore repulsion integral", '------------------------')
-    hf.print_info(S, e, Co, hf_e, start, stop, verbose=verbose)
+    hf.print_info(S, H, e, Co, P, hf_e, start, stop, verbose=verbose)
     print('-----------', "Caculating Electron Repulsion Integral (takes time)", '------------')
     R = hf.R_matrix(mol.cgfs)
     delta_e = 1
@@ -52,7 +52,7 @@ def run_hf(mol):
         previous_e = hf_e
         ITER += 1
         stop = time.time()
-        hf.print_info(S, e, Co, hf_e, start, stop, delta_e, verbose)
+        hf.print_info(S, H, e, Co, P, hf_e, start, stop, verbose=verbose)
 
     return hf_e
 

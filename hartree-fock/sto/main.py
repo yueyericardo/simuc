@@ -2,7 +2,7 @@ import numpy as np
 import hf
 import time
 
-verbose = False
+verbose = True
 MAXITER = 40  # Maximum SCF iterations
 E_conv = 1.0e-6  # Energy convergence criterion
 
@@ -15,8 +15,9 @@ def run_hf(fs, Z):
         fs: basis functions
         Z: nuclear charge of the atom
     """
-    # num of electron = nuclear charege (since it's atom)
-    N = Z
+    print('------------------------------', "Initialization", '------------------------------')
+    print('-------------------------', "Ignore repulsion integral", '------------------------')
+    N = Z  # num of electron = nuclear charege (since it's atom)
     start = time.time()
 
     # initialization
@@ -28,9 +29,7 @@ def run_hf(fs, Z):
     hf_e = hf.energy_tot(e, N, P, H, Vnn)
 
     stop = time.time()
-    print('------------------------------', "Initialization", '------------------------------')
-    print('-------------------------', "Ignore repulsion integral", '------------------------')
-    hf.print_info(e, Co, hf_e, start, stop, verbose=verbose)
+    hf.print_info(S, H, e, Co, P, hf_e, start, stop, verbose=verbose)
     print('-----------', "Caculating Electron Repulsion Integral (takes time)", '------------')
     R = hf.R_matrix(fs)
     delta_e = 1
@@ -53,7 +52,7 @@ def run_hf(fs, Z):
         previous_e = hf_e
         ITER += 1
         stop = time.time()
-        hf.print_info(e, Co, hf_e, start, stop, delta_e, verbose)
+        hf.print_info(S, H, e, Co, P, hf_e, start, stop, verbose=verbose)
 
     return hf_e
 

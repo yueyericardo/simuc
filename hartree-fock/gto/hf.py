@@ -450,7 +450,7 @@ def energy_tot(e, N, P, H, Vnn):
 
 # --------- PART 6 Utils ---------
 
-def print_info(S, e, Co, hf_e, start, stop, delta_e=0, verbose=False):
+def print_info(S, H, e, Co, P, hf_e, start, stop, delta_e=0, verbose=False):
     """
     Print information while doing SCF interations.
     """
@@ -459,9 +459,17 @@ def print_info(S, e, Co, hf_e, start, stop, delta_e=0, verbose=False):
         print('Overlap:')
         print(S)
 
+        # hamiltonian
+        print('Core hamiltonian:')
+        print(H)
+
         # Co
         print('Coefficients:')
         print(Co)
+
+        # density
+        print('Density matrix:')
+        print(P)
 
         # MOs
         print('MO energies:')
