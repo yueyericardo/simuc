@@ -1,4 +1,4 @@
-## Restricted Hartree Fock (RHF) for simple Atom (He and Be) using **Slator Type Orbital (STO)** with **Double Zeta Basis** in Python
+## _Restricted Hartree Fock (RHF)_ for simple Atom (He and Be) using _Slator Type Orbital (STO)_ with _Double Zeta Basis_ in Python
 
 Integral calculated by sympy
 
