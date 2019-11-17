@@ -8,6 +8,6 @@ There is an example calculation of Helium atom at page 412-414.
 File Structure
 ```
 sto/
-|-- hf.py  # define all the integral, matrix, and some util functions
+|-- hf.py    # define all the integral, matrix, and some util functions
 |-- main.py  # run hartree fork iterations and test
 ```
