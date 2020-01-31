@@ -307,7 +307,7 @@ source_morse_1, source_morse_2, source_energy_list_1, source_energy_list_2, \
 
 # bokeh plot
 plot_potential = figure(plot_height=600, plot_width=1000,
-                        title="Title",
+                        title="The Potentials",
                         tools="crosshair,reset,save,wheel_zoom",
                         toolbar_location=None,
                         y_range=[-0.2, 6], x_range=[2, 4.5])
@@ -328,14 +328,17 @@ for sc in source_wave_list_2:
 
 plot_potential.line('x', 'y', source=source_lim_1, line_width=0.8, line_alpha=1, color="black", line_dash='dashed')
 plot_potential.line('x', 'y', source=source_lim_2, line_width=0.8, line_alpha=1, color="black", line_dash='dashed')
+plot_potential.yaxis.axis_label = "Energy [eV]"
+plot_potential.xaxis.axis_label = "R [Å]"
 
 # overlap and FCF
-plot_overlap = figure(plot_height=350, plot_width=350,
-                      title="Title",
+plot_overlap = figure(plot_height=350, plot_width=380,
+                      title="Overlap Matrix",
                       tools="crosshair,reset,save,wheel_zoom",
-                      toolbar_location=None,)
+                      toolbar_location=None,
+                      tooltips=[("x", "$x"), ("y", "$y"), ("value", "@image")])
 
-plot_empty = figure(plot_height=350, plot_width=300,
+plot_empty = figure(plot_height=350, plot_width=240,
                     tools="crosshair,reset,save,wheel_zoom",
                     toolbar_location=None,)
 plot_empty.grid.visible = None
@@ -344,14 +347,24 @@ plot_empty.outline_line_color = None
 
 plot_overlap.x_range.range_padding = plot_overlap.y_range.range_padding = 0
 
-plot_FCF = figure(plot_height=350, plot_width=350,
-                  title="Title",
+plot_FCF = figure(plot_height=350, plot_width=380,
+                  title="Franck-Condon Factor",
                   tools="crosshair,reset,save,wheel_zoom",
-                  toolbar_location=None,)
+                  toolbar_location=None,
+                  tooltips=[("x", "$x"), ("y", "$y"), ("value", "@image")])
 plot_FCF.x_range.range_padding = plot_FCF.y_range.range_padding = 0
 
-plot_overlap.image(image='image', source=source_overlap, x=0, y=0, dw='dw', dh='dh', palette="Spectral11")
-plot_FCF.image(image='image', source=source_FCF, x=0, y=0, dw='dw', dh='dh', palette="Spectral11")
+color_mapper = bokeh.models.LinearColorMapper(palette='Plasma256', low=-1.0, high=1.0)
+color_bar = bokeh.models.ColorBar(color_mapper=color_mapper, ticker=bokeh.models.BasicTicker(), label_standoff=7, border_line_color=None, location=(0, 0))
+
+plot_overlap.image(image='image', source=source_overlap, x=0, y=0, dw='dw', dh='dh', color_mapper=color_mapper)
+plot_overlap.add_layout(color_bar, 'right')
+
+color_mapper = bokeh.models.LinearColorMapper(palette='Turbo256', low=0, high=1.0)
+color_bar = bokeh.models.ColorBar(color_mapper=color_mapper, ticker=bokeh.models.BasicTicker(), label_standoff=7, border_line_color=None, location=(0, 0))
+
+plot_FCF.image(image='image', source=source_FCF, x=0, y=0, dw='dw', dh='dh', color_mapper=color_mapper)
+plot_FCF.add_layout(color_bar, 'right')
 
 
 def update_source_list(old_source, new_source):
