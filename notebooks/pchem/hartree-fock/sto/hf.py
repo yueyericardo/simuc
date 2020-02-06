@@ -28,14 +28,14 @@ def STO(zeta, n, r=r):
 
 # --------- PART 2 Compute integrals between STO functions ---------
 
-def S_int(f1, f2):
+def S_int(fr, fs):
     """
     Compute overlap integral between two STO functions.
     """
-    return sp.integrate(4 * sp.pi * f1*f2*r*r, (r, 0, +oo))
+    return sp.integrate(fr * fs * 4 * sp.pi * r * r, (r, 0, +oo))
 
 
-def H_int(f1, f2, Z):
+def H_int(fr, fs, Z):
     """
     Compute H_core integral between two STO functions.
     H_core = electron kinetics energy + electron nuclear potential energy
@@ -43,28 +43,32 @@ def H_int(f1, f2, Z):
     INPUT:
     Z: Nuclear charge
     """
-    return sp.integrate(4 * sp.pi * f1 * (- ((1 / 2) * (1 / r) * diff(diff(r * f2, r), r)) - ((Z / r) * f2)) * r * r, (r, 0, +oo))
+    T = - ((1 / 2) * (1 / r) * diff(diff(r * fs, r), r))
+    V = - (Z / r) * fs
+    return sp.integrate(fr * (T + V) * 4 * sp.pi * r * r, (r, 0, +oo))
 
 
-def R_int(fs):
+def R_int(four_bfs):
     """
     Compute electron-electron repulsion integral.
+
+    INPUT:
+    four_bfs: an array contain 4 basis functions
     """
-    f1, f2, f3, f4 = fs
+    f1, f2, f3, f4 = four_bfs
 
     f1 = f1.subs(r, r1)
     f2 = f2.subs(r, r1)
     f3 = f3.subs(r, r2)
     f4 = f4.subs(r, r2)
 
-    B = (1 / r1) * sp.integrate(4 * sp.pi * f3 * f4 * r2 * r2, (r2, 0, r1)) + sp.integrate(4 * sp.pi * (1 / r2) * f3 * f4 * r2 * r2, (r2, r1, +oo))
-    A = sp.integrate(4 * sp.pi * f1 * f2 * r1 * r1 * B, (r1, 0, +oo))
-    return A
+    B = (1 / r1) * sp.integrate(f3 * f4 * 4 * sp.pi * r2 * r2, (r2, 0, r1)) + sp.integrate((1 / r2) * f3 * f4 * 4 * sp.pi * r2 * r2, (r2, r1, +oo))
+    return sp.integrate(f1 * f2 * 4 * sp.pi * r1 * r1 * B, (r1, 0, +oo))
 
 
 # --------- PART 3 Build matrix ---------
 
-def S_matrix(fs):
+def S_matrix(bfs):
     """
     Compute overlap matrix S.
 
@@ -73,38 +77,38 @@ def S_matrix(fs):
     OUTPUT:
         S: Overlap matrix
     """
-    num_bfs = len(fs)
+    num_bfs = len(bfs)
     S = np.zeros((num_bfs, num_bfs))
 
-    for i in range(num_bfs):
-        for j in range(num_bfs):
-            S[i, j] = S_int(fs[i], fs[j])
+    for r in range(num_bfs):
+        for s in range(num_bfs):
+            S[r, s] = S_int(bfs[r], bfs[s])
 
     return S
 
 
-def H_matrix(fs, Z):
+def H_matrix(bfs, Z):
     """
     Compute the core hamiltonian matrix H.
     H_core = electron kinetics energy + electron nuclear potential energy
 
     INPUT:
-        fs: basis functions
+        bfs: basis functions
         Z: nuclear charge
     OUTPUT:
         H: core hamiltonian matrix
     """
-    num_bfs = len(fs)
+    num_bfs = len(bfs)
     H = np.zeros((num_bfs, num_bfs))
 
-    for i in range(num_bfs):
-        for j in range(num_bfs):
-            H[i, j] = H_int(fs[i], fs[j], Z)
+    for r in range(num_bfs):
+        for s in range(num_bfs):
+            H[r, s] = H_int(bfs[r], bfs[s], Z)
 
     return H
 
 
-def R_matrix(fs):
+def R_matrix(bfs):
     """
     Compute the electron repulsion integral matrix R.
 
@@ -114,14 +118,14 @@ def R_matrix(fs):
         R: repulsion matrix
     """
     start = time.time()
-    num_bfs = len(fs)
+    num_bfs = len(bfs)
     R = np.zeros((num_bfs, num_bfs, num_bfs, num_bfs))
 
     for r in range(num_bfs):
         for s in range(num_bfs):
             for t in range(num_bfs):
                 for u in range(num_bfs):
-                    R[r, s, t, u] = R_int([fs[r], fs[s], fs[t], fs[u]])
+                    R[r, s, t, u] = R_int([bfs[r], bfs[s], bfs[t], bfs[u]])
 
     stop = time.time()
     print('time Repu: {:.1f} s'.format(stop-start))
@@ -189,7 +193,7 @@ def secular_eqn(F, S):
     Slove secular equation, return the MO energies (eigenvalue) and improved coeffients (eigenvector)
 
     INPUT:
-        F: fock matrix
+        F: fock matrix or h_core matrix
         S: overlap integral
     OUTPUT:
         ei: eigenvalue
@@ -199,7 +203,7 @@ def secular_eqn(F, S):
     return ei, C
 
 
-def energy_tot(e, N, P, H, Vnn):
+def energy_tot(e, N, P, H, Vnn=0):
     """
     Compute the total energy.
 
@@ -208,7 +212,7 @@ def energy_tot(e, N, P, H, Vnn):
     N: num of electrons
     P: density matrix
     H: h_core matrix
-    Vnn: nuclear nuclear repulsion energy
+    Vnn: nuclear nuclear repulsion energy, for atom is 0
     """
     e_tot = 0
     for i in range(int(N/2)):
