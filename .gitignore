@@ -5,3 +5,7 @@ docs/*
 .vscode/*
 */__pycache__/*
 *.pyc
+log/
+*.log
+*.sock
+*.pid
