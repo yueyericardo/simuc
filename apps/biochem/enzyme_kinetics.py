@@ -277,7 +277,7 @@ cond_default = {'Ks': 10, 'kcat': 0.1, 'E0': 200, 'S0': 500, 'Ki': 0, 'Kii': 0, 
 cond_faster = {'Ks': 19, 'kcat': 0.15, 'E0': 300, 'S0': 500, 'Ki': 0, 'Kii': 0, 'Kss': 0, 'I0': 0}
 cond_slower = {'Ks': 4, 'kcat': 0.08, 'E0': 120, 'S0': 500, 'Ki': 0, 'Kii': 0, 'Kss': 0, 'I0': 0}
 cond_comp_ih = {'Ks': 10, 'kcat': 0.1, 'E0': 200, 'S0': 500, 'Ki': 3, 'Kii': 0, 'Kss': 0, 'I0': 100}
-cond_uncomp_ih = {'Ks': 10, 'kcat': 0.1, 'E0': 200, 'S0': 500, 'Ki': 0, 'Kii': 10, 'Kss': 10, 'I0': 100}
+cond_uncomp_ih = {'Ks': 10, 'kcat': 0.1, 'E0': 200, 'S0': 500, 'Ki': 0, 'Kii': 10, 'Kss': 0, 'I0': 100}
 # cond_noncomp_ih = {'Ks': 10, 'kcat': 0.1, 'E0': 200, 'S0': 500, 'Ki': 3, 'Kii': 10, 'Kss': 0, 'I0': 100}
 
 cond_all = [cond_faster, cond_slower, cond_default, cond_comp_ih, cond_uncomp_ih]
