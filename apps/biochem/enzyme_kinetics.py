@@ -3,7 +3,7 @@ import bokeh
 from bokeh.io import curdoc
 from bokeh.layouts import row, column
 from bokeh.models import ColumnDataSource
-from bokeh.models.widgets import Slider
+from bokeh.models.widgets import Slider, RadioButtonGroup
 from bokeh.plotting import figure
 
 
@@ -17,6 +17,10 @@ slider_K_EI_S = Slider(title="Kss", value=0, start=0, end=100, step=10, sizing_m
 slider_E0 = Slider(title="E0", value=200, start=0, end=300, step=50, sizing_mode="stretch_width")
 slider_S0 = Slider(title="S0", value=500, start=400, end=600, step=50, sizing_mode="stretch_width")
 slider_Inhi0 = Slider(title="I0", value=0, start=0, end=700, step=50, sizing_mode="stretch_width")
+
+preset_cond = RadioButtonGroup(labels=["Default", "Faster", "Slower", "Competitive Inhibition", "Uncompetitive Inhibition", "Non-competitive Inhibition"], active=0)
+
+print(preset_cond.active)
 
 # Eq constant
 Ki = slider_Ki.value
@@ -264,8 +268,32 @@ def update_data(attrname, old, new):
     all_information.text = a_i_t
 
 
+cond_default = {'Ks': 10, 'kcat': 0.1, 'E0': 200, 'S0': 500, 'Ki': 0, 'Kii': 0, 'Kss': 0, 'I0': 0}
+cond_faster = {'Ks': 19, 'kcat': 0.15, 'E0': 300, 'S0': 500, 'Ki': 0, 'Kii': 0, 'Kss': 0, 'I0': 0}
+cond_slower = {'Ks': 4, 'kcat': 0.08, 'E0': 120, 'S0': 500, 'Ki': 0, 'Kii': 0, 'Kss': 0, 'I0': 0}
+cond_comp_ih = {'Ks': 10, 'kcat': 0.1, 'E0': 200, 'S0': 500, 'Ki': 3, 'Kii': 0, 'Kss': 0, 'I0': 100}
+cond_uncomp_ih = {'Ks': 10, 'kcat': 0.1, 'E0': 200, 'S0': 500, 'Ki': 0, 'Kii': 10, 'Kss': 10, 'I0': 100}
+cond_noncomp_ih = {'Ks': 10, 'kcat': 0.1, 'E0': 200, 'S0': 500, 'Ki': 3, 'Kii': 10, 'Kss': 0, 'I0': 100}
+
+cond_all = [cond_default, cond_faster, cond_slower, cond_comp_ih, cond_uncomp_ih, cond_noncomp_ih]
+
+
+def update_slider(slider_values):
+    for s in [slider_Ks, slider_kcat, slider_Ki, slider_K_ES_I, slider_K_EI_S, slider_E0, slider_Inhi0, slider_S0]:
+        s.value = slider_values[s.title]
+
+
+def load_preset(attrname, old, new):
+    active_cond = preset_cond.active
+    update_slider(cond_all[active_cond])
+    # update_data()
+
+
 for w in [slider_Ks, slider_kcat, slider_Ki, slider_K_ES_I, slider_K_EI_S, slider_E0, slider_Inhi0, slider_S0]:
     w.on_change('value', update_data)
+
+for w in [preset_cond]:
+    w.on_change('active', load_preset)
 
 title_left = bokeh.models.Div(text="Without Inhibition<br><br>", sizing_mode="stretch_width")
 title_inhi = bokeh.models.Div(text="Inhibition<br><br>", sizing_mode="stretch_width")
@@ -277,10 +305,16 @@ all_information = bokeh.models.Div(text=a_i_t, style={'margin-top': '200px', 'wi
 reaction_png = bokeh.models.Div(text="<br><br><br><br><br>Symbol Definition: <img src='https://yyrcd-1256568788.cos.na-siliconvalley.myqcloud.com/yyrcd/2019-09-18-143043.png' style='width: 310px; margin: auto; display: block'> <br><br>Michaelis-Menten Equation:<br><br> <img src='https://yyrcd-1256568788.cos.na-siliconvalley.myqcloud.com/yyrcd/2019-09-18-mm-equation.png' style='width: 150px; display: block'>", sizing_mode="stretch_width")
 
 # Set up layouts and add to document
-left = column(children=[title_left, slider_Ks, slider_kcat, slider_E0, slider_S0, reaction_png], sizing_mode='fixed', width=400, height=700)
-middle = column(children=[plot_con_time, plot_V_S, plot_1_over], sizing_mode='fixed', width=700, height=700)
-right = column(children=[title_inhi, slider_Ki, slider_K_ES_I, slider_K_EI_S, slider_Inhi0, all_information], sizing_mode='fixed', width=400, height=700)
-all_layout = row(left, middle, right)
+# first row
+left = column(children=[title_left, slider_Ks, slider_kcat, slider_E0, slider_S0, reaction_png], sizing_mode='fixed', width=400, height=730)
+middle = column(children=[plot_con_time, plot_V_S, plot_1_over], sizing_mode='fixed', width=700, height=730)
+right = column(children=[title_inhi, slider_Ki, slider_K_ES_I, slider_K_EI_S, slider_Inhi0, all_information], sizing_mode='fixed', width=400, height=730)
+# second row
+emptydiv = bokeh.models.Div(text=" ", sizing_mode="stretch_width")
+empty = column(emptydiv, sizing_mode='fixed', width=400, height=30)
+bottom = column(preset_cond, sizing_mode='fixed', width=1100, height=30)
+
+all_layout = column(row(left, middle, right), row(empty, bottom))
 
 curdoc().add_root(all_layout)
 curdoc().title = "Enzyme Kinetics"
