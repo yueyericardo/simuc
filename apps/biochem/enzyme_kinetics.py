@@ -18,10 +18,6 @@ slider_E0 = Slider(title="E0", value=200, start=0, end=300, step=50, sizing_mode
 slider_S0 = Slider(title="S0", value=500, start=400, end=600, step=50, sizing_mode="stretch_width")
 slider_Inhi0 = Slider(title="I0", value=0, start=0, end=700, step=50, sizing_mode="stretch_width")
 
-preset_cond = RadioButtonGroup(labels=["Default", "Faster", "Slower", "Competitive Inhibition", "Uncompetitive Inhibition", "Non-competitive Inhibition"], active=0)
-
-print(preset_cond.active)
-
 # Eq constant
 Ki = slider_Ki.value
 K_ES_I = slider_K_ES_I.value
@@ -268,6 +264,13 @@ def update_data(attrname, old, new):
     all_information.text = a_i_t
 
 
+for w in [slider_Ks, slider_kcat, slider_Ki, slider_K_ES_I, slider_K_EI_S, slider_E0, slider_Inhi0, slider_S0]:
+    w.on_change('value', update_data)
+
+
+# load preset conditions
+preset_cond = RadioButtonGroup(labels=["Faster", "Slower", "Default", "Competitive Inhibition", "Uncompetitive Inhibition", "Non-competitive Inhibition"], active=2)
+
 cond_default = {'Ks': 10, 'kcat': 0.1, 'E0': 200, 'S0': 500, 'Ki': 0, 'Kii': 0, 'Kss': 0, 'I0': 0}
 cond_faster = {'Ks': 19, 'kcat': 0.15, 'E0': 300, 'S0': 500, 'Ki': 0, 'Kii': 0, 'Kss': 0, 'I0': 0}
 cond_slower = {'Ks': 4, 'kcat': 0.08, 'E0': 120, 'S0': 500, 'Ki': 0, 'Kii': 0, 'Kss': 0, 'I0': 0}
@@ -275,7 +278,7 @@ cond_comp_ih = {'Ks': 10, 'kcat': 0.1, 'E0': 200, 'S0': 500, 'Ki': 3, 'Kii': 0, 
 cond_uncomp_ih = {'Ks': 10, 'kcat': 0.1, 'E0': 200, 'S0': 500, 'Ki': 0, 'Kii': 10, 'Kss': 10, 'I0': 100}
 cond_noncomp_ih = {'Ks': 10, 'kcat': 0.1, 'E0': 200, 'S0': 500, 'Ki': 3, 'Kii': 10, 'Kss': 0, 'I0': 100}
 
-cond_all = [cond_default, cond_faster, cond_slower, cond_comp_ih, cond_uncomp_ih, cond_noncomp_ih]
+cond_all = [cond_faster, cond_slower, cond_default, cond_comp_ih, cond_uncomp_ih, cond_noncomp_ih]
 
 
 def update_slider(slider_values):
@@ -286,15 +289,13 @@ def update_slider(slider_values):
 def load_preset(attrname, old, new):
     active_cond = preset_cond.active
     update_slider(cond_all[active_cond])
-    # update_data()
 
-
-for w in [slider_Ks, slider_kcat, slider_Ki, slider_K_ES_I, slider_K_EI_S, slider_E0, slider_Inhi0, slider_S0]:
-    w.on_change('value', update_data)
 
 for w in [preset_cond]:
     w.on_change('active', load_preset)
 
+
+# other information
 title_left = bokeh.models.Div(text="Without Inhibition<br><br>", sizing_mode="stretch_width")
 title_inhi = bokeh.models.Div(text="Inhibition<br><br>", sizing_mode="stretch_width")
 
