@@ -3,7 +3,7 @@ import bokeh
 from bokeh.io import curdoc
 from bokeh.layouts import row, column
 from bokeh.models import ColumnDataSource
-from bokeh.models.widgets import Slider, RadioButtonGroup
+from bokeh.models.widgets import Slider, RadioButtonGroup, Button, TextInput, PreText
 from bokeh.plotting import figure
 
 
@@ -295,6 +295,18 @@ for w in [preset_cond]:
     w.on_change('active', load_preset)
 
 
+# export button
+def export():
+    info = {}
+    for s in [slider_Ks, slider_kcat, slider_Ki, slider_K_ES_I, slider_K_EI_S, slider_E0, slider_Inhi0, slider_S0]:
+        info[s.title] = s.value
+    export_text.text = str(info)
+
+
+export_button = Button(label="Export", button_type="success", width=100)
+export_text = PreText(text=" ", width=400)
+export_button.on_click(export)
+
 # other information
 title_left = bokeh.models.Div(text="Without Inhibition<br><br>", sizing_mode="stretch_width")
 title_inhi = bokeh.models.Div(text="Inhibition<br><br>", sizing_mode="stretch_width")
@@ -312,10 +324,13 @@ middle = column(children=[plot_con_time, plot_V_S, plot_1_over], sizing_mode='fi
 right = column(children=[title_inhi, slider_Ki, slider_K_ES_I, slider_K_EI_S, slider_Inhi0, all_information], sizing_mode='fixed', width=400, height=730)
 # second row
 emptydiv = bokeh.models.Div(text=" ", sizing_mode="stretch_width")
-empty = column(emptydiv, sizing_mode='fixed', width=400, height=30)
-bottom = column(preset_cond, sizing_mode='fixed', width=1100, height=30)
+empty = column(emptydiv, sizing_mode='fixed', width=400)
+bottom = column(preset_cond, sizing_mode='fixed', width=1100, height=40)
+# third row
+button = column(export_button, sizing_mode='fixed', width=120, height=40)
+text = column(export_text, sizing_mode='fixed', width=500, height=40)
 
-all_layout = column(row(left, middle, right), row(empty, bottom))
+all_layout = column(row(left, middle, right), row(empty, bottom), row(empty, button), row(empty, text))
 
 curdoc().add_root(all_layout)
 curdoc().title = "Enzyme Kinetics"
