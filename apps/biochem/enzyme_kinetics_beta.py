@@ -5,8 +5,23 @@ from bokeh.layouts import row, column
 from bokeh.models import ColumnDataSource
 from bokeh.models.widgets import Slider, RadioButtonGroup, Button, PreText
 from bokeh.plotting import figure
+from dataclasses import dataclass
 from bokeh.models.callbacks import CustomJS
 
+
+@dataclass
+class Condition:
+    Ks: float
+    kcat: float
+    E0: float
+    S0: float
+    Ki: float
+    Kii: float
+    Kss: float
+    I0: float
+
+
+cond_default = {'Ks': 10, 'kcat': 0.1, 'E0': 200, 'S0': 500, 'Ki': 0, 'Kii': 0, 'Kss': 0, 'I0': 0}
 
 # rate constant slider
 slider_Ks = Slider(title="Ks", value=10, start=1, end=20, step=3, sizing_mode="stretch_width")
