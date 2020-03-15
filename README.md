@@ -6,12 +6,12 @@ SIMUlation for Chemistry
 1. [Sound Interference](http://simuc.chem.ufl.edu/sound)
 1. [Particle in a 1D Box](http://simuc.chem.ufl.edu/1dbox)
 1. [Enzyme Kinetics](http://simuc.chem.ufl.edu/enzyme_kinetics)
-1. [How to make a plot](https://yyrcd-1256568788.cos.na-siliconvalley.myqcloud.com/yyrcd/2019-09-25-How_to_make_a_plot%20-1--1.html)
+1. [How to make a plot](https://nbviewer.jupyter.org/github/yueyericardo/simuc/blob/master/notebooks/tutorial/How_to_make_a_plot.ipynb)
 1. [Particle in a 2D Box](http://simuc.chem.ufl.edu/2dbox)
-1. [Minimal background for python](https://yyrcd-1256568788.cos.na-siliconvalley.myqcloud.com/yyrcd/2019-10-18-Minimal%20Background%20for%20Python-1.html)
-1. [Photoisomerization Kinetics Analysis using Python](https://yyrcd-1256568788.cos.na-siliconvalley.myqcloud.com/yyrcd/2019-10-28-photoisomerization.html)
-1. [HOMO-LUMO Gap Energy of the Conjugated Dye Analysis using Python](https://yyrcd-1256568788.cos.na-siliconvalley.myqcloud.com/yyrcd/2019-10-28-HOMO-LUMO%20Gap%20Energy%20of%20the%20Conjugated%20Dye.html)
-1. [Anaylze the order of dyes bleaching reaction](https://yyrcd-1256568788.cos.na-siliconvalley.myqcloud.com/yyrcd/2019-10-29-Anaylze%20the%20order%20of%20dyes%20bleaching%20reaction-1.html)
+1. [Minimal background for python](https://nbviewer.jupyter.org/github/yueyericardo/simuc/blob/master/notebooks/tutorial/Minimal_Background_for_Python.ipynb)
+1. [Photoisomerization Kinetics Analysis using Python](https://nbviewer.jupyter.org/github/yueyericardo/simuc/blob/master/notebooks/lab/photoisomerization/photoisomerization.ipynb)
+1. [HOMO-LUMO Gap Energy of the Conjugated Dye Analysis using Python](https://nbviewer.jupyter.org/github/yueyericardo/simuc/blob/master/notebooks/lab/HOMO-LUMO_Gap_Energy_of_the_Conjugated_Dye.ipynb)
+1. [Anaylze the order of dyes bleaching reaction](https://nbviewer.jupyter.org/github/yueyericardo/simuc/blob/master/notebooks/lab/Anaylze_the_order_of_dyes_bleaching_reaction.ipynb)
 
 ## 2. Example
 Enzyme Kinetics
