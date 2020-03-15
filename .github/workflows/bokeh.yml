@@ -34,17 +34,3 @@ jobs:
     # test bokeh
     - name: Test apps
       run: bokeh html apps/biochem/enzyme_kinetics.py
-    - name: Commit files
-      run: |
-        if [[ `git status --porcelain` ]]; then
-          git config --local user.email "yueyericardo_bot@gmail.com"
-          git config --local user.name "yueyericardo_bot"
-          git commit -m "Deploy" -a
-        fi
-    # gitpull
-    - name: git pull
-      run: git pull
-    - name: Push changes
-      uses: ad-m/github-push-action@master
-      with:
-        github_token: ${{ secrets.TOKEN }}
