@@ -3,9 +3,25 @@ import bokeh
 from bokeh.io import curdoc
 from bokeh.layouts import row, column
 from bokeh.models import ColumnDataSource
-from bokeh.models.widgets import Slider
+from bokeh.models.widgets import Slider, RadioButtonGroup, Button, PreText
 from bokeh.plotting import figure
+from dataclasses import dataclass
+from bokeh.models.callbacks import CustomJS
 
+
+@dataclass
+class Condition:
+    Ks: float
+    kcat: float
+    E0: float
+    S0: float
+    Ki: float
+    Kii: float
+    Kss: float
+    I0: float
+
+
+cond_default = {'Ks': 10, 'kcat': 0.1, 'E0': 200, 'S0': 500, 'Ki': 0, 'Kii': 0, 'Kss': 0, 'I0': 0}
 
 # rate constant slider
 slider_Ks = Slider(title="Ks", value=10, start=1, end=20, step=3, sizing_mode="stretch_width")
@@ -267,6 +283,63 @@ def update_data(attrname, old, new):
 for w in [slider_Ks, slider_kcat, slider_Ki, slider_K_ES_I, slider_K_EI_S, slider_E0, slider_Inhi0, slider_S0]:
     w.on_change('value', update_data)
 
+
+# load preset conditions
+# preset_cond = RadioButtonGroup(labels=["Faster", "Slower", "Default", "Competitive Inhibition", "Uncompetitive Inhibition", "Non-competitive Inhibition"], active=2)
+preset_cond = RadioButtonGroup(labels=["Faster", "Slower", "Default", "Competitive Inhibition", "Uncompetitive Inhibition"], active=2)
+
+cond_default = {'Ks': 10, 'kcat': 0.1, 'E0': 200, 'S0': 500, 'Ki': 0, 'Kii': 0, 'Kss': 0, 'I0': 0}
+cond_faster = {'Ks': 19, 'kcat': 0.15, 'E0': 300, 'S0': 500, 'Ki': 0, 'Kii': 0, 'Kss': 0, 'I0': 0}
+cond_slower = {'Ks': 4, 'kcat': 0.08, 'E0': 120, 'S0': 500, 'Ki': 0, 'Kii': 0, 'Kss': 0, 'I0': 0}
+cond_comp_ih = {'Ks': 10, 'kcat': 0.1, 'E0': 200, 'S0': 500, 'Ki': 3, 'Kii': 0, 'Kss': 0, 'I0': 100}
+cond_uncomp_ih = {'Ks': 10, 'kcat': 0.1, 'E0': 200, 'S0': 500, 'Ki': 0, 'Kii': 10, 'Kss': 0, 'I0': 100}
+# cond_noncomp_ih = {'Ks': 10, 'kcat': 0.1, 'E0': 200, 'S0': 500, 'Ki': 3, 'Kii': 10, 'Kss': 0, 'I0': 100}
+
+cond_all = [cond_faster, cond_slower, cond_default, cond_comp_ih, cond_uncomp_ih]
+
+
+def update_slider(slider_values):
+    for s in [slider_Ks, slider_kcat, slider_Ki, slider_K_ES_I, slider_K_EI_S, slider_E0, slider_Inhi0, slider_S0]:
+        s.value = slider_values[s.title]
+
+
+def load_preset(attrname, old, new):
+    active_cond = preset_cond.active
+    update_slider(cond_all[active_cond])
+
+
+for w in [preset_cond]:
+    w.on_change('active', load_preset)
+
+
+# export button
+def export():
+    info = {}
+    for s in [slider_Ks, slider_kcat, slider_Ki, slider_K_ES_I, slider_K_EI_S, slider_E0, slider_Inhi0, slider_S0]:
+        info[s.title] = s.value
+    export_text.text = str(info)
+    export_text.style = {"color": "black"}
+
+
+export_button = Button(label="Export", button_type="success", width=100)
+export_text = PreText(text=" ", width=400)
+export_button.on_click(export)
+
+
+# quiz button
+def submit_quiz2():
+    if (slider_Ki.value > 0 and slider_K_ES_I.value > 0):
+        export_text.text = "Right!"
+        export_text.style = {"color": "green"}
+    else:
+        export_text.text = "Wrong!"
+        export_text.style = {"color": "red"}
+
+
+quiz2_button = Button(label="Submit Quiz 2", button_type="success", width=100)
+quiz2_button.on_click(submit_quiz2)
+
+# other information
 title_left = bokeh.models.Div(text="Without Inhibition<br><br>", sizing_mode="stretch_width")
 title_inhi = bokeh.models.Div(text="Inhibition<br><br>", sizing_mode="stretch_width")
 
@@ -277,10 +350,19 @@ all_information = bokeh.models.Div(text=a_i_t, style={'margin-top': '200px', 'wi
 reaction_png = bokeh.models.Div(text="<br><br><br><br><br>Symbol Definition: <img src='https://yyrcd-1256568788.cos.na-siliconvalley.myqcloud.com/yyrcd/2019-09-18-143043.png' style='width: 310px; margin: auto; display: block'> <br><br>Michaelis-Menten Equation:<br><br> <img src='https://yyrcd-1256568788.cos.na-siliconvalley.myqcloud.com/yyrcd/2019-09-18-mm-equation.png' style='width: 150px; display: block'>", sizing_mode="stretch_width")
 
 # Set up layouts and add to document
-left = column(children=[title_left, slider_Ks, slider_kcat, slider_E0, slider_S0, reaction_png], sizing_mode='fixed', width=400, height=700)
-middle = column(children=[plot_con_time, plot_V_S, plot_1_over], sizing_mode='fixed', width=700, height=700)
-right = column(children=[title_inhi, slider_Ki, slider_K_ES_I, slider_K_EI_S, slider_Inhi0, all_information], sizing_mode='fixed', width=400, height=700)
-all_layout = row(left, middle, right)
+# first row
+left = column(children=[title_left, slider_Ks, slider_kcat, slider_E0, slider_S0, reaction_png], sizing_mode='fixed', width=400, height=730)
+middle = column(children=[plot_con_time, plot_V_S, plot_1_over], sizing_mode='fixed', width=700, height=730)
+right = column(children=[title_inhi, slider_Ki, slider_K_ES_I, slider_K_EI_S, slider_Inhi0, all_information], sizing_mode='fixed', width=400, height=730)
+# second row
+emptydiv = bokeh.models.Div(text=" ", sizing_mode="stretch_width")
+empty = column(emptydiv, sizing_mode='fixed', width=400)
+bottom = column(preset_cond, sizing_mode='fixed', width=1100, height=40)
+# third row
+button = column(row(export_button, quiz2_button), sizing_mode='fixed', width=300, height=40)
+text = column(export_text, sizing_mode='fixed', width=500, height=40)
+
+all_layout = column(row(left, middle, right), row(empty, bottom), row(empty, button), row(empty, text))
 
 curdoc().add_root(all_layout)
 curdoc().title = "Enzyme Kinetics"
