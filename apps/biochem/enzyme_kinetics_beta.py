@@ -42,7 +42,6 @@ class Condition(object):
         # converge_tolerance
         self.tol = 1
         self.dt = 0.01
-        self.ESI_scale = 50
 
         # gen info
         self.gen_info()
@@ -78,7 +77,7 @@ class Condition(object):
             self.y_S.append(self.S)
             self.y_ES.append(self.ES)
             self.y_EI.append(self.EI)
-            self.y_ESI.append(self.ESI * self.ESI_scale)
+            self.y_ESI.append(self.ESI)
             self.y_Inhi.append(self.Inhi)
             self.y_E.append(self.E)
             self.y_P.append(self.P)
@@ -193,7 +192,7 @@ p_Inhi = plot_con_time.line('x', 'y', source=source_Inhi, line_width=5, line_alp
 p_E = plot_con_time.line('x', 'y', source=source_E, line_width=3, line_alpha=1, color='deepskyblue', line_dash='dashed', legend='E')
 p_ES = plot_con_time.line('x', 'y', source=source_ES, line_width=1, line_alpha=1, color='green', line_dash='dashed', legend='ES')
 p_EI = plot_con_time.line('x', 'y', source=source_EI, line_width=1, line_alpha=1, color='tomato', line_dash='dashed', legend='EI')
-p_ESI = plot_con_time.line('x', 'y', source=source_ESI, line_width=1, line_alpha=1, color='black', line_dash='dashed', legend='ESI * {}'.format(cond_default.ESI_scale))
+p_ESI = plot_con_time.line('x', 'y', source=source_ESI, line_width=1, line_alpha=1, color='black', line_dash='dashed', legend='EIS')
 plot_con_time.yaxis.axis_label = "Concentration  (mol / L)"
 plot_con_time.xaxis.axis_label = "Time  (s)"
 # add some label
