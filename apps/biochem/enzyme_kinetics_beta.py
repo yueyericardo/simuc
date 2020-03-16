@@ -111,7 +111,7 @@ class Condition(object):
             Km = Km * (1 + self.I0 / self.Ki) / (1 + self.I0 / self.Kii)
             self.text_Km = 'Km\' = {:.2f}'.format(Km)
             self.text_Vm = 'Vm\' = {:.2f}'.format(Vm)
-            if self.Ki == self.Ki:
+            if self.Ki == self.Kii:
                 self.inhi_type = 'Non-Competitive Inhibition'
             else:
                 self.inhi_type = 'Mixed Inhibition'
