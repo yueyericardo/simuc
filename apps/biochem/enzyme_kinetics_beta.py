@@ -111,7 +111,10 @@ class Condition(object):
             Km = Km * (1 + self.I0 / self.Ki) / (1 + self.I0 / self.Kii)
             self.text_Km = 'Km\' = {:.2f}'.format(Km)
             self.text_Vm = 'Vm\' = {:.2f}'.format(Vm)
-            self.inhi_type = 'Non-Competitive Inhibition'
+            if self.Ki == self.Ki:
+                self.inhi_type = 'Non-Competitive Inhibition'
+            else:
+                self.inhi_type = 'Mixed Inhibition'
 
         # un-competitive inhibition
         if (self.Ki == 0 and self.Kii > 0):
@@ -152,12 +155,12 @@ cond_all = [cond_faster, cond_slower, cond_default, cond_comp_ih, cond_uncomp_ih
 # sliders
 slider_Ks = Slider(title="Ks", value=cond_default.Ks, start=1, end=20, step=3, sizing_mode="stretch_width")
 slider_kcat = Slider(title="kcat", value=cond_default.kcat, start=0.06, end=0.2, step=0.01, sizing_mode="stretch_width")
-slider_Ki = Slider(title="Ki", value=cond_default.Ki, start=0, end=20, step=3, sizing_mode="stretch_width")
-slider_K_ES_I = Slider(title="Kii", value=cond_default.Kii, start=0, end=100, step=10, sizing_mode="stretch_width")
-slider_K_EI_S = Slider(title="Kss", value=cond_default.Kss, start=0, end=100, step=10, sizing_mode="stretch_width")
+slider_Ki = Slider(title="Ki", value=cond_default.Ki, start=0, end=20, step=2, sizing_mode="stretch_width")
+slider_K_ES_I = Slider(title="Kii", value=cond_default.Kii, start=0, end=50, step=10, sizing_mode="stretch_width")
+slider_K_EI_S = Slider(title="Kss", value=cond_default.Kss, start=0, end=50, step=10, sizing_mode="stretch_width")
 slider_E0 = Slider(title="E0", value=cond_default.E0, start=0, end=300, step=50, sizing_mode="stretch_width")
 slider_S0 = Slider(title="S0", value=cond_default.S0, start=400, end=600, step=50, sizing_mode="stretch_width")
-slider_Inhi0 = Slider(title="I0", value=cond_default.I0, start=0, end=700, step=50, sizing_mode="stretch_width")
+slider_Inhi0 = Slider(title="I0", value=cond_default.I0, start=0, end=700, step=10, sizing_mode="stretch_width")
 
 # generate source data for first plot
 cond_default.gen_plot_data()
