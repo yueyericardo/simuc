@@ -5,8 +5,6 @@ from bokeh.layouts import row, column
 from bokeh.models import ColumnDataSource
 from bokeh.models.widgets import Slider, RadioButtonGroup, Button, PreText
 from bokeh.plotting import figure
-import time
-from numba import jit
 
 
 class Condition(object):
@@ -49,16 +47,15 @@ class Condition(object):
         # gen info
         self.gen_info()
 
-    @jit()
     def gen_plot_data(self):
-        self.x_t = np.array([0])
-        self.y_S = np.array([self.S])
-        self.y_ES = np.array([self.ES])
-        self.y_EI = np.array([self.EI])
-        self.y_ESI = np.array([self.ESI])
-        self.y_Inhi = np.array([self.Inhi])
-        self.y_E = np.array([self.E])
-        self.y_P = np.array([self.P])
+        self.x_t = [0]
+        self.y_S = [self.S]
+        self.y_ES = [self.ES]
+        self.y_EI = [self.EI]
+        self.y_ESI = [self.ESI]
+        self.y_Inhi = [self.Inhi]
+        self.y_E = [self.E]
+        self.y_P = [self.P]
         steps = 0
 
         for i in range(0, int(150/self.dt)):
@@ -77,14 +74,23 @@ class Condition(object):
             self.P = self.S0 - self.S - self.ES - self.ESI
 
             steps += 1
-            self.x_t = np.append(self.x_t, steps * self.dt)
-            self.y_S = np.append(self.y_S, self.S)
-            self.y_ES = np.append(self.y_ES, self.ES)
-            self.y_EI = np.append(self.y_EI, self.EI)
-            self.y_ESI = np.append(self.y_ESI, self.ESI * self.ESI_scale)
-            self.y_Inhi = np.append(self.y_Inhi, self.Inhi)
-            self.y_E = np.append(self.y_E, self.E)
-            self.y_P = np.append(self.y_P, self.P)
+            self.x_t.append(steps * self.dt)
+            self.y_S.append(self.S)
+            self.y_ES.append(self.ES)
+            self.y_EI.append(self.EI)
+            self.y_ESI.append(self.ESI * self.ESI_scale)
+            self.y_Inhi.append(self.Inhi)
+            self.y_E.append(self.E)
+            self.y_P.append(self.P)
+
+        self.x_t = np.array(self.x_t)
+        self.y_S = np.array(self.y_S)
+        self.y_ES = np.array(self.y_ES)
+        self.y_EI = np.array(self.y_EI)
+        self.y_ESI = np.array(self.y_ESI)
+        self.y_Inhi = np.array(self.y_Inhi)
+        self.y_E = np.array(self.y_E)
+        self.y_P = np.array(self.y_P)
 
     def gen_more_data(self, x_S0, x_1_over_S0):
         Km = (self.kcat + self.kr) / self.kf
@@ -232,7 +238,6 @@ plot_1_over.xaxis.axis_label = "1 / [S]"
 
 # update function
 def update_data(attrname, old, new):
-    start = time.time()
     cond_update = Condition(Ks=slider_Ks.value, kcat=slider_kcat.value, E0=slider_E0.value,
                             S0=slider_S0.value, Ki=slider_Ki.value, Kii=slider_K_ES_I.value,
                             Kss=slider_K_EI_S.value, I0=slider_Inhi0.value)
@@ -258,8 +263,6 @@ def update_data(attrname, old, new):
     source_circle__half_Vm.data = dict(x=[cond_update.xy_circle_half_Vm[0]], y=[cond_update.xy_circle_half_Vm[1]])
 
     all_information.text = cond_update.info
-    stop = time.time()
-    print("time: {}".format(stop - start))
 
 
 def update_slider(cond):
