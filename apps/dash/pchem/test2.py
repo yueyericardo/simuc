@@ -8,7 +8,10 @@ import util
 from server import server
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
-app = dash.Dash(name='test2', external_stylesheets=external_stylesheets,
+external_scripts = ['https://yyrcd-1256568788.cos.na-siliconvalley.myqcloud.com/yyrcd/2020-03-21-iframeResizer.contentWindow.min.js']
+app = dash.Dash(name='test2',
+                external_stylesheets=external_stylesheets,
+                external_scripts=external_scripts,
                 server=server,
                 routes_pathname_prefix='/test2/')
 
