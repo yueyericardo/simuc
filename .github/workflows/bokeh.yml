@@ -32,4 +32,4 @@ jobs:
       run: pip install numpy scipy matplotlib bokeh==1.4.0 
     # test bokeh
     - name: Test apps
-      run: bokeh html apps/biochem/enzyme_kinetics.py
+      run: bokeh html apps/bokeh/biochem/enzyme_kinetics.py
