@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 import dash
+import sys
 import numpy as np
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
+sys.path.append('..')
 import util
 from server import server
 
