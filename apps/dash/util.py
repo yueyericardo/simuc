@@ -4,7 +4,7 @@ import re
 
 def convert_latex(text):
     def toimage(x):
-        if x[1] == r'$'  and x[-2] == r'$':
+        if x[1] == r'$' and x[-2] == r'$':
             x = x[2:-2]
             img = "\n<img src='https://math.now.sh?from={}' style='display: block; margin: 0.5em auto;'>\n"
             return img.format(urllib.parse.quote_plus(x))
