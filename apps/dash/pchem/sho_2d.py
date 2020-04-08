@@ -171,20 +171,19 @@ app.layout = html.Div([
         style={'columnCount': 2}
     ),
     html.Div([
-        html.Label('Choose State')],
-        style={'width': '40%', 'float': 'right', 'display': 'inline-block', 'margin': '0px 70px'}
-    ),
-    html.Div([
-        dcc.Slider(
-            id='state-slider',
-            min=1,
-            max=15,
-            value=1,
-            marks={str(x): str(x) for x in np.arange(1, 16, 1)},
-            step=1,
+        html.Div([html.Br(), html.Br()],
+                 style={'min-height': '70px'}),
+        html.Div([
+            html.Label('Choose State'),
+            dcc.Slider(
+                id='state-slider',
+                min=1,
+                max=15,
+                value=1,
+                marks={str(x): str(x) for x in np.arange(1, 16, 1)},
+                step=1)],
         )],
-        style={'width': '40%', 'float': 'right', 'display': 'inline-block', 'margin': '10px 60px'}
-    )
+             style={'columnCount': 2, 'padding': '0'})
 ])
 
 
