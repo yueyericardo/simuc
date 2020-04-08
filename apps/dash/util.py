@@ -10,5 +10,6 @@ def convert_latex(text):
             return img.format(urllib.parse.quote_plus(x))
         else:
             x = x[1:-1]
-            return r'![](https://math.now.sh?from={})'.format(urllib.parse.quote_plus(x))
+            img = "<img src='https://math.now.sh?from={}' style='display: inline-block; margin: 0;'>"
+            return img.format(urllib.parse.quote_plus(x))
     return re.sub(r'\${2}([^$]+)\${2}|\$(.+?)\$', lambda x: toimage(x.group()), text)
