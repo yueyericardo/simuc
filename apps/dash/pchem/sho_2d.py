@@ -182,8 +182,10 @@ app.layout = html.Div([
                 value=1,
                 marks={str(x): str(x) for x in np.arange(1, 16, 1)},
                 step=1)],
-        )],
-             style={'columnCount': 2, 'padding': '0'})
+                 )],
+             style={'columnCount': 2, 'padding': '0'}),
+    html.Div([html.Br(), html.Br()],
+             style={'min-height': '50px'})
 ])
 
 
