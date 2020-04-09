@@ -4,6 +4,9 @@ import numpy as np
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
+import sys
+sys.path.append('.')
+sys.path.append('..')
 import util
 from server import server
 
