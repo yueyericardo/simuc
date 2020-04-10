@@ -14,7 +14,7 @@ from server import server
 filepath = os.path.split(os.path.realpath(__file__))[0]
 
 external_stylesheets = ['https://codepen.io/yueyericardo/pen/OJyLrKR.css', 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/monokai-sublime.min.css']
-external_scripts = ['https://yyrcd-1256568788.cos.na-siliconvalley.myqcloud.com/yyrcd/2020-03-21-iframeResizer.contentWindow.min.js', 'https://codepen.io/yueyericardo/pen/OJyLrKR.js']
+external_scripts = ['https://yyrcd-1256568788.cos.na-siliconvalley.myqcloud.com/yyrcd/2020-03-21-iframeResizer.contentWindow.min.js']
 
 
 app = dash.Dash(name='free_particle',
@@ -44,15 +44,8 @@ app.index_string = '''
 </html>
 '''
 
-app.scripts.config.serve_locally = False
-
 f = open(os.path.join(filepath, "01_free_particle.md"), "r")
-
-
-Markdown_text = f.read()
-
-Markdown_text = util.convert_latex(Markdown_text)
-
+Markdown_text = util.convert(f.read())
 
 #####################################################################
 

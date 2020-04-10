@@ -70,7 +70,6 @@ def update_figure(a, sec):
     N = 200
     x = np.linspace(0, 12, N)
     k = 1
-    print(sec)
     w = 1 - 0.3 * sec
     b = 0
     y = a * np.sin(k * x + w) + b

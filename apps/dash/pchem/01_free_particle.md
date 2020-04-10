@@ -1,6 +1,3 @@
-### Table of Content
-<a href="/#we-are-now-ready-to-tackle--a-particle-in-a-box-with-infinite-potential-walls-">We are now ready to tackle "A Particle in a box with infinite-potential walls"</a>
-
 ### Authors:
 
 * [Vinícius Wilian D. Cruzeiro](https://scholar.google.com/citations?user=iAK04WMAAAAJ). E-mail: vwcruzeiro@ufl.edu
@@ -23,6 +20,7 @@ United States
 * The reader should follow this notebook in the order that it is presented, executing code cells in consecutive order.
 * In order to execute a cell you may click on the cell and click the *PLAY* button, press *Shift+Enter*, or got to *Cell-->Run cells*. The user may also execute all cells at once by clicking on *Cell --> Run All* at the toolbar above. 
 * **Important:** Some cells **are only going to execute after the user enters input values in the corresponding boxes**.
+
 
 ```python
 # [ expression for item in list if conditional ]
@@ -115,7 +113,7 @@ with $p=\hbar k$
 Although **$\psi_k(x)$ can not be normalized**, the constant $c$ is chosen in such a way (see note below) that the function becomes:
 $$\large{\psi_k(x) = \frac{1}{\sqrt{2\pi}} e^{ikx}}$$
 
-###  Side note on the normalization factor and Dirac's delta function  
+### Side note on the normalization factor and Dirac's delta function  
 
 The normalization of a bra-ket is given by $$\left<\psi_{k'}(x)|\psi_k(x)\right> = \left<k'|k \right> = \int^{+\infty}_{-\infty} \psi_{k'}^*(x)\psi_k(x) dx = \int^{+\infty}_{-\infty} c^* e^{-ik'x} ce^{ikx} dx = |c|^2 \int^{+\infty}_{-\infty} e^{i(k-k')x} dx = |c|^2 2\pi\ \delta(k-k')$$
 
@@ -153,7 +151,7 @@ You can use the cell below to  enter different values for the momentum wavevecto
 
 **What do we learn from this graphical representaton?:** The first plot shows that that the wavefunction is completly ***delocalized*** in the x coordinate. However, wherever we look, the value of the probability density ($|\psi^*_k(x) \psi_k(x) |$)  is the same.
 
-### An important question to ask is: what is the probability to find a free particle within a $\Delta x$ region in space?  ###
+### An important question to ask is: what is the probability to find a free particle within a $\Delta x$ region in space?
 
 This is crucial for measurements, since we would never measure ALL space at the same time, but instead, our instrument will measure a section of $x$ space 
 $$\Psi^*_k(x) \Psi_k(x) \Delta x = \left|\Psi_k(x)\right|^2 \Delta x = \left(\frac{1}{\sqrt{2\pi}} e^{ikx}\right)^*\frac{1}{\sqrt{2\pi}} e^{ikx} \Delta x = \frac{1}{2\pi} \Delta x $$
@@ -242,4 +240,4 @@ $$= \frac{\hbar^2k^2}{2m} \left(\frac{1}{\sqrt{2\pi}}e^{ikx} \right)  = \frac{p^
 
 The first and last terms in this derivation show that the momentum eigenfunctions are also eigenfunctions of the Hamiltonian, with eigenvalues equal to the classical form of the kinetic energy. However, one has to be beware that although the value of the energy might look  *classical*, the behavior of the particles are very different. For the quantum mechanical systems, the particle can *never be at rest* (if $\Delta k = 0$ the particle is deloclaized; if the particle is very localized, then its momentum has many different values).
 
-### We are now ready to tackle "A Particle in a box with infinite-potential walls"###
+### We are now ready to tackle "A Particle in a box with infinite-potential walls"
