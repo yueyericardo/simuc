@@ -2,6 +2,7 @@ import urllib.parse
 import re
 import markdown
 import os
+import regex
 
 
 def genhtml(inputfile, outputfile, addtoc=False):
@@ -27,6 +28,7 @@ def genhtml(inputfile, outputfile, addtoc=False):
 
 def convert(text, addtoc=False):
     text = convert_latex(text)
+    text = """<br><br>To toggle on/off the raw code, click <input id="togglecode" class="button-primary" type="button" value="Toggle Code">\n\n""" + text
     if addtoc:
         header, text = generate_toc(text)
         text = "## Table of content\n\n" + header + '\n' + text
@@ -54,7 +56,11 @@ def convert_latex(text):
             x = x[1:-1]
             img = "<img src='https://math.now.sh?from={}' style='display: inline-block; margin: 0;'>"
             return img.format(urllib.parse.quote_plus(x))
-    return re.sub(r'\${2}([^$]+)\${2}|\$(.+?)\$', lambda x: toimage(x.group()), text)
+    # replace all $$ a+b $$
+    text = regex.sub(r'\${2}([^$]+)\${2}', lambda x: toimage(x.group()), text)
+    # replace all $ a+b $, and ignore all code block
+    text = regex.sub(r'```[^`]+```(*SKIP)(*FAIL)|\$(.+?)\$', lambda x: toimage(x.group()), text)
+    return text
 
 
 def generate_toc(mdtext, start_level=2, end_level=6):
