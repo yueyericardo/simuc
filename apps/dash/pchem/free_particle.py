@@ -34,6 +34,9 @@ app.index_string = '''
         {%css%}
     </head>
     <body>
+        <div class="toggle_container">
+            <input id="toggle_code" class="button-primary" type="button" value="Toggle Code">\n\n
+        </div>
         {%app_entry%}
         <footer>
             {%config%}

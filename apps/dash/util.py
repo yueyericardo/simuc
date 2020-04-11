@@ -28,7 +28,7 @@ def genhtml(inputfile, outputfile, addtoc=False):
 
 def convert(text, addtoc=False):
     text = convert_latex(text)
-    text = """<br><br>To toggle on/off the raw code, click <input id="togglecode" class="button-primary" type="button" value="Toggle Code">\n\n""" + text
+    text = """<br><br>The raw code for this notebook is hidden by default for easier reading. <br>To toggle on/off the raw code, click `Toggle Code` Button floating on the right.\n""" + text
     if addtoc:
         header, text = generate_toc(text)
         text = "## Table of content\n\n" + header + '\n' + text
