@@ -1,5 +1,28 @@
 import urllib.parse
 import re
+import markdown
+import os
+
+
+def genhtml(inputfile, outputfile, addtoc=False):
+
+    f = open(os.path.join("pchem/01_free_particle/", "01_free_particle.md"), "r")
+    text = convert_latex(f.read())
+    if addtoc:
+        header, text = generate_toc(text)
+        text = "## Table of content\n\n" + header + '\n' + text
+    html = markdown.markdown(text, extensions=['fenced_code', 'sane_lists'])
+
+    f = open(outputfile, "w")
+    head = """
+    <link rel="stylesheet" href="https://codepen.io/yueyericardo/pen/OJyLrKR.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/monokai-sublime.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    """
+    html = head + html
+    f.write(html)
+    f.close()
 
 
 def convert(text, addtoc=False):
@@ -8,6 +31,17 @@ def convert(text, addtoc=False):
         header, text = generate_toc(text)
         text = "## Table of content\n\n" + header + '\n' + text
     return text
+
+
+def fit_mathjax(text):
+    def toimage(x):
+        if x[1] == r'$' and x[-2] == r'$':
+            img = "\n<p>{}</p>\n"
+            return img.format(x)
+        else:
+            img = "\n<span>{}</span>\n"
+            return img.format(x)
+    return re.sub(r'\${2}([^$]+)\${2}', lambda x: toimage(x.group()), text)
 
 
 def convert_latex(text):

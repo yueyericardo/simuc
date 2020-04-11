@@ -1,3 +1,5 @@
+To toggle on/off the raw code, click <input id="togglecode" class="button-primary" type="button" value="Toggle Code">
+
 ### Authors:
 
 * [Vinícius Wilian D. Cruzeiro](https://scholar.google.com/citations?user=iAK04WMAAAAJ). E-mail: vwcruzeiro@ufl.edu
@@ -17,6 +19,7 @@ Gainesville, FL 32611-7200
 United States
 
 **Instructions:**
+
 * The reader should follow this notebook in the order that it is presented, executing code cells in consecutive order.
 * In order to execute a cell you may click on the cell and click the *PLAY* button, press *Shift+Enter*, or got to *Cell-->Run cells*. The user may also execute all cells at once by clicking on *Cell --> Run All* at the toolbar above. 
 * **Important:** Some cells **are only going to execute after the user enters input values in the corresponding boxes**.
@@ -70,7 +73,7 @@ def laplace_factor(idxy1, idxy2, row_len, dx, dy):
 The raw code for this IPython notebook is by default hidden for easier reading. As you scroll through code cell,
 they appear as empty cells
 with a blue left-side edge
-To toggle on/off the raw code, click <a href="javascript:code_toggle()">here</a>.
+
 
 
 
@@ -218,6 +221,7 @@ A Free particle has no potential (no acting force), thus the Hamiltonian only ha
 Since we already know an eigenfunction of the momentum operator, let's work a bit with commutator properties, and how they can be applied to the Free Particle wavefunction.
 
 One commutator property says that if two Hermitian operators ($\hat A$ and $\hat B$) commute, then they share a common set of eigenfunctions. 
+
 
 Let's now check if the Hamiltonian and the momentum operators commute: is $\left[\hat P, \hat H \right] =0$?.   
 $\hat H =\frac{\hat P^2}{2m}$, thus we evaluate:

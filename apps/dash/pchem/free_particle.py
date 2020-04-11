@@ -10,6 +10,7 @@ sys.path.append('.')
 sys.path.append('..')
 import util
 from server import server
+import dash_defer_js_import as dji
 
 filepath = os.path.split(os.path.realpath(__file__))[0]
 
@@ -39,7 +40,6 @@ app.index_string = '''
             {%scripts%}
             {%renderer%}
         </footer>
-    <script src="https://codepen.io/yueyericardo/pen/OJyLrKR.js" defer></script>
     </body>
 </html>
 '''
@@ -209,7 +209,8 @@ app.layout = html.Div([
                  )],
              style={'columnCount': 2, 'padding': '0'}),
     html.Div([html.Br(), html.Br()],
-             style={'min-height': '50px'})
+             style={'min-height': '50px'}),
+    dji.Import(src="https://codepen.io/yueyericardo/pen/OJyLrKR.js"),
 ])
 
 
