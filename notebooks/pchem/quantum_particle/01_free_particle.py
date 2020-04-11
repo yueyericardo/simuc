@@ -8,9 +8,9 @@
 #       format_version: '1.5'
 #       jupytext_version: 1.4.2
 #   kernelspec:
-#     display_name: Python 2
+#     display_name: Python 3
 #     language: python
-#     name: python2
+#     name: python3
 # ---
 
 # # Free Particle
@@ -19,6 +19,7 @@
 
 # * [Vinícius Wilian D. Cruzeiro](https://scholar.google.com/citations?user=iAK04WMAAAAJ). E-mail: vwcruzeiro@ufl.edu
 # * Xiang Gao. E-mail: qasdfgtyuiop@ufl.edu
+# * Jinze (Richard) Xue. E-mail: jinzexue@ufl.edu
 # * [Valeria D. Kleiman](http://kleiman.chem.ufl.edu/). E-mail: kleiman@ufl.edu
 #
 # Department of Chemistry
@@ -34,32 +35,18 @@
 # United States
 
 # **Instructions:**
-# * The reader should follow this notebook in the order that it is presented, executing code cells in consecutive order.
-# * In order to execute a cell you may click on the cell and click the *PLAY* button, press *Shift+Enter*, or got to *Cell-->Run cells*. The user may also execute all cells at once by clicking on *Cell --> Run All* at the toolbar above. 
-# * **Important:** Some cells **are only going to execute after the user enters input values in the corresponding boxes**.
-
-from IPython.display import HTML
-
-HTML('''<script>
-code_show=true; 
-function code_toggle() {
- if (code_show){
- $('div.input').hide();
- } else {
- $('div.input').show();
- }
- code_show = !code_show
-} 
-$( document ).ready(code_toggle);
-</script>
-The raw code for this IPython notebook is by default hidden for easier reading. As you scroll through code cell,
-they appear as empty cells
-with a blue left-side edge
-To toggle on/off the raw code, click <a href="javascript:code_toggle()">here</a>.''')
+# - The reader should follow this notebook in the order that it is presented, executing code cells in consecutive order.
+# - In order to execute a cell you may click on the cell and click the *PLAY* button, press *Shift+Enter*, or got to - Cell-->Run cells*. The user may also execute all cells at once by clicking on *Cell --> Run All* at the toolbar above. 
+# - **Important:** Some cells **are only going to execute after the user enters input values in the corresponding boxes**.
 
 # ### Libraries used in this notebook:
 
 # On the next cell we are going to import the libraries used in this notebook as well as call some important functions.
+
+import numpy as np
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
+import matplotlib.pyplot as plt
 
 import matplotlib as mpl # matplotlib library for plotting and visualization
 import matplotlib.pylab as plt # matplotlib library for plotting and visualization
@@ -146,44 +133,39 @@ print("Numpy version = {}".format(np.__version__))
 
 # +
 # Defining Psi and PsiC (complex conjugate) functions
-def psi(x,k): return (1.0/np.sqrt(2.0*np.pi))*(np.cos(k*x)+np.sin(k*x)*1j)
-def psiC(x,k): return (1.0/np.sqrt(2.0*np.pi))*(np.cos(k*x)-np.sin(k*x)*1j)
+def psi(x,k): 
+    return (1.0/np.sqrt(2.0*np.pi))*(np.cos(k*x)+np.sin(k*x)*1j)
+
+def psiC(x,k): 
+    return (1.0/np.sqrt(2.0*np.pi))*(np.cos(k*x)-np.sin(k*x)*1j)
 
 # Reading the input variables from the user
-k = float(input("Enter the value for k (in Angstroms-1) = "))
-xmax = float(input("Enter the maximum value for x (in Angstroms) = "))
+k = 4
+xmax = 5
 
-# Generating the wavefunction graph
-plt.rcParams.update({'font.size': 18, 'font.family': 'STIXGeneral', 'mathtext.fontset': 'stix'})
+# calculation (Prepare data)
 x = np.linspace(-xmax, xmax, 900)
-fig, ax = plt.subplots()
 lim1=1/np.sqrt(2*np.pi) # Maximum value of the wavefunction
-ax.axis([-xmax,xmax,-lim1*1.1,lim1*1.1]) # Defining the limits to be plot in the graph
-ax.plot(x, psi(x,k).real, label="Real", color="blue") # Ploting the real part of the wavefunction
-ax.plot(x, psi(x,k).imag, label="Imag.", color="red") # Ploting the real part of the wavefunction
-ax.hlines(0.0, -xmax, xmax, linewidth=1.8, linestyle='--', color="black") # Adding a horizontal line at 0
-# Now we define labels, legend, etc
-ax.legend(loc=2);
-ax.set_xlabel(r'$x$ (Angstroms)')
-ax.set_ylabel(r'$\psi_k(x)$')
-str1=r"$k$ = "+str(k)+r" A$^{-1}$"
-plt.title('Wavefunction for '+str1)
-plt.legend(bbox_to_anchor=(1.1, 1), loc=2, borderaxespad=0.0)
+y_real = psi(x, k).real
+y_imag = psi(x, k).imag
+y_prob = (psi(x,k)*psiC(x,k)).real
 
-# Generating the probability density graph
-fig, ax = plt.subplots()
-ax.axis([-xmax,xmax,0.0,lim1*lim1*1.4]) # Defining the limits to be plot in the graph
-ax.plot(x, psi(x,k)*psiC(x,k),label="Probability Density", color="green") # Plotting the probability density
-# Now we define labels, legend, etc
-ax.legend(loc=2);
-ax.set_xlabel(r'$x$ (Angstroms)')
-ax.set_ylabel(r'$\left|\psi_k(x)\right|^2$')
-str1=r"$k$ = "+str(k)+r" A$^{-1}$"
-plt.title('Probability Density for '+str1)
-plt.legend(bbox_to_anchor=(1.1, 1), loc=2, borderaxespad=0.0)
+# Plot
+fig = make_subplots(rows=2, cols=1, subplot_titles=("Wavefunction", "Probability Density"))
 
-# Show the plots on the screen once the code reaches this point
-plt.show()
+# 1st subplot
+fig.append_trace(go.Scatter(x=x, y=y_real, name="Real"), row=1, col=1, )
+fig.append_trace(go.Scatter(x=x, y=y_imag, name="Imag"), row=1, col=1)
+fig.update_xaxes(title_text=r"$x (Å)$", row=1, col=1)
+fig.update_yaxes(title_text=r'$\psi_k(x)$', row=1, col=1)
+
+# 2nd subplot
+fig.append_trace(go.Scatter(x=x, y=y_prob, name="Probability Density"), row=2, col=1)
+fig.update_xaxes(title_text=r"$x (Å)$", row=2, col=1)
+fig.update_yaxes(title_text=r'$\left|\psi_k(x)\right|^2$', range=[0, lim1*lim1*1.4], row=2, col=1)
+
+fig.update_layout(height=600)
+fig.show()
 
 
 # -
@@ -214,54 +196,56 @@ plt.show()
 
 # +
 # Defining functions
-def psi_contour(x,dk): return (np.sin(dk*x)/(np.sqrt(np.pi*dk)*x))
-def psi(x,k,dk): return psi_contour(x,dk)*(np.cos(k*x)+np.sin(k*x)*1j)
+def psi_contour(x,dk): 
+    return (np.sin(dk*x)/(np.sqrt(np.pi*dk)*x))
 
-# Reading the input variables from the user
-#print 'To understand this new wavefunction, we plot the Real and Imaginary components separately'
-k = float(input("Enter the value for k_o (in Angstroms-1) = "))
-dk = float(input("Enter the value for Delta k (in Angstroms-1) = "))
-xmax = float(input("Enter the maximum value for x (in Angstroms) = "))
+def psi(x,k,dk): 
+    return psi_contour(x,dk)*(np.cos(k*x)+np.sin(k*x)*1j)
 
-# Generating the wavefunction graph
+k = 4
+dk = 2
+xmax = 5
+
+# calculation (Prepare data)
 lim1 = np.sqrt(dk/np.pi)
-plt.rcParams.update({'font.size': 18, 'font.family': 'STIXGeneral', 'mathtext.fontset': 'stix'})
 x = np.linspace(-xmax, xmax, 900)
-fig, axes = plt.subplots(1, 2, figsize=(13,4))
-str1=r"$k_o  \pm \Delta k$ = "+str(k)+r" $\pm$ "+str(dk)+r" A$^{-1}$"
-# axes[0] is the graph at the left
-axes[0].axis([-xmax,xmax,-1.1*lim1,1.1*lim1])
-axes[0].plot(x, psi(x,k,dk).real, label="Real", color="blue", linewidth=1.8)
-axes[0].plot(x, psi_contour(x,dk), label="", linestyle ="--",color="blue", linewidth=1.2)
-axes[0].plot(x, -psi_contour(x,dk), label="", linestyle ="--",color="blue", linewidth=1.2)
-axes[0].hlines(0.0, -xmax, xmax, linewidth=1.8, linestyle='--', color="black")
-axes[0].set_xlabel(r'$x$ (Angstroms)')
-axes[0].set_ylabel(r'$Real(\Psi_{\Delta k}(x))$')
-axes[0].set_title('Real contribution to $\Psi_{\Delta k}(x)$ \n for '+str1)
-# axes[1] is the graph at the right
-axes[1].axis([-xmax,xmax,-1.1*lim1,1.1*lim1])
-axes[1].plot(x, psi(x,k,dk).imag, label="Imag.", color="red", linewidth=1.8)
-axes[1].plot(x, psi_contour(x,dk), label="", linestyle ="--",color="red", linewidth=1.2)
-axes[1].plot(x, -psi_contour(x,dk), label="", linestyle ="--",color="red", linewidth=1.2)
-axes[1].hlines(0.0, -xmax, xmax, linewidth=1.8, linestyle='--', color="black")
-axes[1].yaxis.set_label_position("right")
-axes[1].set_xlabel(r'$x$ (Angstroms)')
-axes[1].set_ylabel(r'$Imag(\Psi_{\Delta k}(x))$')
-axes[1].set_title('Imaginary contribution to $\Psi_{\Delta k}(x)$ \n for '+str1)
+y_real = psi(x,k,dk).real
+y_imag = psi(x,k,dk).imag
+y_prob = (psi(x,k,dk).real)**2+(psi(x,k,dk).imag)**2
 
-# Generating the probability density graph
-fig, ax = plt.subplots()
-ax.axis([-xmax,xmax,0.0,lim1*lim1*1.1]) # Defining the limits to be plot in the graph
-ax.plot(x, (psi(x,k,dk).real)**2+(psi(x,k,dk).imag)**2,label="Probability Density", color="green") # Plotting the probability density
-# Now we define labels, legend, etc
-ax.legend(loc=2);
-ax.set_xlabel(r'$x$ (Angstroms)')
-ax.set_ylabel(r'$\left|\Psi_{\Delta k}(x)\right|^2$')
-plt.title('Probability Density \n for '+str1)
-plt.legend(bbox_to_anchor=(1.1, 1), loc=2, borderaxespad=0.0)
+# Plot
+title1 = r'$ \text {Real contribution to } \Psi_{\Delta k}(x)$'
+title2 = r'$ \text {Imaginary contribution to } \Psi_{\Delta k}(x)$'
+title3 = r'$ \text {Probability Density }$'
+fig = make_subplots(rows=2, cols=2, subplot_titles=(title1, title2, title3))
 
-# Show the plots on the screen once the code reaches this point
-plt.show()
+# 1st subplot
+fig.append_trace(go.Scatter(x=x, y=y_real, name="Real", line=dict(color='blue')), row=1, col=1, )
+fig.append_trace(go.Scatter(x=x, y=psi_contour(x,dk), showlegend=False, line = dict(color='blue', width=1, dash='dash')), 
+                 row=1, col=1)
+fig.append_trace(go.Scatter(x=x, y=-psi_contour(x,dk), showlegend=False, line = dict(color='blue', width=1, dash='dash')),
+                 row=1, col=1)
+fig.update_xaxes(title_text=r"$x (Å)$", row=1, col=1)
+fig.update_yaxes(title_text=r'$\Psi_{\Delta k}(x)$', row=1, col=1)
+
+# 2nd subplot
+fig.append_trace(go.Scatter(x=x, y=y_imag, name="Imag", line=dict(color='red')), row=1, col=2, )
+fig.append_trace(go.Scatter(x=x, y=psi_contour(x,dk), showlegend=False, line=dict(color='red', width=1, dash='dash')), 
+                 row=1, col=2)
+fig.append_trace(go.Scatter(x=x, y=-psi_contour(x,dk), showlegend=False, line=dict(color='red', width=1, dash='dash')),
+                 row=1, col=2)
+fig.update_xaxes(title_text=r"$x (Å)$", row=1, col=2)
+fig.update_yaxes(title_text=r'$\Psi_{\Delta k}(x)$', row=1, col=2)
+
+# 3rd subplot
+fig.append_trace(go.Scatter(x=x, y=y_prob, name="Probability Density", line=dict(color='green')), row=2, col=1)
+fig.update_xaxes(title_text=r"$x (Å)$", row=2, col=1)
+fig.update_yaxes(title_text=r'$\left|\Psi_{\Delta k}(x)\right|^2$', row=2, col=1)
+
+# show
+title = r"$k_o  \pm \Delta k = {} \pm {} Å^{{-1}}$".format(k, dk)
+fig.update_layout(height=600, title_text=title)
+fig.show()
 
 
 # -
@@ -348,7 +332,7 @@ def psi_contour(x,dk): return np.sin(dk*x)*np.sin(dk*x)/(np.pi*dk*x*x)
 def psi_contourG(x,dk): return dk*dk*np.exp(-x*x*dk*dk)/(dk*np.sqrt(np.pi))
 
 # Reading the input variables from the user
-print "What is the probability density of finding the particle as a function of position? \n"
+print("What is the probability density of finding the particle as a function of position? \n")
 k = float(input("Enter the value for k_o (in Angstroms-1) = "))
 dk = float(input("Enter the value for Delta k (in Angstroms-1) = "))
 xmax = float(input("Enter the maximum value for x (in Angstroms) = "))

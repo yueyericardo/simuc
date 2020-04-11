@@ -50,14 +50,14 @@ def convert_latex(text):
     def toimage(x):
         if x[1] == r'$' and x[-2] == r'$':
             x = x[2:-2]
-            img = "\n<img src='https://math.now.sh?from={}' style='display: block; margin: 0.5em auto;'>\n"
+            img = "\n<img class='block_latex' src='https://math.now.sh?from={}' style='display: block; margin: 0.5em auto;'>\n"
             return img.format(urllib.parse.quote_plus(x))
         else:
             x = x[1:-1]
-            img = "<img src='https://math.now.sh?from={}' style='display: inline-block; margin: 0;'>"
+            img = "<img class='inline_latex' src='https://math.now.sh?inline={}' style='display: inline-block; margin: 0;'>"
             return img.format(urllib.parse.quote_plus(x))
     # replace all $$ a+b $$
-    text = regex.sub(r'\${2}([^$]+)\${2}', lambda x: toimage(x.group()), text)
+    text = re.sub(r'\${2}([^$]+)\${2}', lambda x: toimage(x.group()), text)
     # replace all $ a+b $, and ignore all code block
     text = regex.sub(r'```[^`]+```(*SKIP)(*FAIL)|\$(.+?)\$', lambda x: toimage(x.group()), text)
     return text
