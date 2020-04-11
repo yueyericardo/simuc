@@ -34,9 +34,6 @@ app.index_string = '''
         {%css%}
     </head>
     <body>
-        <div class="toggle_container">
-            <input id="toggle_code" class="button-primary" type="button" value="Toggle Code">\n\n
-        </div>
         {%app_entry%}
         <footer>
             {%config%}
@@ -48,7 +45,7 @@ app.index_string = '''
 '''
 
 f = open(os.path.join(filepath, "01_free_particle.md"), "r")
-Markdown_text = util.convert(f.read())
+Markdown_text = util.convert(f.read(), addbutton=True, addtoc=True)
 
 #####################################################################
 
