@@ -242,39 +242,115 @@ def getfig4(k=4, dk=2, xmax=5):
 
 #####################################################################
 # Layout
-empty_space = html.Div([html.Br()], style={'min-height': '50px'})
+def empty_space(h=50):
+    return html.Div([html.Br()], style={'min-height': '{}px'.format(h)})
+
+
 my_script = dji.Import(src="https://codepen.io/yueyericardo/pen/OJyLrKR.js")
 mathjax_script = dji.Import(src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_SVG")
 
-stateslider = dcc.Slider(id='state-slider', min=1, max=15, value=4, marks={str(x): str(x) for x in np.arange(1, 16, 1)}, step=1)
+# fig1
+fig1 = dcc.Graph(figure=getfig1(), id="fig1")
+sliders1 = html.Div([
+    html.Label('The value for k (in $ Å^{-\;1} $)'),
+    dcc.Slider(id='fig1_k_slider', min=1, max=15, value=4, marks={str(x): str(x) for x in np.arange(1, 16, 1)}, step=1),
+    html.Label('the maximum value for x (in Å)'),
+    dcc.Slider(id='fig1_xmax_slider', min=1, max=15, value=5, marks={str(x): str(x) for x in np.arange(1, 16, 1)}, step=1),
+    ], style={'columnCount': 2, 'padding': '0'})
+
+# fig2
+fig2 = dcc.Graph(figure=getfig2(), id="fig2")
+sliders2 = html.Div([
+    html.Label('The value for $k_0$ (in $ Å^{-\;1} $)'),
+    dcc.Slider(id='fig2_k_slider', min=1, max=15, value=4, marks={str(x): str(x) for x in np.arange(1, 16, 1)}, step=1),
+    html.Label('The value for $\Delta k$ (in $ Å^{-\;1} $)'),
+    dcc.Slider(id='fig2_dk_slider', min=1, max=15, value=2, marks={str(x): str(x) for x in np.arange(1, 16, 1)}, step=1),
+    html.Label('the maximum value for x (in Å)'),
+    dcc.Slider(id='fig2_xmax_slider', min=1, max=15, value=5, marks={str(x): str(x) for x in np.arange(1, 16, 1)}, step=1),
+    ], style={'columnCount': 3, 'padding': '0'})
+
+
+# fig3
+fig3 = dcc.Graph(figure=getfig3(), id="fig3")
+sliders3 = html.Div([
+    html.Label('The value for $k_0$ (in $ Å^{-\;1} $)'),
+    dcc.Slider(id='fig3_k_slider', min=1, max=15, value=4, marks={str(x): str(x) for x in np.arange(1, 16, 1)}, step=1),
+    html.Label('The value for $\Delta k$ (in $ Å^{-\;1} $)'),
+    dcc.Slider(id='fig3_dk_slider', min=1, max=15, value=2, marks={str(x): str(x) for x in np.arange(1, 16, 1)}, step=1),
+    html.Label('the maximum value for x (in Å)'),
+    dcc.Slider(id='fig3_xmax_slider', min=1, max=15, value=5, marks={str(x): str(x) for x in np.arange(1, 16, 1)}, step=1),
+    ], style={'columnCount': 3, 'padding': '0'})
+
+# fig4
+fig4 = dcc.Graph(figure=getfig4(), id="fig4")
+sliders4 = html.Div([
+    html.Label('The value for $k_0$ (in $ Å^{-\;1} $)'),
+    dcc.Slider(id='fig4_k_slider', min=1, max=15, value=4, marks={str(x): str(x) for x in np.arange(1, 16, 1)}, step=1),
+    html.Label('The value for $\Delta k$ (in $ Å^{-\;1} $)'),
+    dcc.Slider(id='fig4_dk_slider', min=1, max=15, value=2, marks={str(x): str(x) for x in np.arange(1, 16, 1)}, step=1),
+    html.Label('the maximum value for x (in Å)'),
+    dcc.Slider(id='fig4_xmax_slider', min=1, max=15, value=5, marks={str(x): str(x) for x in np.arange(1, 16, 1)}, step=1),
+    ], style={'columnCount': 3, 'padding': '0'})
 
 app.layout = html.Div([
     mds[0],
-    dcc.Graph(figure=getfig1(), id="fig1"),
-    stateslider,
+    fig1, sliders1,
     mds[1],
-    dcc.Graph(figure=getfig2()),
+    fig2, sliders2,
     mds[2],
-    dcc.Graph(figure=getfig3()),
+    fig3, sliders3,
     mds[3],
-    dcc.Graph(figure=getfig4()),
+    fig4, sliders4,
     mds[4],
-    # html.Div([
-    #     # dcc.Graph(figure=fig),
-    #     dcc.Graph(id='graph-with-slider')],
-    # ),
-    empty_space,
+    empty_space(),
     my_script,
     mathjax_script,
 ])
 
 
+# update_fig1
 @app.callback(
     Output('fig1', 'figure'),
-    [Input('state-slider', 'value'),
+    [Input('fig1_k_slider', 'value'),
+     Input('fig1_xmax_slider', 'value'),])
+def update_fig1(k, xmax):
+    fig = getfig1(k=k, xmax=xmax)
+    return fig
+
+
+# update_fig2
+@app.callback(
+    Output('fig2', 'figure'),
+    [Input('fig2_k_slider', 'value'),
+     Input('fig2_dk_slider', 'value'),
+     Input('fig2_xmax_slider', 'value'),
      ])
-def update_figure(idx):
-    fig = getfig1(k=idx)
+def update_fig2(k, dk, xmax):
+    fig = getfig2(k=k, dk=dk, xmax=xmax)
+    return fig
+
+
+# update_fig3
+@app.callback(
+    Output('fig3', 'figure'),
+    [Input('fig3_k_slider', 'value'),
+     Input('fig3_dk_slider', 'value'),
+     Input('fig3_xmax_slider', 'value'),
+     ])
+def update_fig3(k, dk, xmax):
+    fig = getfig3(k=k, dk=dk, xmax=xmax)
+    return fig
+
+
+# update_fig4
+@app.callback(
+    Output('fig4', 'figure'),
+    [Input('fig4_k_slider', 'value'),
+     Input('fig4_dk_slider', 'value'),
+     Input('fig4_xmax_slider', 'value'),
+     ])
+def update_fig4(k, dk, xmax):
+    fig = getfig4(k=k, dk=dk, xmax=xmax)
     return fig
 
 
