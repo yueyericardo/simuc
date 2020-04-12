@@ -42,8 +42,7 @@ United States
 
 **Instructions:**
 - The reader should follow this notebook in the order that it is presented, executing code cells in consecutive order.
-- In order to execute a cell you may click on the cell and click the *PLAY* button, press *Shift+Enter*, or got to - Cell-->Run cells*. The user may also execute all cells at once by clicking on *Cell --> Run All* at the toolbar above. 
-- **Important:** Some cells **are only going to execute after the user enters input values in the corresponding boxes**.
+- In order to execute a cell you may click on the cell and click the `PLAY` button, press `Shift+Enter`, or got to `Cell-->Run cells`. The user may also execute all cells at once by clicking on `Cell --> Run All` at the toolbar above. 
 
 
 ### Libraries used in this notebook:
@@ -72,15 +71,6 @@ import IPython # checking the version of IPython
 print("Python version = {}".format(sys.version))
 print("IPython version = {}".format(IPython.__version__))
 print("Numpy version = {}".format(np.__version__))
-```
-
-### Special calls:
-
-
-The next cell configures `matplotlib` to show figures embedded within the cells it was executed from, instead of opening a new window for each figure.
-
-```python
-%matplotlib inline
 ```
 
 ## Describing the Free Particle
