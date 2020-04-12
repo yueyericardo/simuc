@@ -246,9 +246,12 @@ empty_space = html.Div([html.Br()], style={'min-height': '50px'})
 my_script = dji.Import(src="https://codepen.io/yueyericardo/pen/OJyLrKR.js")
 mathjax_script = dji.Import(src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_SVG")
 
+stateslider = dcc.Slider(id='state-slider', min=1, max=15, value=4, marks={str(x): str(x) for x in np.arange(1, 16, 1)}, step=1)
+
 app.layout = html.Div([
     mds[0],
     dcc.Graph(figure=getfig1(), id="fig1"),
+    stateslider,
     mds[1],
     dcc.Graph(figure=getfig2()),
     mds[2],
@@ -256,36 +259,23 @@ app.layout = html.Div([
     mds[3],
     dcc.Graph(figure=getfig4()),
     mds[4],
-    html.Div([
-        # dcc.Graph(figure=fig),
-        dcc.Graph(id='graph-with-slider')],
-    ),
+    # html.Div([
+    #     # dcc.Graph(figure=fig),
+    #     dcc.Graph(id='graph-with-slider')],
+    # ),
     empty_space,
     my_script,
     mathjax_script,
 ])
 
 
-# @app.callback(
-#     Output('graph-with-slider', 'figure'),
-#     [Input('state-slider', 'value'),
-#      ])
-# def update_figure(idx):
-#     wave = evecs[idx-1].reshape([NUM, NUM])
-
-#     fig = go.Figure(data=[go.Surface(z=wave.real, x=x_, y=y_, cmin=-0.12, cmax=0.12, showscale=False)])
-
-#     fig.update_layout(title='Wavefunction', autosize=False,
-#                       width=500, height=500,
-#                       scene=dict(
-#                           xaxis=dict(nticks=5, range=[-half_r, half_r],),
-#                           yaxis=dict(nticks=5, range=[-half_r, half_r],),
-#                           zaxis=dict(nticks=3, range=[-0.12, 0.12],),
-#                           xaxis_title='x (Å)',
-#                           yaxis_title='y (Å)',
-#                           ),
-#                       margin=dict(l=60, r=60, b=60, t=60))
-#     return fig
+@app.callback(
+    Output('fig1', 'figure'),
+    [Input('state-slider', 'value'),
+     ])
+def update_figure(idx):
+    fig = getfig1(k=idx)
+    return fig
 
 
 if __name__ == '__main__':
