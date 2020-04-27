@@ -8,9 +8,9 @@
 #       format_version: '1.5'
 #       jupytext_version: 1.4.2
 #   kernelspec:
-#     display_name: Python 2
+#     display_name: Python 3
 #     language: python
-#     name: python2
+#     name: python3
 # ---
 
 # # Particle in an box with infinite-potential walls
@@ -118,8 +118,11 @@ Image(filename='particle_in_an_infinite_box_diagram.png')
 def psi(x,n,L): return np.sqrt(2.0/L)*np.sin(float(n)*np.pi*x/L)
 
 # Reading the input variables from the user
-n = int(input("Enter the value for the quantum number n = "))
-L = float(input("Enter the size of the box in Angstroms = "))
+# n = int(input("Enter the value for the quantum number n = "))
+# L = float(input("Enter the size of the box in Angstroms = "))
+
+n = 3
+L = 4
 
 # Generating the wavefunction graph
 plt.rcParams.update({'font.size': 18, 'font.family': 'STIXGeneral', 'mathtext.fontset': 'stix'})
@@ -158,8 +161,11 @@ plt.show()
 # Reading the input boxes sizes from the user, and making sure the values are not larger than 20 A
 L = 100.0
 while(L>20.0):
-    L1 = float(input(" To compare wavefunctions for boxes of different lengths \nenter the value of L for the first box  (in Angstroms and not larger then 20 A) = "))
-    L2 = float(input("Enter the value of L for the second box (in Angstroms and not larger then 20) = "))
+#     L1 = float(input(" To compare wavefunctions for boxes of different lengths \nenter the value of L for the first box  (in Angstroms and not larger then 20 A) = "))
+#     L2 = float(input("Enter the value of L for the second box (in Angstroms and not larger then 20) = "))
+#     L = max(L1,L2)
+    L1 = 2
+    L2 = 4
     L = max(L1,L2)
     if(L>20.0):
         print ("The sizes of the boxes cannot be larger than 20 A. Please enter the values again.\n")
@@ -229,10 +235,15 @@ me=9.1093837e-31  # mass of an electron in kg
 def En(n,L,m): return (h**2 / (m*8))* (1e10)**2 *6.242e+18*((float(n)/L)**2)
 
 # Reading the input variables from the user
-L1 = float(input(" To see how the energy levels change for boxes of different lengths, \nenter the value for L for the first box (in Angstroms) = "))
-nmax1 = int(input("Enter the number of levels you want to plot for the first box = "))
-L2 = float(input("Enter the value for L for the second box (in Angstroms) = "))
-nmax2 = int(input("Enter the number of levels you want to plot for the second box = "))
+# L1 = float(input(" To see how the energy levels change for boxes of different lengths, \nenter the value for L for the first box (in Angstroms) = "))
+# nmax1 = int(input("Enter the number of levels you want to plot for the first box = "))
+# L2 = float(input("Enter the value for L for the second box (in Angstroms) = "))
+# nmax2 = int(input("Enter the number of levels you want to plot for the second box = "))
+
+L1 = 10
+nmax1 = 10
+L2 = 7
+nmax2 = 5
 
 # Generating the graph
 plt.rcParams.update({'font.size': 18, 'font.family': 'STIXGeneral', 'mathtext.fontset': 'stix'})
@@ -274,11 +285,17 @@ plt.show()
 
 # +
 # Reading the input variables from the user
-L = float(input(" Eenter the value for L for both boxes (in Angstroms) = "))
-m1 = input(" To see how the energy levels change for particles of different mass, \nEnter the value of the mass for the first particle (in units of the mass of 1 electron) = ")
-nmax1 = int(input("Enter the number of levels you want to plot for the first box = "))
-m2 = input("Enter the value of the mass for the second particle (in units of the mass of 1 electron) = ")
-nmax2 = int(input("Enter the number of levels you want to plot for the second box = "))
+# L = float(input(" Eenter the value for L for both boxes (in Angstroms) = "))
+# m1 = input(" To see how the energy levels change for particles of different mass, \nEnter the value of the mass for the first particle (in units of the mass of 1 electron) = ")
+# nmax1 = int(input("Enter the number of levels you want to plot for the first box = "))
+# m2 = input("Enter the value of the mass for the second particle (in units of the mass of 1 electron) = ")
+# nmax2 = int(input("Enter the number of levels you want to plot for the second box = "))
+
+L = 10
+m1 = 10
+nmax1 = 10 
+m2 = 3
+nmax2 = 1
 
 # Generating the graph
 plt.rcParams.update({'font.size': 18, 'font.family': 'STIXGeneral', 'mathtext.fontset': 'stix'})
@@ -315,8 +332,10 @@ plt.show()
 
 # +
 # Here the users inputs the value of L
-L = float(input("Enter the value of L (in Angstroms) = "))
-nmax = int(input("Enter the maximum value of n you want to plot = "))
+# L = float(input("Enter the value of L (in Angstroms) = "))
+# nmax = int(input("Enter the maximum value of n you want to plot = "))
+L = 10
+nmax = 5
 
 # Generating the wavefunction graph
 fig, ax = plt.subplots(figsize=(12,9))
@@ -391,8 +410,11 @@ plt.show()
 def psi2D(x,y): return 2.0*np.sin(n*np.pi*x)*np.sin(m*np.pi*y)
 
 # Here the users inputs the values of n and m
-n = int(input("Let's look at the Wavefunction for a 2D box \nEnter the value for n = "))
-m = int(input("Enter the value for m = "))
+# n = int(input("Let's look at the Wavefunction for a 2D box \nEnter the value for n = "))
+# m = int(input("Enter the value for m = "))
+
+n = 3
+m = 2
 
 # Generating the wavefunction graph
 x = np.linspace(0, 1, 100)
@@ -418,8 +440,12 @@ plt.show()
 
 # +
 # Here the users inputs the values of n and m
-yo = float(input("Enter the value of y/L_y for the x-axes slice ="))
-xo = float(input("Enter the value of x/L_x for the y-axes slice ="))
+# yo = float(input("Enter the value of y/L_y for the x-axes slice ="))
+# xo = float(input("Enter the value of x/L_x for the y-axes slice ="))
+
+yo = 0.25
+xo = 0.6
+
 
 # Generating the wavefunction graph
 plt.rcParams.update({'font.size': 18, 'font.family': 'STIXGeneral', 'mathtext.fontset': 'stix'})
@@ -476,10 +502,15 @@ plt.show()
 def En2D(n,m,L1,L2): return 37.60597*((float(n)/L1)**2+ (float(m)/L2)**2)
 
 # Reading data from the user
-L1 = float(input("Can we count DEGENERATE states?\nEnter the value for Lx (in Angstroms) = "))
-nmax1 = int(input("Enter the maximum value of n to consider = "))
-L2 = float(input("Enter the value for Ly (in Angstroms) = "))
-mmax2 = int(input("Enter the maximum value of m to consider = "))
+# L1 = float(input("Can we count DEGENERATE states?\nEnter the value for Lx (in Angstroms) = "))
+# nmax1 = int(input("Enter the maximum value of n to consider = "))
+# L2 = float(input("Enter the value for Ly (in Angstroms) = "))
+# mmax2 = int(input("Enter the maximum value of m to consider = "))
+
+L1 = 5
+nmax1 = 3
+L2 = 5
+mmax2 = 3
 
 # Plotting the energy levels
 plt.rcParams.update({'font.size': 18, 'font.family': 'STIXGeneral', 'mathtext.fontset': 'stix'})
