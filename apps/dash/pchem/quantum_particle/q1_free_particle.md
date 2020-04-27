@@ -21,7 +21,6 @@ jupyter:
 
 ### Authors:
 
-
 * [Vinícius Wilian D. Cruzeiro](https://scholar.google.com/citations?user=iAK04WMAAAAJ). E-mail: vwcruzeiro@ufl.edu
 * Xiang Gao. E-mail: qasdfgtyuiop@ufl.edu
 * Jinze (Richard) Xue. E-mail: jinzexue@ufl.edu
@@ -39,19 +38,17 @@ Gainesville, FL 32611-7200
 
 United States
 
-
 **Instructions:**
 - The reader should follow this notebook in the order that it is presented, executing code cells in consecutive order.
 - In order to execute a cell you may click on the cell and click the `PLAY` button, press `Shift+Enter`, or got to `Cell-->Run cells`. The user may also execute all cells at once by clicking on `Cell --> Run All` at the toolbar above. 
 
-
 ### Libraries used in this notebook:
-
 
 On the next cell we are going to import the libraries used in this notebook as well as call some important functions.
 
 ```python
 import numpy as np
+import plotly
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 ```
@@ -70,6 +67,7 @@ import sys # checking the version of Python
 import IPython # checking the version of IPython
 print("Python version = {}".format(sys.version))
 print("IPython version = {}".format(IPython.__version__))
+print("Plotly version = {}".format(plotly.__version__))
 print("Numpy version = {}".format(np.__version__))
 ```
 
