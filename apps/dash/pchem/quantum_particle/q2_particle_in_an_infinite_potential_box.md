@@ -83,6 +83,9 @@ from IPython.display import Image
 Image(filename='particle_in_an_infinite_box_diagram.png')
 ```
 
+![](./assets/particle_in_an_infinite_box_diagram.png)
+
+
 Inside the box, the potential is equal to zero, therefore the Schrödinger equation for this system is given by:
 $$\frac{-\hbar^2}{2m}\frac{\partial^2\psi_n(x)}{\partial{x}^2} =E\psi_n(x) $$
 

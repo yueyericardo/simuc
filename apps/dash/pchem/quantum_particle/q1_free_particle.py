@@ -22,7 +22,7 @@ external_scripts = [
     'https://yyrcd-1256568788.cos.na-siliconvalley.myqcloud.com/yyrcd/2020-03-21-iframeResizer.contentWindow.min.js']
 
 
-app = dash.Dash(name='q1_free_particle',
+app = dash.Dash(__name__,
                 external_stylesheets=external_stylesheets,
                 external_scripts=external_scripts,
                 server=server,
