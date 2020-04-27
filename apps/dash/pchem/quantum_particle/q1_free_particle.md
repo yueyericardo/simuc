@@ -337,6 +337,11 @@ fig.update_layout(height=600, title_text=title)
 fig.show()
 ```
 
+<div class="alert alert-info"> 
+    <p><b>Figure</b></p>
+</div>
+
+
 @@@fig@@@
 
 

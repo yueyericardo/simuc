@@ -294,13 +294,13 @@ sliders4 = html.Div([
 
 app.layout = html.Div([
     mds[0],
-    fig1, sliders1,
+    html.Div([fig1, sliders1], className="my-whole-fig"),
     mds[1],
-    fig2, sliders2,
+    html.Div([fig2, sliders2], className="my-whole-fig"),
     mds[2],
-    fig3, sliders3,
+    html.Div([fig3, sliders3], className="my-whole-fig"),
     mds[3],
-    fig4, sliders4,
+    html.Div([fig4, sliders4], className="my-whole-fig"),
     mds[4],
     empty_space(),
     my_script,
