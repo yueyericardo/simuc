@@ -160,6 +160,10 @@ fig.show()
 
 # -
 
+# <div class="alert alert-info"> 
+#     <p><b>Figure 1</b></p>
+# </div>
+#
 # @@@fig@@@
 
 # **What do we learn from this graphical representaton?:** The first plot shows that that the wavefunction is completly ***delocalized*** in the x coordinate. However, wherever we look, the value of the probability density ($|\psi^*_k(x) \psi_k(x) |$)  is the same.
@@ -242,6 +246,10 @@ fig.show()
 
 # -
 
+# <div class="alert alert-info"> 
+#     <p><b>Figure 2</b></p>
+# </div>
+#
 # @@@fig@@@
 
 # Assuming $k_o > \Delta k$, the $\cos(k_o x)$ and $\sin(k_o x)$ components oscillate with a larger frequency ($k_o$) and they are modulated by a sinusoidal component with smaller frequency ($\Delta k$).   
@@ -316,6 +324,10 @@ fig.show()
 
 # -
 
+# <div class="alert alert-info"> 
+#     <p><b>Figure 3</b></p>
+# </div>
+#
 # @@@fig@@@
 
 # We can compare the effect of the Gaussian distribution with the equally-weigthed $k$ values:
@@ -365,6 +377,10 @@ fig.show()
 
 # -
 
+# <div class="alert alert-info"> 
+#     <p><b>Figure 4</b></p>
+# </div>
+#
 # @@@fig@@@
 
 # **What can we conclude:** From the graphical representation we can learn that for $\Delta k$ very small  compared to $k_o$ (try plotting for $k_o = 4$ and $\Delta k = 0.04$), the particle is still delocalized. As $\Delta k$ increases the particle becomes more localized in a specific region around $x=0$ (i.e $k_o = 4$  and $\Delta k = 0.4$). When $\Delta k$ is large in comparison to $k_o$ (i.e. $k_o = 4$ $ \Delta k = 16$), we oberve the probability density concentrated around $x=0$.   

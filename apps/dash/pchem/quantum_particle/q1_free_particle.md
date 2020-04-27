@@ -177,6 +177,10 @@ fig.update_layout(height=600)
 fig.show()
 ```
 
+<div class="alert alert-info"> 
+    <p><b>Figure 1</b></p>
+</div>
+
 @@@fig@@@
 
 
@@ -262,6 +266,10 @@ fig.update_layout(height=600, title_text=title)
 fig.show()
 ```
 
+<div class="alert alert-info"> 
+    <p><b>Figure 2</b></p>
+</div>
+
 @@@fig@@@
 
 
@@ -338,9 +346,8 @@ fig.show()
 ```
 
 <div class="alert alert-info"> 
-    <p><b>Figure</b></p>
+    <p><b>Figure 3</b></p>
 </div>
-
 
 @@@fig@@@
 
@@ -392,6 +399,10 @@ fig.update_layout(height=400, title_text=title)
 fig.show()
 
 ```
+
+<div class="alert alert-info"> 
+    <p><b>Figure 4</b></p>
+</div>
 
 @@@fig@@@
 
