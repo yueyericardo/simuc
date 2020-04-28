@@ -68,39 +68,82 @@ for t in text_list:
 #####################################################################
 
 
-def getfig1(k=4, xmax=5):
-    # Defining Psi and PsiC (complex conjugate) functions
-    def psi(x, k):
-        return (1.0/np.sqrt(2.0*np.pi))*(np.cos(k*x)+np.sin(k*x)*1j)
+def getfig1(n=4):
+    # Defining the wavefunction
+    def psi(x, n, L):
+        return np.sqrt(2.0 / L) * np.sin(float(n) * np.pi * x / L)
 
-    def psiC(x, k):
-        return (1.0/np.sqrt(2.0*np.pi))*(np.cos(k*x)-np.sin(k*x)*1j)
+    def get_energy(n, L, m):
+        return (h**2 / (m * 8)) * (1e10) ** 2 * 6.242e+18 * ((float(n) / L)**2)
+
+    L = 6
+    N = 200
+    me = 9.1093837e-31
+    h = 6.62607e-34
 
     # calculation (Prepare data)
-    x = np.linspace(-xmax, xmax, 900)
-    lim1 = 1/np.sqrt(2*np.pi)  # Maximum value of the wavefunction
-    y_real = psi(x, k).real
-    y_imag = psi(x, k).imag
-    y_prob = (psi(x, k)*psiC(x, k)).real
+    x = np.linspace(0, L, N)
+    wave = psi(x, n, L)
+    prob = wave * wave
+    xleft = [0, 0]
+    xright = [L, L]
+    y_vertical = [-1.3, 1.3]
+    energy = get_energy(n, L, me)
 
     # Plot
-    fig = make_subplots(rows=2, cols=1, subplot_titles=(
-        "Wavefunction", "Probability Density"))
+    fig = make_subplots(rows=2, cols=2,
+                        column_widths=[0.75, 0.25],
+                        specs=[[{}, {"rowspan": 2}], [{}, None]],
+                        subplot_titles=(r"$\text {Wavefunction}$", r"$\text {Energy Level}$", r"$\text {Probability Density}$"))
 
     # 1st subplot
-    fig.append_trace(go.Scatter(x=x, y=y_real, name="Real"), row=1, col=1, )
-    fig.append_trace(go.Scatter(x=x, y=y_imag, name="Imag"), row=1, col=1)
-    fig.update_xaxes(title_text=r"$x (Å)$", row=1, col=1)
-    fig.update_yaxes(title_text=r'$\psi_k(x)$', row=1, col=1)
+    fig.append_trace(go.Scatter(x=x, y=wave, name="Wavefunction"), row=1, col=1)
+    fig.append_trace(go.Scatter(x=xleft, y=y_vertical, showlegend=False, line=dict(color='white', width=2)), row=1, col=1, )
+    fig.append_trace(go.Scatter(x=xright, y=y_vertical, showlegend=False, line=dict(color='white', width=2)), row=1, col=1, )
+    fig.update_xaxes(title_text=r"$x (Å)$", range=[-2, 12], showgrid=False, row=1, col=1)
+    fig.update_yaxes(title_text=r'$\psi(x)$', range=[-1.2, 1.2], showgrid=False, zeroline=False, row=1, col=1)
 
     # 2nd subplot
-    fig.append_trace(go.Scatter(
-        x=x, y=y_prob, name="Probability Density"), row=2, col=1)
-    fig.update_xaxes(title_text=r"$x (Å)$", row=2, col=1)
-    fig.update_yaxes(title_text=r'$\left|\psi_k(x)\right|^2$',
-                     range=[0, lim1*lim1*1.4], row=2, col=1)
+    fig.append_trace(go.Scatter(x=[-0.1, 1.1], y=[energy, energy], name="Energy Level", line=dict(color='green')), row=1, col=2)
+    fig.update_xaxes(range=[0, 1], showgrid=False, row=1, col=2)
+    fig.update_yaxes(title_text=r'$eV$', range=[0, 120], showgrid=False, zeroline=False, row=1, col=2)
 
-    fig.update_layout(height=600)
+    # 3rd subplot
+    fig.append_trace(go.Scatter(x=x, y=prob, name="Probability Density", line=dict(color='red')), row=2, col=1)
+    fig.append_trace(go.Scatter(x=xleft, y=y_vertical, showlegend=False, line=dict(color='white', width=2)), row=2, col=1, )
+    fig.append_trace(go.Scatter(x=xright, y=y_vertical, showlegend=False, line=dict(color='white', width=2)), row=2, col=1, )
+    fig.update_xaxes(title_text=r"$x (Å)$", range=[-2, 12], showgrid=False, row=2, col=1)
+    fig.update_yaxes(title_text=r'$\left|\psi(x)\right|^2$', range=[-1.2, 1.2], showgrid=False, zeroline=False, row=2, col=1)
+
+    # annotations
+    annotations = list(fig['layout']['annotations'])
+    annotations.append(dict(y=0, x=-1,
+                            xref='x1', yref='y1',
+                            text=r"$V = +\infty$",
+                            font=dict(size=14, color="black"),
+                            showarrow=False
+                            ))
+    annotations.append(dict(y=0, x=L+1,
+                            xref='x1', yref='y1',
+                            text=r"$V = +\infty$",
+                            font=dict(size=14, color="black"),
+                            showarrow=False
+                            ))
+    annotations.append(dict(y=0, x=-1,
+                            xref='x3', yref='y3',
+                            text=r"$V = +\infty$",
+                            font=dict(size=14, color="black"),
+                            showarrow=False
+                            ))
+    annotations.append(dict(y=0, x=L+1,
+                            xref='x3', yref='y3',
+                            text=r"$V = +\infty$",
+                            font=dict(size=14, color="black"),
+                            showarrow=False
+                            ))
+
+    fig.update_layout(annotations=annotations)
+    fig.update_layout(height=600, title_text=r"$\text {Particle in 1D Box}$")
     return fig
 
 
@@ -252,11 +295,15 @@ mathjax_script = dji.Import(src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/
 # fig1
 fig1 = dcc.Graph(figure=getfig1(), id="fig1")
 sliders1 = html.Div([
-    html.Label('The value for k (in $ Å^{-\;1} $)'),
-    dcc.Slider(id='fig1_k_slider', min=1, max=15, value=4, marks={str(x): str(x) for x in np.arange(1, 16, 1)}, step=1),
-    html.Label('the maximum value for x (in Å)'),
-    dcc.Slider(id='fig1_xmax_slider', min=1, max=15, value=5, marks={str(x): str(x) for x in np.arange(1, 16, 1)}, step=1),
-    ], style={'columnCount': 2, 'padding': '0'})
+    html.Label('The value for the quantum number n'),
+    dcc.Slider(id='fig1_n_slider', min=1, max=10, value=4, marks={str(x): str(x) for x in np.arange(1, 11, 1)}, step=1),
+    ], style={'columnCount': 1, 'padding': '0'})
+# sliders1 = html.Div([
+#     html.Label('The value for k (in $ Å^{-\;1} $)'),
+#     dcc.Slider(id='fig1_k_slider', min=1, max=15, value=4, marks={str(x): str(x) for x in np.arange(1, 16, 1)}, step=1),
+#     html.Label('the maximum value for x (in Å)'),
+#     dcc.Slider(id='fig1_xmax_slider', min=1, max=15, value=5, marks={str(x): str(x) for x in np.arange(1, 16, 1)}, step=1),
+#     ], style={'columnCount': 2, 'padding': '0'})
 
 # fig2
 fig2 = dcc.Graph(figure=getfig2(), id="fig2")
@@ -315,10 +362,9 @@ app.layout = html.Div([
 # update_fig1
 @app.callback(
     Output('fig1', 'figure'),
-    [Input('fig1_k_slider', 'value'),
-     Input('fig1_xmax_slider', 'value'),])
-def update_fig1(k, xmax):
-    fig = getfig1(k=k, xmax=xmax)
+    [Input('fig1_n_slider', 'value')])
+def update_fig1(n):
+    fig = getfig1(n=n)
     return fig
 
 

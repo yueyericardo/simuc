@@ -103,7 +103,84 @@ Image(filename='particle_in_an_infinite_box_diagram.png')
 
 # +
 # Defining the wavefunction
-def psi(x,n,L): return np.sqrt(2.0/L)*np.sin(float(n)*np.pi*x/L)
+def psi(x, n, L):
+    return np.sqrt(2.0 / L) * np.sin(float(n) * np.pi * x / L)
+
+def get_energy(n, L, m):
+    return (h**2 / (m * 8)) * (1e10) ** 2 * 6.242e+18 * ((float(n) / L)**2)
+
+L = 6
+n = 2
+N = 200
+me = 9.1093837e-31
+h = 6.62607e-34 
+
+# calculation (Prepare data)
+x = np.linspace(0, L, N)
+wave = psi(x,n,L)
+prob = wave * wave
+xleft = [0, 0]
+xright = [L, L]
+y_vertical = [-1.3, 1.3]
+energy = get_energy(n, L, me)
+
+# Plot
+fig = make_subplots(rows=2, cols=2, 
+                    column_widths=[0.75, 0.25],
+                    specs=[[{}, {"rowspan": 2}],[{}, None]],
+                    subplot_titles=(r"$\text {Wavefunction}$", r"$\text {Energy Level}$", r"$\text {Probability Density}$"))
+
+# 1st subplot
+fig.append_trace(go.Scatter(x=x, y=wave, name="Wavefunction"), row=1, col=1)
+fig.append_trace(go.Scatter(x=xleft, y=y_vertical, showlegend=False, line=dict(color='white', width=2)), row=1, col=1, )
+fig.append_trace(go.Scatter(x=xright, y=y_vertical, showlegend=False, line=dict(color='white', width=2)), row=1, col=1, )
+fig.update_xaxes(title_text=r"$x (Å)$", range=[-2, 12], showgrid=False, row=1, col=1)
+fig.update_yaxes(title_text=r'$\psi(x)$', range=[-1.2, 1.2], showgrid=False, zeroline=False, row=1, col=1)
+
+# 2nd subplot
+fig.append_trace(go.Scatter(x=[-0.1, 1.1], y=[energy, energy], name="Energy Level", line=dict(color='green')), row=1, col=2)
+fig.update_xaxes(range=[0, 1], showgrid=False, row=1, col=2)
+fig.update_yaxes(title_text=r'$eV$', range=[0, 120], showgrid=False, zeroline=False, row=1, col=2)
+
+# 3rd subplot
+fig.append_trace(go.Scatter(x=x, y=prob, name="Probability Density", line=dict(color='red')), row=2, col=1)
+fig.append_trace(go.Scatter(x=xleft, y=y_vertical, showlegend=False, line=dict(color='white', width=2)), row=2, col=1, )
+fig.append_trace(go.Scatter(x=xright, y=y_vertical, showlegend=False, line=dict(color='white', width=2)), row=2, col=1, )
+fig.update_xaxes(title_text=r"$x (Å)$", range=[-2, 12], showgrid=False, row=2, col=1)
+fig.update_yaxes(title_text=r'$\left|\psi(x)\right|^2$', range=[-1.2, 1.2], showgrid=False, zeroline=False, row=2, col=1)
+
+# annotations
+annotations = list(fig['layout']['annotations'])
+annotations.append(dict(y=0, x=-1,
+                        xref='x1', yref='y1',
+                        text=r"$V = +\infty$",
+                        font=dict(size=14, color="black"),
+                        showarrow=False
+                        ))
+annotations.append(dict(y=0, x=L+1,
+                        xref='x1', yref='y1',
+                        text=r"$V = +\infty$",
+                        font=dict(size=14, color="black"),
+                        showarrow=False
+                        ))
+annotations.append(dict(y=0, x=-1,
+                        xref='x3', yref='y3',
+                        text=r"$V = +\infty$",
+                        font=dict(size=14, color="black"),
+                        showarrow=False
+                        ))
+annotations.append(dict(y=0, x=L+1,
+                        xref='x3', yref='y3',
+                        text=r"$V = +\infty$",
+                        font=dict(size=14, color="black"),
+                        showarrow=False
+                        ))
+
+fig.update_layout(annotations=annotations)
+fig.update_layout(height=600, title_text=r"$\text {Particle in 1D Box}$")
+fig.show()
+
+# +
 
 # Reading the input variables from the user
 # n = int(input("Enter the value for the quantum number n = "))
@@ -113,7 +190,7 @@ n = 3
 L = 4
 
 # Generating the wavefunction graph
-plt.rcParams.update({'font.size': 18, 'font.family': 'STIXGeneral', 'mathtext.fontset': 'stix'})
+
 x = np.linspace(0, L, 900)
 fig, ax = plt.subplots()
 lim1=np.sqrt(2.0/L) # Maximum value of the wavefunction
