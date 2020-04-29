@@ -33,7 +33,7 @@ def convert(text, addbutton=False, addtoc=False, split=True, lateximg=True):
     if lateximg:
         text = convert_latex(text)
     if addbutton:
-        text = """<br><br>`NOTE`: The raw code for this notebook is hidden by default for easier reading. To toggle on/off the code, click <input id="toggle_code" class="button-primary" type="button" value="Toggle Code">\n\n""" + text
+        text = """<br><br>`NOTE`: The raw code for this notebook is hidden by default for easier reading. To toggle on/off the code, click <input id="toggle_code" class="button-primary" type="button" value="Toggle Code">\n\n <div class="loader" id="loader" style="display: block;"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><p style="margin-top: 10px;">Drawing Figures...<br>Please wait until it's done.</p></div>""" + text
     if addtoc:
         header, text = generate_toc(text)
         text = "## Table of content\n\n" + header + '\n' + text

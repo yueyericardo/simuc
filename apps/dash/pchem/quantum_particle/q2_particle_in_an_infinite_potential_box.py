@@ -2,6 +2,10 @@
 from plotly.subplots import make_subplots
 import plotly.graph_objects as go
 import dash_defer_js_import as dji
+import sys
+sys.path.append('.')
+sys.path.append('..')
+sys.path.append('...')
 from server import server
 import util
 import dash
@@ -9,10 +13,7 @@ import numpy as np
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
-import sys
 import os
-sys.path.append('.')
-sys.path.append('..')
 
 filepath = os.path.split(os.path.realpath(__file__))[0]
 
@@ -90,7 +91,7 @@ def get_1dbox(n=5, L=10, num_me=1, all_levels=False):
     y_vertical = [-1.3, 1.3]
     # energy levels
     if all_levels:
-        energy = list(get_energy(np.linspace(1, 10, 10), L, m))
+        energy = list(get_energy(np.linspace(1, 8, 8), L, m))
         for i, e in enumerate(energy):
             if i+1 == n:
                 energy[i] = dict(energy=e, color="green", n=i+1)
@@ -111,7 +112,7 @@ def get_1dbox(n=5, L=10, num_me=1, all_levels=False):
                         subplot_titles=(r"$\text {Wavefunction}$", r"$\text {Energy Level}$", r"$\text {Probability Density}$"))
 
     # 1st subplot
-    fig.append_trace(go.Scatter(x=x, y=wave, name="Wavefunction"), row=1, col=1)
+    fig.append_trace(go.Scatter(x=x, y=wave, name="Wavefunction", showlegend=False), row=1, col=1)
     # nodes
     fig.append_trace(go.Scatter(x=nodes_x, y=nodes_y, name="node", mode="markers", marker=dict(size=6, color='blue'), showlegend=False), row=1, col=1)
     # wall
@@ -122,14 +123,15 @@ def get_1dbox(n=5, L=10, num_me=1, all_levels=False):
     fig.update_yaxes(title_text=r'$\psi(x)$', range=[-1.2, 1.2], showgrid=False, zeroline=False, row=1, col=1)
 
     # 2nd subplot
+    annotations = list(fig['layout']['annotations'])
     for e in energy:
-        fig.append_trace(go.Scatter(x=[-0.1, 0.5, 1.1], y=[e["energy"], e["energy"], e["energy"]], name="Energy Level", text=[None, r"$E_{{{}}}={:.2f}\; eV$".format(e['n'], e['energy']), None], textfont=dict(
-            color=e["color"]), textposition="top center", mode="lines+text", showlegend=False, line=dict(color=e["color"], width=2 if e['n'] == n else 1)), row=1, col=2)
+        fig.append_trace(go.Scatter(x=[-0.1, 0.5, 1.1], y=[e["energy"], e["energy"], e["energy"]], name="Energy Level", mode="lines", showlegend=False, line=dict(color=e["color"], width=2 if e['n'] == n else 1)), row=1, col=2)
+        annotations.append(dict(y=e["energy"]+1.5, x=0.5, xref='x2', yref='y2', text=r"$E_{{{}}}={:.2f}\; eV$".format(e["n"], e["energy"]), font=dict(size=11, color=e["color"]), showarrow=False))
     fig.update_xaxes(range=[0, 1], showgrid=False, showticklabels=False, row=1, col=2)
-    fig.update_yaxes(title_text=r'$eV$', range=[0, energy[-1]["energy"]+2], showgrid=False, zeroline=False, row=1, col=2)
+    fig.update_yaxes(title_text=r'$eV$', range=[0, 102], showgrid=False, zeroline=False, row=1, col=2)
 
     # 3rd subplot
-    fig.append_trace(go.Scatter(x=x, y=prob, name="Probability Density", line=dict(color='red')), row=2, col=1)
+    fig.append_trace(go.Scatter(x=x, y=prob, name="Probability Density", line=dict(color='red'), showlegend=False), row=2, col=1)
     fig.append_trace(go.Scatter(x=nodes_x, y=nodes_y, name="node", mode="markers", marker=dict(size=6, color='red'), showlegend=False), row=2, col=1)
     fig.append_trace(go.Scatter(x=xleft, y=y_vertical, showlegend=False, line=dict(color='white', width=2)), row=2, col=1, )
     fig.append_trace(go.Scatter(x=xright, y=y_vertical, showlegend=False, line=dict(color='white', width=2)), row=2, col=1, )
@@ -137,14 +139,13 @@ def get_1dbox(n=5, L=10, num_me=1, all_levels=False):
     fig.update_yaxes(title_text=r'$\left|\psi(x)\right|^2$', range=[-1.2, 1.2], showgrid=False, zeroline=False, row=2, col=1)
 
     # annotations
-    annotations = list(fig['layout']['annotations'])
     annotations.append(dict(y=0, x=-1, xref='x1', yref='y1', text=r"$V = +\infty$", font=dict(size=14, color="black"), showarrow=False))
     annotations.append(dict(y=0, x=L+1, xref='x1', yref='y1', text=r"$V = +\infty$", font=dict(size=14, color="black"), showarrow=False))
     annotations.append(dict(y=0, x=-1, xref='x3', yref='y3', text=r"$V = +\infty$", font=dict(size=14, color="black"), showarrow=False))
     annotations.append(dict(y=0, x=L+1, xref='x3', yref='y3', text=r"$V = +\infty$", font=dict(size=14, color="black"), showarrow=False))
 
     fig.update_layout(annotations=annotations)
-    fig.update_layout(height=600, title_text=r"$\text {{Particle in an 1D Box}} \;(n={})$".format(n))
+    fig.update_layout(height=800, title_text=r"$\text {{Particle in an 1D Box}} \;(n={})$".format(n))
     return fig
 
 
@@ -189,7 +190,7 @@ def get_1dbox_combined(L=10, num_me=1):
     # 1st subplot
     annotations = list(fig['layout']['annotations'])
     for i, w in enumerate(waves):
-        fig.append_trace(go.Scatter(x=x, y=w+energies[i], line=dict(color='blue'), showlegend=False), row=1, col=1)
+        fig.append_trace(go.Scatter(x=x, y=w*2+energies[i], line=dict(color='blue'), showlegend=False), row=1, col=1)
         fig.append_trace(go.Scatter(x=nodes_x[i], y=np.zeros_like(nodes_x[i])+energies[i], name="node",
                                     mode="markers", marker=dict(size=6, color='blue'), showlegend=False), row=1, col=1)
         fig.append_trace(go.Scatter(x=[0, L/2, L], y=[energies[i], energies[i], energies[i]], name="Energy Level",
@@ -201,11 +202,11 @@ def get_1dbox_combined(L=10, num_me=1):
     fig.append_trace(go.Scatter(x=xright, y=y_vertical, showlegend=False, line=dict(color='white', width=2)), row=1, col=1, )
     # axis
     fig.update_xaxes(title_text=r"$x (Å)$", range=[-3, 14], showgrid=False, row=1, col=1)
-    fig.update_yaxes(title_text=r'$eV$', range=[0, energies[-1]+2], showgrid=False, zeroline=False, row=1, col=1)
+    fig.update_yaxes(title_text=r'$eV$', range=[0, 35], showgrid=False, zeroline=False, row=1, col=1)
 
     # 2nd subplot
     for i, p in enumerate(probs):
-        fig.append_trace(go.Scatter(x=x, y=p+energies[i], showlegend=False, line=dict(color='red')), row=1, col=2)
+        fig.append_trace(go.Scatter(x=x, y=p*2+energies[i], showlegend=False, line=dict(color='red')), row=1, col=2)
         fig.append_trace(go.Scatter(x=nodes_x[i], y=np.zeros_like(nodes_x[i])+energies[i], name="node",
                                     mode="markers", marker=dict(size=6, color='red'), showlegend=False), row=1, col=2)
         fig.append_trace(go.Scatter(x=[0, L/2, L], y=[energies[i], energies[i], energies[i]], name="Energy Level",
@@ -215,7 +216,7 @@ def get_1dbox_combined(L=10, num_me=1):
     fig.append_trace(go.Scatter(x=xleft, y=y_vertical, showlegend=False, line=dict(color='white', width=2)), row=1, col=2, )
     fig.append_trace(go.Scatter(x=xright, y=y_vertical, showlegend=False, line=dict(color='white', width=2)), row=1, col=2, )
     fig.update_xaxes(title_text=r"$x (Å)$", range=[-3, 14], showgrid=False, row=1, col=2)
-    fig.update_yaxes(title_text=r'$eV$', range=[0, energies[-1]+2], showgrid=False, zeroline=False, row=1, col=2)
+    fig.update_yaxes(title_text=r'$eV$', range=[0, 35], showgrid=False, zeroline=False, row=1, col=2)
 
     # annotations
     annotations.append(dict(y=energies[-1]/2, x=-1.25, xref='x1', yref='y1', text=r"$V = +\infty$", font=dict(size=11, color="black"), showarrow=False))
@@ -223,142 +224,6 @@ def get_1dbox_combined(L=10, num_me=1):
 
     fig.update_layout(annotations=annotations)
     fig.update_layout(height=800, title_text=r"$\text {Particle in an 1D Box}$")
-    return fig
-
-
-def getfig2(k=4, dk=2, xmax=5):
-    # Defining functions
-    def psi_contour(x, dk):
-        return (np.sin(dk*x)/(np.sqrt(np.pi*dk)*x))
-
-    def psi(x, k, dk):
-        return psi_contour(x, dk)*(np.cos(k*x)+np.sin(k*x)*1j)
-
-    # calculation (Prepare data)
-    x = np.linspace(-xmax, xmax, 900)
-    y_real = psi(x, k, dk).real
-    y_imag = psi(x, k, dk).imag
-    y_prob = (psi(x, k, dk).real)**2+(psi(x, k, dk).imag)**2
-
-    # Plot
-    title1 = r'$ \text {Real contribution to } \Psi_{\Delta k}(x)$'
-    title2 = r'$ \text {Imaginary contribution to } \Psi_{\Delta k}(x)$'
-    title3 = r'$ \text {Probability Density }$'
-    fig = make_subplots(
-        rows=2, cols=2, subplot_titles=(title1, title2, title3))
-
-    # 1st subplot
-    fig.append_trace(go.Scatter(x=x, y=y_real, name="Real",
-                                line=dict(color='blue')), row=1, col=1)
-    fig.append_trace(go.Scatter(x=x, y=psi_contour(x, dk), showlegend=False, line=dict(
-        color='blue', width=1, dash='dash')), row=1, col=1)
-    fig.append_trace(go.Scatter(x=x, y=-psi_contour(x, dk), showlegend=False,
-                                line=dict(color='blue', width=1, dash='dash')), row=1, col=1)
-    fig.update_xaxes(title_text=r"$x (Å)$", row=1, col=1)
-    fig.update_yaxes(title_text=r'$\Psi_{\Delta k}(x)$', row=1, col=1)
-
-    # 2nd subplot
-    fig.append_trace(go.Scatter(x=x, y=y_imag, name="Imag",
-                                line=dict(color='red')), row=1, col=2, )
-    fig.append_trace(go.Scatter(x=x, y=psi_contour(x, dk), showlegend=False, line=dict(
-        color='red', width=1, dash='dash')), row=1, col=2)
-    fig.append_trace(go.Scatter(x=x, y=-psi_contour(x, dk), showlegend=False,
-                                line=dict(color='red', width=1, dash='dash')), row=1, col=2)
-    fig.update_xaxes(title_text=r"$x (Å)$", row=1, col=2)
-    fig.update_yaxes(title_text=r'$\Psi_{\Delta k}(x)$', row=1, col=2)
-
-    # 3rd subplot
-    fig.append_trace(go.Scatter(
-        x=x, y=y_prob, name="Probability Density", line=dict(color='green')), row=2, col=1)
-    fig.update_xaxes(title_text=r"$x (Å)$", row=2, col=1)
-    fig.update_yaxes(
-        title_text=r'$\left|\Psi_{\Delta k}(x)\right|^2$', row=2, col=1)
-
-    # show
-    title = r"$k_o  \pm \Delta k = {} \pm {} Å^{{-1}}$".format(k, dk)
-    fig.update_layout(height=600, title_text=title)
-    return fig
-
-
-def getfig3(k=4, dk=2, xmax=5):
-    # Defining functions
-    def psi_contour(x, dk):
-        return dk*np.exp(-0.5*x*x*dk*dk)/np.sqrt(dk*np.sqrt(np.pi))
-
-    def psi(x, k, dk):
-        return psi_contour(x, dk)*(np.cos(k*x)+np.sin(k*x)*1j)
-
-    # calculation (Prepare data)
-    x = np.linspace(-xmax, xmax, 900)
-    y_real = psi(x, k, dk).real
-    y_imag = psi(x, k, dk).imag
-    y_prob = (psi(x, k, dk).real)**2+(psi(x, k, dk).imag)**2
-
-    # Plot
-    title1 = r'$ \text {Real contribution to } \Psi_{\Delta k}(x)$'
-    title2 = r'$ \text {Imaginary contribution to } \Psi_{\Delta k}(x)$'
-    title3 = r'$ \text {Probability Density }$'
-    fig = make_subplots(rows=2, cols=2, subplot_titles=(title1, title2, title3))
-
-    # 1st subplot
-    fig.append_trace(go.Scatter(x=x, y=y_real, name="Real", line=dict(color='blue')), row=1, col=1, )
-    fig.append_trace(go.Scatter(x=x, y=psi_contour(x, dk), showlegend=False, line=dict(color='blue', width=1, dash='dash')),
-                     row=1, col=1)
-    fig.append_trace(go.Scatter(x=x, y=-psi_contour(x, dk), showlegend=False, line=dict(color='blue', width=1, dash='dash')),
-                     row=1, col=1)
-    fig.update_xaxes(title_text=r"$x (Å)$", row=1, col=1)
-    fig.update_yaxes(title_text=r'$\Psi_{\Delta k}(x)$', row=1, col=1)
-
-    # 2nd subplot
-    fig.append_trace(go.Scatter(x=x, y=y_imag, name="Imag", line=dict(color='red')), row=1, col=2, )
-    fig.append_trace(go.Scatter(x=x, y=psi_contour(x, dk), showlegend=False, line=dict(color='red', width=1, dash='dash')),
-                     row=1, col=2)
-    fig.append_trace(go.Scatter(x=x, y=-psi_contour(x, dk), showlegend=False, line=dict(color='red', width=1, dash='dash')),
-                     row=1, col=2)
-    fig.update_xaxes(title_text=r"$x (Å)$", row=1, col=2)
-    fig.update_yaxes(title_text=r'$\Psi_{\Delta k}(x)$', row=1, col=2)
-
-    # 3rd subplot
-    fig.append_trace(go.Scatter(x=x, y=y_prob, name="Probability Density", line=dict(color='green')), row=2, col=1)
-    fig.update_xaxes(title_text=r"$x (Å)$", row=2, col=1)
-    fig.update_yaxes(title_text=r'$\left|\Psi_{\Delta k}(x)\right|^2$', row=2, col=1)
-
-    # show
-    title = r"$k_o  \pm \Delta k = {} \pm {} Å^{{-1}}$".format(k, dk)
-    fig.update_layout(height=600, title_text=title)
-    return fig
-
-
-def getfig4(k=4, dk=2, xmax=5):
-    # Defining functions
-    def psi_contour(x, dk):
-        return np.sin(dk*x)*np.sin(dk*x)/(np.pi*dk*x*x)
-
-    def psi_contourG(x, dk):
-        return dk*dk*np.exp(-x*x*dk*dk)/(dk*np.sqrt(np.pi))
-
-    # calculation (Prepare data)
-    x = np.linspace(-xmax, xmax, 900)
-
-    # Plot
-    title1 = r'$ \text {Probability Density for equally weigthed k}$'
-    title2 = r'$ \text {Probability Density for Gaussian-weigthed k }$'
-    fig = make_subplots(rows=1, cols=2, subplot_titles=(title1, title2))
-
-    # 1st subplot
-    fig.append_trace(go.Scatter(x=x, y=psi_contour(x, dk), name="Probability Density", line=dict(color='green')), row=1, col=1)
-    fig.update_xaxes(title_text=r"$x (Å)$", row=1, col=1)
-    fig.update_yaxes(title_text=r'$\left|\Psi_{\Delta k}(x)\right|^2$', row=1, col=1)
-
-    # 2nd subplot
-    fig.append_trace(go.Scatter(x=x, y=psi_contourG(
-        x, dk), name="Probability Density", line=dict(color='magenta')), row=1, col=2)
-    fig.update_xaxes(title_text=r"$x (Å)$", row=1, col=2)
-    fig.update_yaxes(title_text=r'$\left|\Psi_{\Delta k}(x)\right|^2$', row=1, col=2)
-
-    # show
-    title = r"$k_o  \pm \Delta k = {} \pm {} Å^{{-1}}$".format(k, dk)
-    fig.update_layout(height=400, title_text=title)
     return fig
 
 
@@ -380,42 +245,42 @@ sliders1 = html.Div([
 
 
 # fig2
-fig2 = dcc.Graph(figure=get_1dbox(L=5), id="fig2")
+fig2 = dcc.Graph(figure=get_1dbox(), id="fig2")
 sliders2 = html.Div([
     html.Label('The value for the quantum number n'),
-    dcc.Slider(id='fig2_n_slider', min=1, max=10, value=4, marks={str(x): str(x) for x in np.arange(1, 11, 1)}, step=1),
+    dcc.Slider(id='fig2_n_slider', min=1, max=10, value=4, marks={str(x): str(x) for x in np.arange(1, 9, 1)}, step=1),
     html.Label('The length for the box L (in Å)'),
-    dcc.Slider(id='fig2_l_slider', min=1, max=10, value=10, marks={str(x): str(x) for x in np.arange(1, 11, 1)}, step=1),
+    dcc.Slider(id='fig2_l_slider', min=1, max=10, value=10, marks={str(x): str(x) for x in np.arange(5, 11, 1)}, step=1),
     ], style={'columnCount': 2, 'padding': '0'})
 
 
 # fig3
-fig3 = dcc.Graph(figure=get_1dbox(n=4, L=10, all_levels=True), id="fig3")
+fig3 = dcc.Graph(figure=get_1dbox(n=4, L=5, all_levels=True), id="fig3")
 sliders3 = html.Div([
     html.Label('The value for the quantum number n'),
-    dcc.Slider(id='fig3_n_slider', min=1, max=10, value=4, marks={str(x): str(x) for x in np.arange(1, 11, 1)}, step=1),
+    dcc.Slider(id='fig3_n_slider', min=1, max=10, value=4, marks={str(x): str(x) for x in np.arange(1, 9, 1)}, step=1),
     html.Label('The length for the box L (in Å)'),
-    dcc.Slider(id='fig3_l_slider', min=1, max=10, value=10, marks={str(x): str(x) for x in np.arange(1, 11, 1)}, step=1),
+    dcc.Slider(id='fig3_l_slider', min=1, max=10, value=5, marks={str(x): str(x) for x in np.arange(3, 9, 1)}, step=1),
     ], style={'columnCount': 2, 'padding': '0'})
 
 # fig4
-fig4 = dcc.Graph(figure=get_1dbox(n=4, L=10, all_levels=True), id="fig4")
+fig4 = dcc.Graph(figure=get_1dbox(n=4, L=5, all_levels=True), id="fig4")
 sliders4 = html.Div([
     html.Label('The value for the quantum number n'),
-    dcc.Slider(id='fig4_n_slider', min=1, max=10, value=4, marks={str(x): str(x) for x in np.arange(1, 11, 1)}, step=1),
+    dcc.Slider(id='fig4_n_slider', min=1, max=10, value=4, marks={str(x): str(x) for x in np.arange(1, 9, 1)}, step=1),
     html.Label('The length for the box L (in Å)'),
-    dcc.Slider(id='fig4_l_slider', min=1, max=10, value=10, marks={str(x): str(x) for x in np.arange(1, 11, 1)}, step=1),
+    dcc.Slider(id='fig4_l_slider', min=1, max=10, value=5, marks={str(x): str(x) for x in np.arange(3, 6, 1)}, step=1),
     html.Label('The mass of particle (in mass of electron)'),
-    dcc.Slider(id='fig4_m_slider', min=1, max=5, value=1, marks={str(x): str(x) for x in np.arange(1, 6, 1)}, step=1),
+    dcc.Slider(id='fig4_m_slider', min=1, max=5, value=1, marks={str(x): str(x) for x in np.arange(1, 4, 1)}, step=1),
     ], style={'columnCount': 3, 'padding': '0'})
 
 # fig5
 fig5 = dcc.Graph(figure=get_1dbox_combined(L=10, num_me=1), id="fig5")
 sliders5 = html.Div([
     html.Label('The length for the box L (in Å)'),
-    dcc.Slider(id='fig5_l_slider', min=1, max=10, value=10, marks={str(x): str(x) for x in np.arange(1, 11, 1)}, step=1),
+    dcc.Slider(id='fig5_l_slider', min=1, max=10, value=10, marks={str(x): str(x) for x in np.arange(5, 11, 1)}, step=1),
     html.Label('The mass of particle (in mass of electron)'),
-    dcc.Slider(id='fig5_m_slider', min=1, max=5, value=1, marks={str(x): str(x) for x in np.arange(1, 6, 1)}, step=1),
+    dcc.Slider(id='fig5_m_slider', min=1, max=4, value=1, marks={str(x): str(x) for x in np.arange(1, 4, 1)}, step=1),
     ], style={'columnCount': 2, 'padding': '0'})
 
 app.layout = html.Div([

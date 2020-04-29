@@ -110,20 +110,20 @@ def get_1dbox(n=5, L=10, num_me=1, all_levels=False):
         return (h**2 / (m * 8)) * (1e10) ** 2 * 6.242e+18 * ((n / L)**2)
 
     N = 200
-    h = 6.62607e-34 
+    h = 6.62607e-34
     me = 9.1093837e-31
     m = num_me * me
-    
+
     # calculation (Prepare data)
     x = np.linspace(0, L, N)
-    wave = psi(x,n,L)
+    wave = psi(x, n, L)
     prob = wave * wave
     xleft = [0, 0]
     xright = [L, L]
     y_vertical = [-1.3, 1.3]
     # energy levels
     if all_levels:
-        energy = list(get_energy(np.linspace(1, 10, 10), L, m))
+        energy = list(get_energy(np.linspace(1, 8, 8), L, m))
         for i, e in enumerate(energy):
             if i+1 == n:
                 energy[i] = dict(energy=e, color="green", n=i+1)
@@ -138,13 +138,13 @@ def get_1dbox(n=5, L=10, num_me=1, all_levels=False):
     nodes_y = np.zeros_like(nodes_x)
 
     # Plot
-    fig = make_subplots(rows=2, cols=2, 
+    fig = make_subplots(rows=2, cols=2,
                         column_widths=[0.75, 0.25],
-                        specs=[[{}, {"rowspan": 2}],[{}, None]],
+                        specs=[[{}, {"rowspan": 2}], [{}, None]],
                         subplot_titles=(r"$\text {Wavefunction}$", r"$\text {Energy Level}$", r"$\text {Probability Density}$"))
 
     # 1st subplot
-    fig.append_trace(go.Scatter(x=x, y=wave, name="Wavefunction"), row=1, col=1)
+    fig.append_trace(go.Scatter(x=x, y=wave, name="Wavefunction", showlegend=False), row=1, col=1)
     # nodes
     fig.append_trace(go.Scatter(x=nodes_x, y=nodes_y, name="node", mode="markers", marker=dict(size=6, color='blue'), showlegend=False), row=1, col=1)
     # wall
@@ -155,13 +155,15 @@ def get_1dbox(n=5, L=10, num_me=1, all_levels=False):
     fig.update_yaxes(title_text=r'$\psi(x)$', range=[-1.2, 1.2], showgrid=False, zeroline=False, row=1, col=1)
 
     # 2nd subplot
+    annotations = list(fig['layout']['annotations'])
     for e in energy:
-        fig.append_trace(go.Scatter(x=[-0.1, 0.5, 1.1], y=[e["energy"], e["energy"], e["energy"]], name="Energy Level", text=[None, r"$E_{{{}}}={:.2f}\; eV$".format(e['n'], e['energy']), None], textfont=dict(color=e["color"]), textposition="top center", mode="lines+text", showlegend=False, line=dict(color=e["color"], width=2 if e['n']==n else 1)), row=1, col=2)
+        fig.append_trace(go.Scatter(x=[-0.1, 0.5, 1.1], y=[e["energy"], e["energy"], e["energy"]], name="Energy Level", mode="lines", showlegend=False, line=dict(color=e["color"], width=2 if e['n'] == n else 1)), row=1, col=2)
+        annotations.append(dict(y=e["energy"]+1.5, x=0.5, xref='x2', yref='y2', text=r"$E_{{{}}}={:.2f}\; eV$".format(e["n"], e["energy"]), font=dict(size=11, color=e["color"]), showarrow=False))
     fig.update_xaxes(range=[0, 1], showgrid=False, showticklabels=False, row=1, col=2)
-    fig.update_yaxes(title_text=r'$eV$', range=[0, energy[-1]["energy"]+2], showgrid=False, zeroline=False, row=1, col=2)
+    fig.update_yaxes(title_text=r'$eV$', range=[0, 102], showgrid=False, zeroline=False, row=1, col=2)
 
     # 3rd subplot
-    fig.append_trace(go.Scatter(x=x, y=prob, name="Probability Density", line=dict(color='red')), row=2, col=1)
+    fig.append_trace(go.Scatter(x=x, y=prob, name="Probability Density", line=dict(color='red'), showlegend=False), row=2, col=1)
     fig.append_trace(go.Scatter(x=nodes_x, y=nodes_y, name="node", mode="markers", marker=dict(size=6, color='red'), showlegend=False), row=2, col=1)
     fig.append_trace(go.Scatter(x=xleft, y=y_vertical, showlegend=False, line=dict(color='white', width=2)), row=2, col=1, )
     fig.append_trace(go.Scatter(x=xright, y=y_vertical, showlegend=False, line=dict(color='white', width=2)), row=2, col=1, )
@@ -169,14 +171,13 @@ def get_1dbox(n=5, L=10, num_me=1, all_levels=False):
     fig.update_yaxes(title_text=r'$\left|\psi(x)\right|^2$', range=[-1.2, 1.2], showgrid=False, zeroline=False, row=2, col=1)
 
     # annotations
-    annotations = list(fig['layout']['annotations'])
     annotations.append(dict(y=0, x=-1, xref='x1', yref='y1', text=r"$V = +\infty$", font=dict(size=14, color="black"), showarrow=False))
     annotations.append(dict(y=0, x=L+1, xref='x1', yref='y1', text=r"$V = +\infty$", font=dict(size=14, color="black"), showarrow=False))
     annotations.append(dict(y=0, x=-1, xref='x3', yref='y3', text=r"$V = +\infty$", font=dict(size=14, color="black"), showarrow=False))
     annotations.append(dict(y=0, x=L+1, xref='x3', yref='y3', text=r"$V = +\infty$", font=dict(size=14, color="black"), showarrow=False))
 
     fig.update_layout(annotations=annotations)
-    fig.update_layout(height=600, title_text=r"$\text {{Particle in an 1D Box}} \;(n={})$".format(n))
+    fig.update_layout(height=800, title_text=r"$\text {{Particle in an 1D Box}} \;(n={})$".format(n))
     return fig
 
 
@@ -208,7 +209,7 @@ get_1dbox(L=5)
 #
 # Let's now analyze how the **Energy Levels** $E_n$ for an electron change as a function of the **size of the box**.
 
-get_1dbox(n=4, L=10, all_levels=True)
+get_1dbox(n=4, L=5, all_levels=True)
 
 # <div class="alert alert-info"> 
 #     <p><b>Figure 3</b></p>
@@ -223,7 +224,7 @@ get_1dbox(n=4, L=10, all_levels=True)
 #
 #
 
-get_1dbox(n=4, L=10, all_levels=True, num_me=3)
+get_1dbox(n=4, L=5, all_levels=True, num_me=3)
 
 
 # <div class="alert alert-info"> 
@@ -243,10 +244,10 @@ def get_1dbox_combined(L=10, num_me=1):
         return (h**2 / (m * 8)) * (1e10) ** 2 * 6.242e+18 * ((n / L)**2)
 
     N = 200
-    h = 6.62607e-34 
+    h = 6.62607e-34
     me = 9.1093837e-31
     m = num_me * me
-    
+
     # calculation (Prepare data)
     x = np.linspace(0, L, N)
     nmax = 7
@@ -255,7 +256,7 @@ def get_1dbox_combined(L=10, num_me=1):
     energies = []
     nodes_x = []
     for n in range(1, nmax+1, 1):
-        wave = psi(x,n,L)
+        wave = psi(x, n, L)
         prob = wave * wave
         energy = get_energy(n, L, m)
         nodes = np.linspace(start=0, stop=L, num=n, endpoint=False)[1:]
@@ -264,40 +265,45 @@ def get_1dbox_combined(L=10, num_me=1):
         energies.append(energy)
         nodes_x.append(nodes)
 
-
     xleft = [0, 0]
     xright = [L, L]
     y_vertical = [-1, 1000]
 
     # Plot
-    fig = make_subplots(rows=1, cols=2, 
+    fig = make_subplots(rows=1, cols=2,
                         subplot_titles=(r"$\text {Wavefunction}$", r"$\text {Probability Density}$"))
 
     # 1st subplot
     annotations = list(fig['layout']['annotations'])
     for i, w in enumerate(waves):
         fig.append_trace(go.Scatter(x=x, y=w+energies[i], line=dict(color='blue'), showlegend=False), row=1, col=1)
-        fig.append_trace(go.Scatter(x=nodes_x[i], y=np.zeros_like(nodes_x[i])+energies[i], name="node", mode="markers", marker=dict(size=6, color='blue'), showlegend=False), row=1, col=1)
-        fig.append_trace(go.Scatter(x=[0, L/2, L], y=[energies[i], energies[i], energies[i]], name="Energy Level", mode="lines", showlegend=False, line=dict(color="green", dash='dot')), row=1, col=1)
-        annotations.append(dict(y=energies[i], x=L+2.5, xref='x1', yref='y1', text=r"$E_{{{}}}={:.2f}\; eV$".format(i+1, energies[i]), font=dict(size=11, color="green"), showarrow=False))
+        fig.append_trace(go.Scatter(x=nodes_x[i], y=np.zeros_like(nodes_x[i])+energies[i], name="node",
+                                    mode="markers", marker=dict(size=6, color='blue'), showlegend=False), row=1, col=1)
+        fig.append_trace(go.Scatter(x=[0, L/2, L], y=[energies[i], energies[i], energies[i]], name="Energy Level",
+                                    mode="lines", showlegend=False, line=dict(color="green", dash='dot')), row=1, col=1)
+        annotations.append(dict(y=energies[i], x=L+2.5, xref='x1', yref='y1',
+                                text=r"$E_{{{}}}={:.2f}\; eV$".format(i+1, energies[i]), font=dict(size=11, color="green"), showarrow=False))
     # wall
     fig.append_trace(go.Scatter(x=xleft, y=y_vertical, showlegend=False, line=dict(color='white', width=2)), row=1, col=1, )
     fig.append_trace(go.Scatter(x=xright, y=y_vertical, showlegend=False, line=dict(color='white', width=2)), row=1, col=1, )
     # axis
     fig.update_xaxes(title_text=r"$x (Å)$", range=[-3, 14], showgrid=False, row=1, col=1)
-    fig.update_yaxes(title_text=r'$eV$', range=[0, energies[-1]+2], showgrid=False, zeroline=False, row=1, col=1)
+    fig.update_yaxes(title_text=r'$eV$', range=[0, 35], showgrid=False, zeroline=False, row=1, col=1)
 
     # 2nd subplot
     for i, p in enumerate(probs):
         fig.append_trace(go.Scatter(x=x, y=p+energies[i], showlegend=False, line=dict(color='red')), row=1, col=2)
-        fig.append_trace(go.Scatter(x=nodes_x[i], y=np.zeros_like(nodes_x[i])+energies[i], name="node", mode="markers", marker=dict(size=6, color='red'), showlegend=False), row=1, col=2)
-        fig.append_trace(go.Scatter(x=[0, L/2, L], y=[energies[i], energies[i], energies[i]], name="Energy Level", mode="lines", showlegend=False, line=dict(color="green", dash='dot')), row=1, col=2)
-        annotations.append(dict(y=energies[i], x=L+2.5, xref='x2', yref='y2', text=r"$E_{{{}}}={:.2f}\; eV$".format(i+1, energies[i]), font=dict(size=11, color="green"), showarrow=False))
+        fig.append_trace(go.Scatter(x=nodes_x[i], y=np.zeros_like(nodes_x[i])+energies[i], name="node",
+                                    mode="markers", marker=dict(size=6, color='red'), showlegend=False), row=1, col=2)
+        fig.append_trace(go.Scatter(x=[0, L/2, L], y=[energies[i], energies[i], energies[i]], name="Energy Level",
+                                    mode="lines", showlegend=False, line=dict(color="green", dash='dot')), row=1, col=2)
+        annotations.append(dict(y=energies[i], x=L+2.5, xref='x2', yref='y2',
+                                text=r"$E_{{{}}}={:.2f}\; eV$".format(i+1, energies[i]), font=dict(size=11, color="green"), showarrow=False))
     fig.append_trace(go.Scatter(x=xleft, y=y_vertical, showlegend=False, line=dict(color='white', width=2)), row=1, col=2, )
     fig.append_trace(go.Scatter(x=xright, y=y_vertical, showlegend=False, line=dict(color='white', width=2)), row=1, col=2, )
     fig.update_xaxes(title_text=r"$x (Å)$", range=[-3, 14], showgrid=False, row=1, col=2)
-    fig.update_yaxes(title_text=r'$eV$', range=[0, energies[-1]+2], showgrid=False, zeroline=False, row=1, col=2)
-    
+    fig.update_yaxes(title_text=r'$eV$', range=[0, 35], showgrid=False, zeroline=False, row=1, col=2)
+
     # annotations
     annotations.append(dict(y=energies[-1]/2, x=-1.25, xref='x1', yref='y1', text=r"$V = +\infty$", font=dict(size=11, color="black"), showarrow=False))
     annotations.append(dict(y=energies[-1]/2, x=-1.25, xref='x2', yref='y2', text=r"$V = +\infty$", font=dict(size=11, color="black"), showarrow=False))
@@ -305,6 +311,7 @@ def get_1dbox_combined(L=10, num_me=1):
     fig.update_layout(annotations=annotations)
     fig.update_layout(height=800, title_text=r"$\text {Particle in an 1D Box}$")
     return fig
+
 
 get_1dbox_combined(L=10, num_me=1)
 
