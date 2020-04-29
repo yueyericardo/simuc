@@ -185,6 +185,7 @@ get_1dbox(n=3)
 
 # <div class="alert alert-info"> 
 #     <p><b>Figure 1</b></p>
+#     Quantum number <b>n</b>
 # </div>
 #
 # @@@fig@@@
@@ -195,6 +196,7 @@ get_1dbox(L=5)
 
 # <div class="alert alert-info"> 
 #     <p><b>Figure 2</b></p>
+#     Box Length <b>L</b>
 # </div>
 #
 # @@@fig@@@
@@ -213,6 +215,7 @@ get_1dbox(n=4, L=5, all_levels=True)
 
 # <div class="alert alert-info"> 
 #     <p><b>Figure 3</b></p>
+#     Energy Levels $E_n$
 # </div>
 #
 # @@@fig@@@
@@ -229,6 +232,7 @@ get_1dbox(n=4, L=5, all_levels=True, num_me=3)
 
 # <div class="alert alert-info"> 
 #     <p><b>Figure 4</b></p>
+#     Mass of the particle
 # </div>
 #
 # @@@fig@@@
@@ -318,6 +322,7 @@ get_1dbox_combined(L=10, num_me=1)
 
 # <div class="alert alert-info"> 
 #     <p><b>Figure 5</b></p>
+#     Combine all together
 # </div>
 #
 # @@@fig@@@
