@@ -112,123 +112,87 @@ Here are a few questions to think about before we move on:
 Some of these questions can be answered by plotting the **Wavefunction**, $\psi_n(x)$ and the **Probability Density**, $|\psi_n(x)|^2$ for different values of $n$.
 
 ```python
-# Defining the wavefunction
-def psi(x, n, L):
-    return np.sqrt(2.0 / L) * np.sin(float(n) * np.pi * x / L)
+def get_1dbox(n=5, L=10, num_me=1, all_levels=False):
+    # Defining the wavefunction
+    def psi(x, n, L):
+        return np.sqrt(2.0 / L) * np.sin(float(n) * np.pi * x / L)
 
-def get_energy(n, L, m):
-    return (h**2 / (m * 8)) * (1e10) ** 2 * 6.242e+18 * ((float(n) / L)**2)
+    def get_energy(n, L, m):
+        return (h**2 / (m * 8)) * (1e10) ** 2 * 6.242e+18 * ((n / L)**2)
 
-L = 6
-n = 2
-N = 200
-me = 9.1093837e-31
-h = 6.62607e-34 
+    N = 200
+    h = 6.62607e-34 
+    me = 9.1093837e-31
+    m = num_me * me
+    
+    # calculation (Prepare data)
+    x = np.linspace(0, L, N)
+    wave = psi(x,n,L)
+    prob = wave * wave
+    xleft = [0, 0]
+    xright = [L, L]
+    y_vertical = [-1.3, 1.3]
+    # energy levels
+    if all_levels:
+        energy = list(get_energy(np.linspace(1, 10, 10), L, m))
+        for i, e in enumerate(energy):
+            if i+1 == n:
+                energy[i] = dict(energy=e, color="green", n=i+1)
+            else:
+                energy[i] = dict(energy=e, color="gray", n=i+1)
+    else:
+        energy = get_energy(n, L, m)
+        energy = [dict(energy=energy, color="green", n=n)]
 
-# calculation (Prepare data)
-x = np.linspace(0, L, N)
-wave = psi(x,n,L)
-prob = wave * wave
-xleft = [0, 0]
-xright = [L, L]
-y_vertical = [-1.3, 1.3]
-energy = get_energy(n, L, me)
+    # nodes
+    nodes_x = np.linspace(start=0, stop=L, num=n, endpoint=False)[1:]
+    nodes_y = np.zeros_like(nodes_x)
 
-# Plot
-fig = make_subplots(rows=2, cols=2, 
-                    column_widths=[0.75, 0.25],
-                    specs=[[{}, {"rowspan": 2}],[{}, None]],
-                    subplot_titles=(r"$\text {Wavefunction}$", r"$\text {Energy Level}$", r"$\text {Probability Density}$"))
+    # Plot
+    fig = make_subplots(rows=2, cols=2, 
+                        column_widths=[0.75, 0.25],
+                        specs=[[{}, {"rowspan": 2}],[{}, None]],
+                        subplot_titles=(r"$\text {Wavefunction}$", r"$\text {Energy Level}$", r"$\text {Probability Density}$"))
 
-# 1st subplot
-fig.append_trace(go.Scatter(x=x, y=wave, name="Wavefunction"), row=1, col=1)
-fig.append_trace(go.Scatter(x=xleft, y=y_vertical, showlegend=False, line=dict(color='white', width=2)), row=1, col=1, )
-fig.append_trace(go.Scatter(x=xright, y=y_vertical, showlegend=False, line=dict(color='white', width=2)), row=1, col=1, )
-fig.update_xaxes(title_text=r"$x (Å)$", range=[-2, 12], showgrid=False, row=1, col=1)
-fig.update_yaxes(title_text=r'$\psi(x)$', range=[-1.2, 1.2], showgrid=False, zeroline=False, row=1, col=1)
+    # 1st subplot
+    fig.append_trace(go.Scatter(x=x, y=wave, name="Wavefunction"), row=1, col=1)
+    # nodes
+    fig.append_trace(go.Scatter(x=nodes_x, y=nodes_y, name="node", mode="markers", marker=dict(size=6, color='blue'), showlegend=False), row=1, col=1)
+    # wall
+    fig.append_trace(go.Scatter(x=xleft, y=y_vertical, showlegend=False, line=dict(color='white', width=2)), row=1, col=1, )
+    fig.append_trace(go.Scatter(x=xright, y=y_vertical, showlegend=False, line=dict(color='white', width=2)), row=1, col=1, )
+    # axis
+    fig.update_xaxes(title_text=r"$x (Å)$", range=[-2, 12], showgrid=False, row=1, col=1)
+    fig.update_yaxes(title_text=r'$\psi(x)$', range=[-1.2, 1.2], showgrid=False, zeroline=False, row=1, col=1)
 
-# 2nd subplot
-fig.append_trace(go.Scatter(x=[-0.1, 1.1], y=[energy, energy], name="Energy Level", line=dict(color='green')), row=1, col=2)
-fig.update_xaxes(range=[0, 1], showgrid=False, row=1, col=2)
-fig.update_yaxes(title_text=r'$eV$', range=[0, 120], showgrid=False, zeroline=False, row=1, col=2)
+    # 2nd subplot
+    for e in energy:
+        fig.append_trace(go.Scatter(x=[-0.1, 0.5, 1.1], y=[e["energy"], e["energy"], e["energy"]], name="Energy Level", text=[None, r"$E_{{{}}}={:.2f}\; eV$".format(e['n'], e['energy']), None], textfont=dict(color=e["color"]), textposition="top center", mode="lines+text", showlegend=False, line=dict(color=e["color"], width=2 if e['n']==n else 1)), row=1, col=2)
+    fig.update_xaxes(range=[0, 1], showgrid=False, showticklabels=False, row=1, col=2)
+    fig.update_yaxes(title_text=r'$eV$', range=[0, energy[-1]["energy"]+2], showgrid=False, zeroline=False, row=1, col=2)
 
-# 3rd subplot
-fig.append_trace(go.Scatter(x=x, y=prob, name="Probability Density", line=dict(color='red')), row=2, col=1)
-fig.append_trace(go.Scatter(x=xleft, y=y_vertical, showlegend=False, line=dict(color='white', width=2)), row=2, col=1, )
-fig.append_trace(go.Scatter(x=xright, y=y_vertical, showlegend=False, line=dict(color='white', width=2)), row=2, col=1, )
-fig.update_xaxes(title_text=r"$x (Å)$", range=[-2, 12], showgrid=False, row=2, col=1)
-fig.update_yaxes(title_text=r'$\left|\psi(x)\right|^2$', range=[-1.2, 1.2], showgrid=False, zeroline=False, row=2, col=1)
+    # 3rd subplot
+    fig.append_trace(go.Scatter(x=x, y=prob, name="Probability Density", line=dict(color='red')), row=2, col=1)
+    fig.append_trace(go.Scatter(x=nodes_x, y=nodes_y, name="node", mode="markers", marker=dict(size=6, color='red'), showlegend=False), row=2, col=1)
+    fig.append_trace(go.Scatter(x=xleft, y=y_vertical, showlegend=False, line=dict(color='white', width=2)), row=2, col=1, )
+    fig.append_trace(go.Scatter(x=xright, y=y_vertical, showlegend=False, line=dict(color='white', width=2)), row=2, col=1, )
+    fig.update_xaxes(title_text=r"$x (Å)$", range=[-2, 12], showgrid=False, row=2, col=1)
+    fig.update_yaxes(title_text=r'$\left|\psi(x)\right|^2$', range=[-1.2, 1.2], showgrid=False, zeroline=False, row=2, col=1)
 
-# annotations
-annotations = list(fig['layout']['annotations'])
-annotations.append(dict(y=0, x=-1,
-                        xref='x1', yref='y1',
-                        text=r"$V = +\infty$",
-                        font=dict(size=14, color="black"),
-                        showarrow=False
-                        ))
-annotations.append(dict(y=0, x=L+1,
-                        xref='x1', yref='y1',
-                        text=r"$V = +\infty$",
-                        font=dict(size=14, color="black"),
-                        showarrow=False
-                        ))
-annotations.append(dict(y=0, x=-1,
-                        xref='x3', yref='y3',
-                        text=r"$V = +\infty$",
-                        font=dict(size=14, color="black"),
-                        showarrow=False
-                        ))
-annotations.append(dict(y=0, x=L+1,
-                        xref='x3', yref='y3',
-                        text=r"$V = +\infty$",
-                        font=dict(size=14, color="black"),
-                        showarrow=False
-                        ))
+    # annotations
+    annotations = list(fig['layout']['annotations'])
+    annotations.append(dict(y=0, x=-1, xref='x1', yref='y1', text=r"$V = +\infty$", font=dict(size=14, color="black"), showarrow=False))
+    annotations.append(dict(y=0, x=L+1, xref='x1', yref='y1', text=r"$V = +\infty$", font=dict(size=14, color="black"), showarrow=False))
+    annotations.append(dict(y=0, x=-1, xref='x3', yref='y3', text=r"$V = +\infty$", font=dict(size=14, color="black"), showarrow=False))
+    annotations.append(dict(y=0, x=L+1, xref='x3', yref='y3', text=r"$V = +\infty$", font=dict(size=14, color="black"), showarrow=False))
 
-fig.update_layout(annotations=annotations)
-fig.update_layout(height=600, title_text=r"$\text {Particle in 1D Box}$")
-fig.show()
+    fig.update_layout(annotations=annotations)
+    fig.update_layout(height=600, title_text=r"$\text {{Particle in an 1D Box}} \;(n={})$".format(n))
+    return fig
 ```
 
 ```python
-
-# Reading the input variables from the user
-# n = int(input("Enter the value for the quantum number n = "))
-# L = float(input("Enter the size of the box in Angstroms = "))
-
-n = 3
-L = 4
-
-# Generating the wavefunction graph
-
-x = np.linspace(0, L, 900)
-fig, ax = plt.subplots()
-lim1=np.sqrt(2.0/L) # Maximum value of the wavefunction
-ax.axis([0.0,L,-1.1*lim1,1.1*lim1]) # Defining the limits to be plot in the graph
-str1=r"$n = "+str(n)+r"$"
-ax.plot(x, psi(x,n,L), linestyle='--', label=str1, color="orange", linewidth=2.8) # Plotting the wavefunction
-ax.hlines(0.0, 0.0, L, linewidth=1.8, linestyle='--', color="black") # Adding a horizontal line at 0
-# Now we define labels, legend, etc
-ax.legend(loc=2);
-ax.set_xlabel(r'$L$')
-ax.set_ylabel(r'$\psi_n(x)$')
-plt.title('Wavefunction')
-plt.legend(bbox_to_anchor=(1.1, 1), loc=2, borderaxespad=0.0)
-
-# Generating the probability density graph
-fig, ax = plt.subplots()
-ax.axis([0.0,L,0.0,lim1*lim1*1.1])
-str1=r"$n = "+str(n)+r"$"
-ax.plot(x, psi(x,n,L)*psi(x,n,L), label=str1, linewidth=2.8)
-ax.legend(loc=2);
-ax.set_xlabel(r'$L$')
-ax.set_ylabel(r'$|\psi_n|^2(x)$')
-plt.title('Probability Density')
-plt.legend(bbox_to_anchor=(1.1, 1), loc=2, borderaxespad=0.0)
-
-# Show the plots on the screen once the code reaches this point
-plt.show()
+get_1dbox(n=4)
 ```
 
 <div class="alert alert-info"> 
@@ -241,59 +205,7 @@ plt.show()
 We can explore the changes in the **Wavefunction** and **Probability Density** for a given state *n* in boxes of different length $L$: 
 
 ```python
-# Reading the input boxes sizes from the user, and making sure the values are not larger than 20 A
-L = 100.0
-while(L>20.0):
-#     L1 = float(input(" To compare wavefunctions for boxes of different lengths \nenter the value of L for the first box  (in Angstroms and not larger then 20 A) = "))
-#     L2 = float(input("Enter the value of L for the second box (in Angstroms and not larger then 20) = "))
-#     L = max(L1,L2)
-    L1 = 2
-    L2 = 4
-    L = max(L1,L2)
-    if(L>20.0):
-        print ("The sizes of the boxes cannot be larger than 20 A. Please enter the values again.\n")
-
-# Generating the wavefunction and probability density graphs
-plt.rcParams.update({'font.size': 18, 'font.family': 'STIXGeneral', 'mathtext.fontset': 'stix'})
-fig, ax = plt.subplots(figsize=(12,6))
-ax.spines['right'].set_color('none')
-ax.xaxis.tick_bottom()
-ax.spines['left'].set_color('none')
-ax.axes.get_yaxis().set_visible(False)
-ax.spines['top'].set_color('none')
-val = 1.1*max(L1,L2)
-X1 = np.linspace(0.0, L1, 900,endpoint=True)
-X2 = np.linspace(0.0, L2, 900,endpoint=True)
-ax.axis([-0.5*val,1.5*val,-np.sqrt(2.0/L),3*np.sqrt(2.0/L)])
-ax.set_xlabel(r'$X$ (Angstroms)')
-strA="$\psi_n$"
-strB="$|\psi_n|^2$"
-ax.text(-0.12*val, 0.0, strA, rotation='vertical', fontsize=30, color="black")
-ax.text(-0.12*val, np.sqrt(4.0/L), strB, rotation='vertical', fontsize=30, color="black")
-str1=r"$L = "+str(L1)+r"$ A"
-str2=r"$L = "+str(L2)+r"$ A"
-ax.plot(X1,psi(X1,n,L1)*np.sqrt(L1/L), color="red", label=str1, linewidth=2.8)
-ax.plot(X2,psi(X2,n,L2)*np.sqrt(L2/L), color="blue", label=str2, linewidth=2.8)
-ax.plot(X1,psi(X1,n,L1)*psi(X1,n,L1)*(L1/L) + np.sqrt(4.0/L), color="red", linewidth=2.8)
-ax.plot(X2,psi(X2,n,L2)*psi(X2,n,L2)*(L2/L) + np.sqrt(4.0/L), color="blue", linewidth=2.8)
-ax.margins(0.00)
-ax.legend(loc=9)
-str2="$V = +\infty$"
-ax.text(1.03*val,  0.5*np.sqrt(2.0/L), str2, rotation='vertical', fontsize=40, color="black")
-ax.text(-0.3*val, 0.5*np.sqrt(2.0/L), str2, rotation='vertical', fontsize=40, color="black")
-ax.vlines(0.0, -np.sqrt(2.0/L), 2.5*np.sqrt(2.0/L), linewidth=4.8, color="red")
-ax.vlines(L1, -np.sqrt(2.0/L), 2.5*np.sqrt(2.0/L), linewidth=4.8, color="red")
-ax.vlines(0.0, -np.sqrt(2.0/L), 2.5*np.sqrt(2.0/L), linewidth=4.8, color="blue")
-ax.vlines(L2, -np.sqrt(2.0/L), 2.5*np.sqrt(2.0/L), linewidth=4.8, color="blue")
-ax.hlines(0.0, 0.0, L, linewidth=1.8, linestyle='--', color="black")
-ax.hlines(np.sqrt(4.0/L), 0.0, L, linewidth=1.8, linestyle='--', color="black")
-plt.title('Wavefunction and Probability Density', fontsize=30)
-str3=r"$n = "+str(n)+r"$"
-ax.text(1.1*L,np.sqrt(4.0/L), r"$n = "+str(n)+r"$", fontsize=25, color="black")
-plt.legend(bbox_to_anchor=(0.73, 0.95), loc=2, borderaxespad=0.)
-
-# Show the plots on the screen once the code reaches this point
-plt.show()
+get_1dbox(L=5)
 ```
 
 <div class="alert alert-info"> 
@@ -314,56 +226,7 @@ In contrast to the solution in the free particle system, for a particle confined
 Let's now analyze how the **Energy Levels** $E_n$ for an electron change as a function of the **size of the box**.
 
 ```python
-#Given the following parameters
-
-h=6.62607e-34    #planck's constant in joules
-me=9.1093837e-31  # mass of an electron in kg
-# (h**2 / (me*8))* (1e10)**2 *6.242e+18  #is the prefactor using length units is Angstroms and then converted into electron volts
-
-# Defining a function to compute the energy
-
-def En(n,L,m): return (h**2 / (m*8))* (1e10)**2 *6.242e+18*((float(n)/L)**2)
-
-# Reading the input variables from the user
-# L1 = float(input(" To see how the energy levels change for boxes of different lengths, \nenter the value for L for the first box (in Angstroms) = "))
-# nmax1 = int(input("Enter the number of levels you want to plot for the first box = "))
-# L2 = float(input("Enter the value for L for the second box (in Angstroms) = "))
-# nmax2 = int(input("Enter the number of levels you want to plot for the second box = "))
-
-L1 = 10
-nmax1 = 10
-L2 = 7
-nmax2 = 5
-
-# Generating the graph
-plt.rcParams.update({'font.size': 18, 'font.family': 'STIXGeneral', 'mathtext.fontset': 'stix'})
-fig, ax = plt.subplots(figsize=(8,12))
-ax.spines['right'].set_color('none')
-ax.yaxis.tick_left()
-ax.spines['bottom'].set_color('none')
-ax.axes.get_xaxis().set_visible(False)
-ax.spines['top'].set_color('none')
-val = 1.1*max(En(nmax1,L1,me),En(nmax2,L2,me))
-val2= 1.1*max(L1,L2)
-ax.axis([0.0,10.0,0.0,val])
-ax.set_ylabel(r'$E_n$ (eV)')
-for n in range(1,nmax1+1):
-    str1="$n = "+str(n)+r"$, $E_{"+str(n)+r"} = %.3f$ eV"%(En(n,L1,me))
-    ax.text(0.6, En(n,L1,me)+0.01*val, str1, fontsize=16, color="red")
-    ax.hlines(En(n,L1,me), 0.0, 4.5, linewidth=1.8, linestyle='--', color="red")
-for n in range(1,nmax2+1):
-    str1="$n = "+str(n)+r"$, $E_{"+str(n)+r"} = %.3f$ eV"%(En(n,L2,me))
-    ax.text(6.2, En(n,L2,me)+0.01*val, str1, fontsize=16, color="blue")
-    ax.hlines(En(n,L2,me), 5.5, 10.0, linewidth=1.8, linestyle='--', color="blue")
-str1=r"$L = "+str(L1)+r"$ A"
-plt.title("Energy Levels for a particle of mass = $m_{electron}$ \n ", fontsize=30)
-str1=r"$L = "+str(L1)+r"$ A"
-str2=r"$L = "+str(L2)+r"$ A"
-ax.text(1.5,val, str1, fontsize=25, color="red")
-ax.text(6,val, str2, fontsize=25, color="blue")
-
-# Show the plots on the screen once the code reaches this point
-plt.show()
+get_1dbox(n=4, L=10, all_levels=True)
 ```
 
 <div class="alert alert-info"> 
@@ -382,48 +245,7 @@ and how the *Energy Levels*, $E_n$  change as a function of the **mass of the pa
 <!-- #endregion -->
 
 ```python
-# Reading the input variables from the user
-# L = float(input(" Eenter the value for L for both boxes (in Angstroms) = "))
-# m1 = input(" To see how the energy levels change for particles of different mass, \nEnter the value of the mass for the first particle (in units of the mass of 1 electron) = ")
-# nmax1 = int(input("Enter the number of levels you want to plot for the first box = "))
-# m2 = input("Enter the value of the mass for the second particle (in units of the mass of 1 electron) = ")
-# nmax2 = int(input("Enter the number of levels you want to plot for the second box = "))
-
-L = 10
-m1 = 10
-nmax1 = 10 
-m2 = 3
-nmax2 = 1
-
-# Generating the graph
-plt.rcParams.update({'font.size': 18, 'font.family': 'STIXGeneral', 'mathtext.fontset': 'stix'})
-fig, ax = plt.subplots(figsize=(8,12))
-ax.spines['right'].set_color('none')
-ax.yaxis.tick_left()
-ax.spines['bottom'].set_color('none')
-ax.axes.get_xaxis().set_visible(False)
-ax.spines['top'].set_color('none')
-val = 1.1*max(En(nmax1,L,m1*me),En(nmax2,L,m2*me))
-val2= 1.1*max(m1,m2)
-ax.axis([0.0,10.0,0.0,val])
-ax.set_ylabel(r'$E_n$ (eV)')
-for n in range(1,nmax1+1):
-    str1="$n = "+str(n)+r"$, $E_{"+str(n)+r"} = %.3f$ eV"%(En(n,L,m1*me))
-    ax.text(0.6, En(n,L,m1*me)+0.01*val, str1, fontsize=16, color="green")
-    ax.hlines(En(n,L,m1*me), 0.0, 4.5, linewidth=1.8, linestyle='--', color="green")
-for n in range(1,nmax2+1):
-    str1="$n = "+str(n)+r"$, $E_{"+str(n)+r"} = %.3f$ eV"%(En(n,L,m2*me))
-    ax.text(6.2, En(n,L,m2*me)+0.01*val, str1, fontsize=16, color="magenta")
-    ax.hlines(En(n,L,m2*me), 5.5, 10.0, linewidth=1.8, linestyle='--', color="magenta")
-str1=r"$m = "+str(m1)+r"$ A"
-plt.title("Energy Levels for two particles with different masses\n ", fontsize=30)
-str1=r"$m_1 = "+str(m1)+r"$ $m_e$ "
-str2=r"$m_2 = "+str(m2)+r"$ $m_e$ "
-ax.text(1.1,val, str1, fontsize=25, color="green")
-ax.text(6.5,val, str2, fontsize=25, color="magenta")
-
-# Show the plots on the screen once the code reaches this point
-plt.show()
+get_1dbox(n=4, L=10, all_levels=True, num_me=3)
 ```
 
 <div class="alert alert-info"> 
@@ -436,67 +258,81 @@ plt.show()
 We can combine the information from the wavefunctions, probability density, and energies into a single plot that compares the wavefunctions and the probability densities for different states, each one represented at its energy value. These plots are made using the electron mass.
 
 ```python
-# Here the users inputs the value of L
-# L = float(input("Enter the value of L (in Angstroms) = "))
-# nmax = int(input("Enter the maximum value of n you want to plot = "))
-L = 10
-nmax = 5
+def get_1dbox_combined(L=10, num_me=1):
+    # Defining the wavefunction
+    def psi(x, n, L):
+        return np.sqrt(2.0 / L) * np.sin(float(n) * np.pi * x / L)
 
-# Generating the wavefunction graph
-fig, ax = plt.subplots(figsize=(12,9))
-ax.spines['right'].set_color('none')
-ax.xaxis.tick_bottom()
-ax.spines['left'].set_color('none')
-ax.axes.get_yaxis().set_visible(False)
-ax.spines['top'].set_color('none')
-X3 = np.linspace(0.0, L, 900,endpoint=True)
-Emax = En(nmax,L,me)
-amp = (En(2,L,me)-En(1,L,me)) *0.9
-Etop = (Emax+amp)*1.1
-ax.axis([-0.5*L,1.5*L,0.0,Etop])
-ax.set_xlabel(r'$X$ (Angstroms)')
+    def get_energy(n, L, m):
+        return (h**2 / (m * 8)) * (1e10) ** 2 * 6.242e+18 * ((n / L)**2)
 
-for n in range(1,nmax+1):
-    ax.hlines(En(n,L,me), 0.0, L, linewidth=1.8, linestyle='--', color="black")
-    str1="$n = "+str(n)+r"$, $E_{"+str(n)+r"} = %.3f$ eV"%(En(n,L,me))
-    ax.text(1.03*L, En(n,L,me), str1, fontsize=16, color="black")
-    ax.plot(X3,En(n,L,me)+amp*np.sqrt(L/2.0)*psi(X3,n,L), color="red", label="", linewidth=2.8)
-ax.margins(0.00)
-ax.vlines(0.0, 0.0, Etop, linewidth=4.8, color="blue")
-ax.vlines(L, 0.0, Etop, linewidth=4.8, color="blue")
-ax.hlines(0.0, 0.0, L, linewidth=4.8, color="blue")
-plt.title('Wavefunctions', fontsize=30)
-plt.legend(bbox_to_anchor=(0.8, 1), loc=2, borderaxespad=0.)
-str2="$V = +\infty$"
-ax.text(-0.15*L, 0.6*Emax, str2, rotation='vertical', fontsize=40, color="black")
+    N = 200
+    h = 6.62607e-34 
+    me = 9.1093837e-31
+    m = num_me * me
+    
+    # calculation (Prepare data)
+    x = np.linspace(0, L, N)
+    nmax = 7
+    waves = []
+    probs = []
+    energies = []
+    nodes_x = []
+    for n in range(1, nmax+1, 1):
+        wave = psi(x,n,L)
+        prob = wave * wave
+        energy = get_energy(n, L, m)
+        nodes = np.linspace(start=0, stop=L, num=n, endpoint=False)[1:]
+        waves.append(wave)
+        probs.append(prob)
+        energies.append(energy)
+        nodes_x.append(nodes)
 
-# Generating the probability density graph
-fig, ax = plt.subplots(figsize=(12,9))
-ax.spines['right'].set_color('none')
-ax.xaxis.tick_bottom()
-ax.spines['left'].set_color('none')
-ax.axes.get_yaxis().set_visible(False)
-ax.spines['top'].set_color('none')
-X3 = np.linspace(0.0, L, 900,endpoint=True)
-Emax = En(nmax,L,me)
-ax.axis([-0.5*L,1.5*L,0.0,Etop])
-ax.set_xlabel(r'$X$ (Angstroms)')
-for n in range(1,nmax+1):
-    ax.hlines(En(n,L,me), 0.0, L, linewidth=1.8, linestyle='--', color="black")
-    str1="$n = "+str(n)+r"$, $E_{"+str(n)+r"} = %.3f$ eV"%(En(n,L,me))
-    ax.text(1.03*L, En(n,L,me), str1, fontsize=16, color="black")
-    ax.plot(X3,En(n,L,me)+ amp*(np.sqrt(L/2.0)*psi(X3,n,L))**2, color="red", label="", linewidth=2.8)
-ax.margins(0.00)
-ax.vlines(0.0, 0.0, Etop, linewidth=4.8, color="blue")
-ax.vlines(L, 0.0, Etop, linewidth=4.8, color="blue")
-ax.hlines(0.0, 0.0, L, linewidth=4.8, color="blue")
-plt.title('Probability Density', fontsize=30)
-plt.legend(bbox_to_anchor=(0.8, 1), loc=2, borderaxespad=0.)
-str2="$V = +\infty$"
-ax.text(-0.15*L, 0.6*Emax, str2, rotation='vertical', fontsize=40, color="black")
 
-# Show the plots on the screen once the code reaches this point
-plt.show()
+    xleft = [0, 0]
+    xright = [L, L]
+    y_vertical = [-1, 1000]
+
+    # Plot
+    fig = make_subplots(rows=1, cols=2, 
+                        subplot_titles=(r"$\text {Wavefunction}$", r"$\text {Probability Density}$"))
+
+    # 1st subplot
+    annotations = list(fig['layout']['annotations'])
+    for i, w in enumerate(waves):
+        fig.append_trace(go.Scatter(x=x, y=w+energies[i], line=dict(color='blue'), showlegend=False), row=1, col=1)
+        fig.append_trace(go.Scatter(x=nodes_x[i], y=np.zeros_like(nodes_x[i])+energies[i], name="node", mode="markers", marker=dict(size=6, color='blue'), showlegend=False), row=1, col=1)
+        fig.append_trace(go.Scatter(x=[0, L/2, L], y=[energies[i], energies[i], energies[i]], name="Energy Level", mode="lines", showlegend=False, line=dict(color="green", dash='dot')), row=1, col=1)
+        annotations.append(dict(y=energies[i], x=L+2.5, xref='x1', yref='y1', text=r"$E_{{{}}}={:.2f}\; eV$".format(i+1, energies[i]), font=dict(size=11, color="green"), showarrow=False))
+    # wall
+    fig.append_trace(go.Scatter(x=xleft, y=y_vertical, showlegend=False, line=dict(color='white', width=2)), row=1, col=1, )
+    fig.append_trace(go.Scatter(x=xright, y=y_vertical, showlegend=False, line=dict(color='white', width=2)), row=1, col=1, )
+    # axis
+    fig.update_xaxes(title_text=r"$x (Å)$", range=[-3, 14], showgrid=False, row=1, col=1)
+    fig.update_yaxes(title_text=r'$eV$', range=[0, energies[-1]+2], showgrid=False, zeroline=False, row=1, col=1)
+
+    # 2nd subplot
+    for i, p in enumerate(probs):
+        fig.append_trace(go.Scatter(x=x, y=p+energies[i], showlegend=False, line=dict(color='red')), row=1, col=2)
+        fig.append_trace(go.Scatter(x=nodes_x[i], y=np.zeros_like(nodes_x[i])+energies[i], name="node", mode="markers", marker=dict(size=6, color='red'), showlegend=False), row=1, col=2)
+        fig.append_trace(go.Scatter(x=[0, L/2, L], y=[energies[i], energies[i], energies[i]], name="Energy Level", mode="lines", showlegend=False, line=dict(color="green", dash='dot')), row=1, col=2)
+        annotations.append(dict(y=energies[i], x=L+2.5, xref='x2', yref='y2', text=r"$E_{{{}}}={:.2f}\; eV$".format(i+1, energies[i]), font=dict(size=11, color="green"), showarrow=False))
+    fig.append_trace(go.Scatter(x=xleft, y=y_vertical, showlegend=False, line=dict(color='white', width=2)), row=1, col=2, )
+    fig.append_trace(go.Scatter(x=xright, y=y_vertical, showlegend=False, line=dict(color='white', width=2)), row=1, col=2, )
+    fig.update_xaxes(title_text=r"$x (Å)$", range=[-3, 14], showgrid=False, row=1, col=2)
+    fig.update_yaxes(title_text=r'$eV$', range=[0, energies[-1]+2], showgrid=False, zeroline=False, row=1, col=2)
+    
+    # annotations
+    annotations.append(dict(y=energies[-1]/2, x=-1.25, xref='x1', yref='y1', text=r"$V = +\infty$", font=dict(size=11, color="black"), showarrow=False))
+    annotations.append(dict(y=energies[-1]/2, x=-1.25, xref='x2', yref='y2', text=r"$V = +\infty$", font=dict(size=11, color="black"), showarrow=False))
+
+    fig.update_layout(annotations=annotations)
+    fig.update_layout(height=800, title_text=r"$\text {Particle in an 1D Box}$")
+    return fig
+```
+
+```python
+get_1dbox_combined(L=10, num_me=1)
 ```
 
 <div class="alert alert-info"> 
