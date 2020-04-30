@@ -280,7 +280,7 @@ def get_1dbox_combined(L=10, num_me=1):
     # 1st subplot
     annotations = list(fig['layout']['annotations'])
     for i, w in enumerate(waves):
-        fig.append_trace(go.Scatter(x=x, y=w+energies[i], line=dict(color='blue'), showlegend=False), row=1, col=1)
+        fig.append_trace(go.Scatter(x=x, y=w*2+energies[i], line=dict(color='blue'), showlegend=False), row=1, col=1)
         fig.append_trace(go.Scatter(x=nodes_x[i], y=np.zeros_like(nodes_x[i])+energies[i], name="node",
                                     mode="markers", marker=dict(size=6, color='blue'), showlegend=False), row=1, col=1)
         fig.append_trace(go.Scatter(x=[0, L/2, L], y=[energies[i], energies[i], energies[i]], name="Energy Level",
@@ -296,7 +296,7 @@ def get_1dbox_combined(L=10, num_me=1):
 
     # 2nd subplot
     for i, p in enumerate(probs):
-        fig.append_trace(go.Scatter(x=x, y=p+energies[i], showlegend=False, line=dict(color='red')), row=1, col=2)
+        fig.append_trace(go.Scatter(x=x, y=p*2+energies[i], showlegend=False, line=dict(color='red')), row=1, col=2)
         fig.append_trace(go.Scatter(x=nodes_x[i], y=np.zeros_like(nodes_x[i])+energies[i], name="node",
                                     mode="markers", marker=dict(size=6, color='red'), showlegend=False), row=1, col=2)
         fig.append_trace(go.Scatter(x=[0, L/2, L], y=[energies[i], energies[i], energies[i]], name="Energy Level",
@@ -309,8 +309,8 @@ def get_1dbox_combined(L=10, num_me=1):
     fig.update_yaxes(title_text=r'$eV$', range=[0, 35], showgrid=False, zeroline=False, row=1, col=2)
 
     # annotations
-    annotations.append(dict(y=energies[-1]/2, x=-1.25, xref='x1', yref='y1', text=r"$V = +\infty$", font=dict(size=11, color="black"), showarrow=False))
-    annotations.append(dict(y=energies[-1]/2, x=-1.25, xref='x2', yref='y2', text=r"$V = +\infty$", font=dict(size=11, color="black"), showarrow=False))
+    annotations.append(dict(y=35/2, x=-1.25, xref='x1', yref='y1', text=r"$V = +\infty$", font=dict(size=11, color="black"), showarrow=False))
+    annotations.append(dict(y=35/2, x=-1.25, xref='x2', yref='y2', text=r"$V = +\infty$", font=dict(size=11, color="black"), showarrow=False))
 
     fig.update_layout(annotations=annotations)
     fig.update_layout(height=800, title_text=r"$\text {Particle in an 1D Box}$")
