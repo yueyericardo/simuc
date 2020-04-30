@@ -219,8 +219,8 @@ def get_1dbox_combined(L=10, num_me=1):
     fig.update_yaxes(title_text=r'$eV$', range=[0, 35], showgrid=False, zeroline=False, row=1, col=2)
 
     # annotations
-    annotations.append(dict(y=energies[-1]/2, x=-1.25, xref='x1', yref='y1', text=r"$V = +\infty$", font=dict(size=11, color="black"), showarrow=False))
-    annotations.append(dict(y=energies[-1]/2, x=-1.25, xref='x2', yref='y2', text=r"$V = +\infty$", font=dict(size=11, color="black"), showarrow=False))
+    annotations.append(dict(y=20, x=-1.25, xref='x1', yref='y1', text=r"$V = +\infty$", font=dict(size=11, color="black"), showarrow=False))
+    annotations.append(dict(y=20, x=-1.25, xref='x2', yref='y2', text=r"$V = +\infty$", font=dict(size=11, color="black"), showarrow=False))
 
     fig.update_layout(annotations=annotations)
     fig.update_layout(height=800, title_text=r"$\text {Particle in an 1D Box}$")
@@ -280,7 +280,7 @@ sliders5 = html.Div([
     html.Label('The length for the box L (in Å)'),
     dcc.Slider(id='fig5_l_slider', min=1, max=10, value=10, marks={str(x): str(x) for x in np.arange(5, 11, 1)}, step=1),
     html.Label('The mass of particle (in mass of electron)'),
-    dcc.Slider(id='fig5_m_slider', min=1, max=4, value=1, marks={str(x): str(x) for x in np.arange(1, 4, 1)}, step=1),
+    dcc.Slider(id='fig5_m_slider', min=1, max=5, value=1, marks={str(x): str(x) for x in np.arange(1, 4, 1)}, step=1),
     ], style={'columnCount': 2, 'padding': '0'})
 
 app.layout = html.Div([
