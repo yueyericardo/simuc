@@ -180,7 +180,7 @@ mathjax_script = dji.Import(src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/
 fig1 = dcc.Graph(figure=getfig1(), id="fig1")
 sliders1_1 = html.Div([
     html.Label('Initial Pressure $P_1$ (in $ atm $)'),
-    dcc.Slider(id='p1_slider', min=2.5, max=4, value=3, marks={str(x): str(x) for x in np.arange(2.5, 5, 0.5)}, step=0.5),
+    dcc.Slider(id='p1_slider', min=2.5, max=5.0, value=3, marks={str(x): str(x) for x in np.arange(2.5, 5.5, 0.5)}, step=0.5),
     html.Label('Initial Volume $V_1$ (in $ L $)'),
     dcc.Slider(id='v1_slider', min=10, max=15, value=12, marks={str(x): str(x) for x in np.arange(10, 16, 1)}, step=1),
     html.Label('Heat capacity ratio $\gamma$'),
