@@ -120,9 +120,9 @@ fig.append_trace(go.Scatter(x=V_stage4, y=P_stage4, name="Stage 4",
                             line=dict(width=2, color='red',)), row=1, col=1, )
 
 # Region fill
-fig.add_trace(go.Scatter(x=np.flip(np.concatenate([V_stage3, V_stage4])), y=np.flip(np.concatenate([P_stage3+0.01, P_stage4+0.01])),
+fig.add_trace(go.Scatter(x=np.flip(np.concatenate([V_stage3, V_stage4])), y=np.flip(np.concatenate([P_stage3, P_stage4])),
     fill=None, showlegend=False,  mode='lines',
-    # line_color='rgba(0, 0, 250, 0.1)' 
+    line=dict(width=0),
     ))
 fig.add_trace(go.Scatter(x=np.concatenate([V_stage1, V_stage2]), y=np.concatenate([P_stage1, P_stage2]),
     fill='tonexty', mode='none', showlegend=False, 
