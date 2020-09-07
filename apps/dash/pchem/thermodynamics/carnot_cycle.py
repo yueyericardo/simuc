@@ -58,7 +58,7 @@ app.index_string = '''
 text = """
 <br><br>
 <p style="text-align: center;">
-<video preload="auto" src="assets/Carnot_Cycle.mp4" loop="" muted="" autoplay="" style="width: 50%" controls="controls">
+<video preload="auto" src="assets/Carnot_Cycle.mp4" loop="" muted="" autoplay="" style="width: 60%" controls="controls">
 </video>
 </p>
 <center>
@@ -78,7 +78,7 @@ Vstp = 22.41396954
 #####################################################################
 
 
-def getfig1(p1=2.0, v1=11.2, gamma=5./3.,  p2_iso=1.0, p3_adi=0.4):
+def getfig1(p1=3.0, v1=12.0, gamma=1.6,  p2_iso=1.6, p3_adi=0.4):
     def solveP(p1, V1, V2, n):    # Pressure of the gas assuming a path of pV^n
         p = p1 * (V1 / V2)**n
         return p
@@ -188,9 +188,9 @@ sliders1_1 = html.Div([
     ], style={'columnCount': 3, 'padding': '0'})
 sliders1_2 = html.Div([
     html.Label('Pressure after Stage1 $P_2$ (in $ atm $)'),
-    dcc.Slider(id='p2_slider', min=1, max=2.2, value=1.5, marks={'{:.1f}'.format(x): '{:.1f}'.format(x) for x in np.arange(1, 2.5, 0.3)}, step=0.3),
+    dcc.Slider(id='p2_slider', min=1.0, max=2.2, value=1.6, marks={'{:.1f}'.format(x): '{:.1f}'.format(x) for x in np.arange(1.0, 2.5, 0.3)}, step=0.3),
     html.Label('Pressure after Stage2 $P_3$ (in $ atm $)'),
-    dcc.Slider(id='p3_slider', min=0.5, max=0.9, value=0.4, marks={'{:.1f}'.format(x): '{:.1f}'.format(x) for x in np.arange(0.5, 1.1, 0.1)}, step=0.1),
+    dcc.Slider(id='p3_slider', min=0.5, max=0.9, value=0.4, marks={'{:.1f}'.format(x): '{:.1f}'.format(x) for x in np.arange(0.5, 1.0, 0.1)}, step=0.1),
     ], style={'columnCount': 2, 'padding': '0'})
 
 
