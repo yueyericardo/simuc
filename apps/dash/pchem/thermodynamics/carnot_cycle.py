@@ -161,7 +161,7 @@ def getfig1(p1=3.0, v1=12.0, gamma=1.6,  p2_iso=1.6, p3_adi=0.4):
                      #                  showgrid=False, zeroline=False
                      )
 
-    fig.update_layout(height=600, legend={'traceorder': 'normal'}, paper_bgcolor='rgba(0,0,0,0)',
+    fig.update_layout(width=1000, height=700, legend={'traceorder': 'normal'}, paper_bgcolor='rgba(0,0,0,0)',
                       #                   plot_bgcolor='rgba(0,0,0,0)'
                       )
     return fig
