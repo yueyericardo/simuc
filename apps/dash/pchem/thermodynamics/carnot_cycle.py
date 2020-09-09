@@ -104,7 +104,7 @@ def getfig1(p1=3.0, v1=12.0, gamma=1.6,  p2_iso=1.6, p3_adi=0.4):
     fig.append_trace(go.Scatter(x=[v1, v2_iso], y=[p1, p2_iso], name=None, mode="markers+text",
                                 marker=dict(color='black', size=8), opacity=0.5, showlegend=False,
                                 text=["P1", "P2"], textposition="top center",
-                                textfont=dict(size=13, color="black")
+                                textfont=dict(family="times", size=18, color="black",)
                                 ),  row=1, col=1, )
     ############################################################################################
 
@@ -117,7 +117,7 @@ def getfig1(p1=3.0, v1=12.0, gamma=1.6,  p2_iso=1.6, p3_adi=0.4):
     fig.append_trace(go.Scatter(x=[v3_adi, v4_iso], y=[p3_adi, p4_iso], name=None, mode='markers+text',
                                 marker=dict(color='black', size=8), opacity=0.5, showlegend=False,
                                 text=["P3", "P4"], textposition="bottom center",
-                                textfont=dict(size=13, color="black",)
+                                textfont=dict(family="times", size=18, color="black",)
                                 ),  row=1, col=1, )
 
     # dashed lines
