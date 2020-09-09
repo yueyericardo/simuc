@@ -163,7 +163,7 @@ def getfig1(p1=3.0, v1=12.0, gamma=1.6,  p2_iso=1.6, p3_adi=0.4):
                      #                  showline=True, linewidth=1, linecolor='black', ticks='outside',
                      #                  showgrid=False, zeroline=False
                      )
-    fig.update_yaxes(title_text=r'$p \;\text{(atm)}$ ', row=1, col=1, range=[0, 6]
+    fig.update_yaxes(title_text=r'$P \;\text{(atm)}$ ', row=1, col=1, range=[0, 6]
                      #                  showline=True, linewidth=1, linecolor='black', ticks='outside',
                      #                  showgrid=False, zeroline=False
                      )
@@ -191,13 +191,13 @@ sliders1_1 = html.Div([
     html.Label('$V_1$ (L): Initial Volume'),
     dcc.Slider(id='v1_slider', min=10, max=15, value=12, marks={str(x): str(x) for x in np.arange(10, 16, 1)}, step=1),
     html.Label('$\gamma$: Heat capacity ratio'),
-    dcc.Slider(id='gamma_slider', min=1.1, max=1.7, value=1.6, marks={'{:.1f}'.format(x): '{:.1f}'.format(x) for x in np.arange(1.1, 1.8, 0.1)}, step=0.1),
+    dcc.Slider(id='gamma_slider', min=1.1, max=1.6, value=1.6, marks={x: '{:.1f}'.format(x) for x in np.arange(1.1, 1.7, 0.1)}, step=None),
     ], style={'columnCount': 3, 'padding': '0'})
 sliders1_2 = html.Div([
     html.Label('$P_2$ (atm): Pressure after Stage1'),
-    dcc.Slider(id='p2_slider', min=1.0, max=2.2, value=1.6, marks={'{:.1f}'.format(x): '{:.1f}'.format(x) for x in np.arange(1.0, 2.5, 0.3)}, step=0.3),
+    dcc.Slider(id='p2_slider', min=1.2, max=2.2, value=1.6, marks={x: '{:.1f}'.format(x) for x in np.arange(1.0, 2.3, 0.2)}, step=None),
     html.Label('$P_3$ (atm): Pressure after Stage2'),
-    dcc.Slider(id='p3_slider', min=0.5, max=0.9, value=0.4, marks={'{:.1f}'.format(x): '{:.1f}'.format(x) for x in np.arange(0.5, 1.0, 0.1)}, step=0.1),
+    dcc.Slider(id='p3_slider', min=0.5, max=1.0, value=0.4, marks={x: '{:.1f}'.format(x) for x in np.arange(0.5, 1.1, 0.1)}, step=None),
     ], style={'columnCount': 2, 'padding': '0'})
 
 
