@@ -67,7 +67,9 @@ Edited from
     physics-Thermodynamics -Carnot Engine- basic introduction - YouTube
 </a>
 </center>
-<br><br>
+<br>
+<ul style="columns: 2; -webkit-columns: 2; -moz-columns: 2; text-align: center;"><li>Stage 1: Isothermal Expansion</li><li>Stage 2: Adiabatic Expansion &nbsp;</li><li>Stage 3: Isothermal Compression</li><li>Stage 4: Adiabatic Compression &nbsp;</li></ul>
+<br>
 """
 mds = []
 tmp = dcc.Markdown(text, dangerously_allow_html=True)
@@ -99,10 +101,12 @@ def getfig1(p1=3.0, v1=12.0, gamma=1.6,  p2_iso=1.6, p3_adi=0.4):
                                 line=dict(width=1.5, color='red', dash='dot')), row=1, col=1, )
 
     # plot marker
-    fig.append_trace(go.Scatter(x=[v1, v2_iso], y=[p1, p2_iso], name=None, mode='markers',
-                                marker=dict(color='black', size=8), opacity=0.5, showlegend=False),  row=1, col=1, )
+    fig.append_trace(go.Scatter(x=[v1, v2_iso], y=[p1, p2_iso], name=None, mode="markers+text",
+                                marker=dict(color='black', size=8), opacity=0.5, showlegend=False,
+                                text=["P1", "P2"], textposition="top center",
+                                textfont=dict(size=13, color="black")
+                                ),  row=1, col=1, )
     ############################################################################################
-
 
     ############################################################################################
     # finish the codes to make Figure 15, you could also change codes outside of the fence
@@ -110,8 +114,11 @@ def getfig1(p1=3.0, v1=12.0, gamma=1.6,  p2_iso=1.6, p3_adi=0.4):
     v4_iso = (p1 * v1**gamma / (p3_adi * v3_adi)) ** (1 / (gamma - 1))
     p4_iso = (v1 / v4_iso)**gamma * p1
 
-    fig.append_trace(go.Scatter(x=[v3_adi, v4_iso], y=[p3_adi, p4_iso], name=None, mode='markers',
-                                marker=dict(color='black', size=8), opacity=0.5, showlegend=False),  row=1, col=1, )
+    fig.append_trace(go.Scatter(x=[v3_adi, v4_iso], y=[p3_adi, p4_iso], name=None, mode='markers+text',
+                                marker=dict(color='black', size=8), opacity=0.5, showlegend=False,
+                                text=["P3", "P4"], textposition="bottom center",
+                                textfont=dict(size=13, color="black",)
+                                ),  row=1, col=1, )
 
     # dashed lines
     fig.append_trace(go.Scatter(x=V, y=solveP(p2_iso, v2_iso, V, gamma), showlegend=False,
@@ -179,17 +186,17 @@ mathjax_script = dji.Import(src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/
 # fig1
 fig1 = dcc.Graph(figure=getfig1(), id="fig1")
 sliders1_1 = html.Div([
-    html.Label('Initial Pressure $P_1$ (in $ atm $)'),
+    html.Label('$P_1$ (atm): Initial Pressure'),
     dcc.Slider(id='p1_slider', min=2.5, max=5.0, value=3, marks={str(x): str(x) for x in np.arange(2.5, 5.5, 0.5)}, step=0.5),
-    html.Label('Initial Volume $V_1$ (in $ L $)'),
+    html.Label('$V_1$ (L): Initial Volume'),
     dcc.Slider(id='v1_slider', min=10, max=15, value=12, marks={str(x): str(x) for x in np.arange(10, 16, 1)}, step=1),
-    html.Label('Heat capacity ratio $\gamma$'),
+    html.Label('$\gamma$: Heat capacity ratio'),
     dcc.Slider(id='gamma_slider', min=1.1, max=1.7, value=1.6, marks={'{:.1f}'.format(x): '{:.1f}'.format(x) for x in np.arange(1.1, 1.8, 0.1)}, step=0.1),
     ], style={'columnCount': 3, 'padding': '0'})
 sliders1_2 = html.Div([
-    html.Label('Pressure after Stage1 $P_2$ (in $ atm $)'),
+    html.Label('$P_2$ (atm): Pressure after Stage1'),
     dcc.Slider(id='p2_slider', min=1.0, max=2.2, value=1.6, marks={'{:.1f}'.format(x): '{:.1f}'.format(x) for x in np.arange(1.0, 2.5, 0.3)}, step=0.3),
-    html.Label('Pressure after Stage2 $P_3$ (in $ atm $)'),
+    html.Label('$P_3$ (atm): Pressure after Stage2'),
     dcc.Slider(id='p3_slider', min=0.5, max=0.9, value=0.4, marks={'{:.1f}'.format(x): '{:.1f}'.format(x) for x in np.arange(0.5, 1.0, 0.1)}, step=0.1),
     ], style={'columnCount': 2, 'padding': '0'})
 

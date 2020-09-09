@@ -75,8 +75,10 @@ fig.append_trace(go.Scatter(x=V, y=solveP(p1, v1, V, gamma), name="Adiabat",
                             line=dict(width=1.5, color='red', dash='dot')), row=1, col=1, )
 
 # plot marker
-fig.append_trace(go.Scatter(x=[v1, v2_iso], y=[p1, p2_iso], name=None, mode='markers',
-                            marker=dict(color='black', size=8), opacity=0.5, showlegend=False),  row=1, col=1, )
+fig.append_trace(go.Scatter(x=[v1, v2_iso], y=[p1, p2_iso], name=None, mode="markers+text",
+                            marker=dict(color='black', size=8), opacity=0.5, showlegend=False, 
+                            text=["$P_1$", "$P_2$"], textposition="top center"
+                           ),  row=1, col=1, )
 ############################################################################################
 
 
@@ -87,8 +89,10 @@ v3_adi = (p2_iso / p3_adi)**(1. / gamma) * v2_iso
 v4_iso = (p1 * v1**gamma / (p3_adi * v3_adi)) ** (1 / (gamma - 1))
 p4_iso = (v1 / v4_iso)**gamma * p1
 
-fig.append_trace(go.Scatter(x=[v3_adi, v4_iso], y=[p3_adi, p4_iso], name=None, mode='markers',
-                            marker=dict(color='black', size=8), opacity=0.5, showlegend=False),  row=1, col=1, )
+fig.append_trace(go.Scatter(x=[v3_adi, v4_iso], y=[p3_adi, p4_iso], name=None, mode='markers+text',
+                            marker=dict(color='black', size=8), opacity=0.5, showlegend=False, 
+                            text=["$P_3$", "$P_4$"], textposition="top center"
+                           ),  row=1, col=1, )
 
 # dashed lines
 fig.append_trace(go.Scatter(x=V, y=solveP(p2_iso, v2_iso, V, gamma), showlegend=False, 
@@ -150,3 +154,5 @@ fig.show()
 # </div>
 #
 # @@@fig@@@
+
+
