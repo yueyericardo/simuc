@@ -10,8 +10,8 @@ sys.path.append('..')
 import util
 from server import server
 
-external_stylesheets = ['https://raw.githubusercontent.com/yueyericardo/simuc/master/apps/dash/resources/dash.css']
-external_scripts = ['https://raw.githubusercontent.com/yueyericardo/simuc/master/apps/dash/resources/iframeResizer.contentWindow.min.js']
+external_stylesheets = ['http://simuc.chem.ufl.edu/static/dash/dash.css']
+external_scripts = ['http://simuc.chem.ufl.edu/static/dash/iframeResizer.contentWindow.min.js']
 app = dash.Dash(name='sho_2d',
                 external_stylesheets=external_stylesheets,
                 external_scripts=external_scripts,

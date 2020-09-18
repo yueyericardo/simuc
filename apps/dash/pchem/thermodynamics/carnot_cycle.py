@@ -16,10 +16,10 @@ sys.path.append('..')
 
 filepath = os.path.split(os.path.realpath(__file__))[0]
 
-external_stylesheets = ['https://raw.githubusercontent.com/yueyericardo/simuc/master/apps/dash/resources/dash.css',
-                        'https://raw.githubusercontent.com/yueyericardo/simuc/master/apps/dash/resources/monokai-sublime.min.css']
+external_stylesheets = ['http://simuc.chem.ufl.edu/static/dash/dash.css',
+                        'http://simuc.chem.ufl.edu/static/dash/monokai-sublime.min.css']
 external_scripts = [
-    'https://raw.githubusercontent.com/yueyericardo/simuc/master/apps/dash/resources/iframeResizer.contentWindow.min.js']
+    'http://simuc.chem.ufl.edu/static/dash/iframeResizer.contentWindow.min.js']
 
 
 app = dash.Dash(__name__,
@@ -180,7 +180,7 @@ def empty_space(h=50):
     return html.Div([html.Br()], style={'min-height': '{}px'.format(h)})
 
 
-my_script = dji.Import(src="https://raw.githubusercontent.com/yueyericardo/simuc/master/apps/dash/resources/redraw.js")
+my_script = dji.Import(src="http://simuc.chem.ufl.edu/static/dash/redraw.js")
 mathjax_script = dji.Import(src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_SVG")
 
 # fig1

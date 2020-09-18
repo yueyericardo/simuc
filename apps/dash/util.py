@@ -16,8 +16,8 @@ def genhtml(inputfile, outputfile, addtoc=False):
 
     f = open(outputfile, "w")
     head = """
-    <link rel="stylesheet" href="https://raw.githubusercontent.com/yueyericardo/simuc/master/apps/dash/resources/dash.css">
-    <link rel="stylesheet" href="https://raw.githubusercontent.com/yueyericardo/simuc/master/apps/dash/resources/monokai-sublime.min.css">
+    <link rel="stylesheet" href="http://simuc.chem.ufl.edu/static/dash/dash.css">
+    <link rel="stylesheet" href="http://simuc.chem.ufl.edu/static/dash/monokai-sublime.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js"></script>
     <script>hljs.initHighlightingOnLoad();</script>
     """
