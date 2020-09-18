@@ -7,8 +7,8 @@ from dash.dependencies import Input, Output
 import util
 from server import server
 
-external_stylesheets = ['https://codepen.io/yueyericardo/pen/OJyLrKR.css']
-external_scripts = ['https://yyrcd-1256568788.cos.na-siliconvalley.myqcloud.com/yyrcd/2020-03-21-iframeResizer.contentWindow.min.js']
+external_stylesheets = ['https://raw.githubusercontent.com/yueyericardo/simuc/master/apps/dash/resources/dash.css']
+external_scripts = ['https://raw.githubusercontent.com/yueyericardo/simuc/master/apps/dash/resources/iframeResizer.contentWindow.min.js']
 app = dash.Dash(name='test2',
                 external_stylesheets=external_stylesheets,
                 external_scripts=external_scripts,
